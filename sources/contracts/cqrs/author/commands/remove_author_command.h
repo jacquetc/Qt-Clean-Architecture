@@ -3,12 +3,14 @@
 
 #include <QUuid>
 
-
-namespace Contracts::CQRS::Author::Commands {
-class RemoveAuthorCommand {
-public:
-
-    RemoveAuthorCommand() {}
+namespace Contracts::CQRS::Author::Commands
+{
+class RemoveAuthorCommand
+{
+  public:
+    RemoveAuthorCommand()
+    {
+    }
 
     QUuid id;
 };

@@ -16,15 +16,12 @@ set(domain_SRCS
     domain_global.h
 author.h
 entity.h
-    # user.h
-    # user.cpp
 )
 
 add_library(skribisto-domain SHARED ${domain_SRCS})
+target_include_directories(skribisto-domain PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_definitions(skribisto-domain PRIVATE SKRIBISTO_DOMAIN_LIBRARY)
-
-
 target_link_libraries(skribisto-domain PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 

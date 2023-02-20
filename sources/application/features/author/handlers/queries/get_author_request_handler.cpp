@@ -1,16 +1,20 @@
 #include "get_author_request_handler.h"
 #include "automapper/automapper.h"
+#include "persistence/interface_author_repository.h"
 
 using namespace Application::Features::Author::Queries;
 
-GetAuthorRequestHandler::GetAuthorRequestHandler(InterfaceAuthorRepository *repository)
-    : m_repository(repository)
+GetAuthorRequestHandler::GetAuthorRequestHandler(InterfaceRepositories *repositories)
+    : Handler(), m_repositories(repositories)
 {
 }
 
 Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &request)
 {
-    auto authorResult = m_repository->get(request.id);
+    InterfaceAuthorRepository *repository =
+        dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
+
+    auto authorResult = repository->get(request.id);
 
     if (authorResult.isError())
     {

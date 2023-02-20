@@ -2,6 +2,7 @@
 #define CREATE_AUTHOR_COMMAND_HANDLER_H
 
 #include "cqrs/author/commands/create_author_command.h"
+#include "handler.h"
 #include "persistence/interface_repositories.h"
 #include "result.h"
 
@@ -11,7 +12,7 @@ using namespace Contracts::CQRS::Author::Commands;
 
 namespace Application::Features::Author::Commands
 {
-class CreateAuthorCommandHandler
+class CreateAuthorCommandHandler : public Handler
 {
   public:
     CreateAuthorCommandHandler(InterfaceRepositories *repositories);

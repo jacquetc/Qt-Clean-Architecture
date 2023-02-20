@@ -14,16 +14,17 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core CONFIG REQUIRED)
 set(application_SRCS
 
     application_global.h
-    validation_exception.h
     features/author/handlers/queries/get_author_request_handler.h features/author/handlers/queries/get_author_request_handler.cpp
     features/author/handlers/commands/create_author_command_handler.h features/author/handlers/commands/create_author_command_handler.cpp
     features/author/handlers/commands/remove_author_command_handler.h features/author/handlers/commands/remove_author_command_handler.cpp
 features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
+handler.h handler.cpp
 )
 
 add_library(skribisto-application SHARED ${application_SRCS})
 
 add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(${PROJECT_NAME} skribisto-contracts)
 
 target_compile_definitions(skribisto-application PRIVATE SKRIBISTO_APPLICATION_LIBRARY)
 

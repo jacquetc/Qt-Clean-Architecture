@@ -8,25 +8,38 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 project(skribisto-adapters LANGUAGES CXX VERSION ${VERSION})
 
-find_package(QT NAMES Qt6 COMPONENTS Core CONFIG REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core CONFIG REQUIRED)
+find_package(QT NAMES Qt6 COMPONENTS Core Gui CONFIG REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui CONFIG REQUIRED)
 
 set(adapters_SRCS
 
     adapters_global.h
+    adapters_registration.h adapters_registration.cpp
+    author/author_controller.h
+    author/author_undo_commands.h author/author_undo_commands.cpp
+    undo_controller.h undo_controller.cpp
 )
 
 add_library(skribisto-adapters SHARED ${adapters_SRCS})
 
 add_dependencies(${PROJECT_NAME} skribisto-application)
+add_dependencies(${PROJECT_NAME} skribisto-persistence)
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
+add_dependencies(${PROJECT_NAME} skribisto-domain)
 
 target_compile_definitions(skribisto-adapters PRIVATE SKRIBISTO_ADAPTERS_LIBRARY)
 
-target_link_libraries(skribisto-adapters PRIVATE skribisto-application skribisto-contracts Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(skribisto-adapters PRIVATE
+    skribisto-application
+    skribisto-contracts
+    skribisto-domain
+    skribisto-persistence
+    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/application/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/persistence/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
 
 # ---------------------------------
 if(IOS)

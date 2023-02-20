@@ -33,16 +33,12 @@ class AuthorDTO : public AuthorDTOBase
     {
         m_data.reset(new AuthorDTOData);
     }
-    AuthorDTO(const QUuid &uuid, const QString &name, const QUuid &relative, const QDateTime &creationDate,
-              const QDateTime &updateDate)
-        : AuthorDTOBase(nullptr)
+    AuthorDTO(const QUuid &uuid, const QString &name, const QUuid &relative) : AuthorDTOBase(nullptr)
     {
         m_data.reset(new AuthorDTOData);
         m_data->uuid = uuid;
         m_data->name = name;
         m_data->relative = relative;
-        m_data->creationDate = creationDate;
-        m_data->updateDate = updateDate;
     }
 
     AuthorDTO(const AuthorDTO &other) : AuthorDTOBase(other), m_data(other.m_data->clone())

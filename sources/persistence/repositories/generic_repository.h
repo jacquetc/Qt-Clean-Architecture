@@ -6,6 +6,7 @@
 #include "persistence/interface_generic_repository.h"
 #include "persistence_global.h"
 #include "result.h"
+#include "wait_in_event_loop.h"
 
 #include <QEventLoop>
 #include <QFuture>
@@ -21,7 +22,8 @@ namespace Repository
 // -------------------------------------------------
 
 template <class T>
-class SKRPERSISTENCEEXPORT GenericRepository : public virtual Contracts::Persistence::InterfaceGenericRepository<T>
+class SKRPERSISTENCEEXPORT GenericRepository : public virtual Contracts::Persistence::InterfaceGenericRepository<T>,
+                                               public WaitInEventLoop
 {
 
   public:
@@ -45,37 +47,7 @@ class SKRPERSISTENCEEXPORT GenericRepository : public virtual Contracts::Persist
     Result<bool> exists(const QUuid &uuid) override;
 
   protected:
-    template <class U> auto waitInEventLoop(QFuture<Result<U>> &&future)
-    {
-        QEventLoop wait;
-        QFutureWatcher<Result<U>> fw;
-
-        QObject::connect(&fw, &QFutureWatcher<Result<U>>::finished, &wait, &QEventLoop::quit);
-
-        // Connect progressRangeChanged signal to a lambda function that emits a signal with progress info
-        QObject::connect(&fw, &QFutureWatcher<Result<U>>::progressRangeChanged, [this](int minimum, int maximum) {
-            // emit a signal with progress info
-            setProgressChanged(minimum, maximum, 0);
-        });
-
-        // Connect progressValueChanged signal to a lambda function that emits a signal with progress info
-        QObject::connect(&fw, &QFutureWatcher<Result<U>>::progressValueChanged, [this](int progressValue) {
-            // emit a signal with progress info
-            setProgressChanged(0, 0, progressValue);
-        });
-
-        fw.setFuture(future);
-        wait.exec();
-
-        // Disconnect the signals after the event loop has finished
-        QObject::disconnect(&fw, &QFutureWatcher<Result<U>>::finished, &wait, &QEventLoop::quit);
-        QObject::disconnect(&fw, &QFutureWatcher<Result<U>>::progressRangeChanged, nullptr, nullptr);
-        QObject::disconnect(&fw, &QFutureWatcher<Result<U>>::progressValueChanged, nullptr, nullptr);
-
-        return fw.result();
-    }
-
-    virtual void setProgressChanged(int minimum, int maximum, int value) = 0;
+    // virtual void setProgressChanged(int minimum, int maximum, int value) = 0;
 
   private:
     mutable QReadWriteLock m_lock;

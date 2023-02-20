@@ -26,6 +26,7 @@ Repositories::~Repositories()
 InterfaceRepository *Repositories::get(Entities entity)
 {
 
+    QReadLocker locker(&m_databaseLock); // Acquire a read lock before reading from the database
     if (m_repositories.contains(entity))
     {
 
@@ -39,6 +40,7 @@ InterfaceRepository *Repositories::get(Entities entity)
 void Repositories::append(Entities entity, InterfaceRepository *repository)
 {
 
+    QWriteLocker locker(&m_databaseLock); // Acquire a write lock before writing to the database
     if (m_repositories.contains(entity))
     {
         qWarning() << "Repositories: m_repositories contains already this InterfaceRepository";
@@ -49,6 +51,7 @@ void Repositories::append(Entities entity, InterfaceRepository *repository)
 
 void Repositories::setDatabaseContext(InterfaceDatabaseContext *context)
 {
+    QWriteLocker locker(&m_databaseLock); // Acquire a write lock before writing to the database
     m_context = context;
     for (auto repository : qAsConst(m_repositories))
     {

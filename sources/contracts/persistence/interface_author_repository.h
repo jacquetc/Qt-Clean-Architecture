@@ -17,8 +17,6 @@ class SKRCONTRACTSEXPORT InterfaceAuthorRepository
     virtual ~InterfaceAuthorRepository()
     {
     }
-
-    // classes can clean up
 };
 } // namespace Contracts::Persistence
 

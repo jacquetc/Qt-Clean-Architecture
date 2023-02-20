@@ -17,6 +17,10 @@ template <typename T> class Result
     {
     }
 
+    explicit Result() : m_error(Error())
+    {
+    }
+
     bool operator!() const
     {
         return !isOk();
@@ -25,27 +29,47 @@ template <typename T> class Result
     {
         return isOk();
     }
-    Q_INVOKABLE Result &operator=(const Result &result);
-    bool operator==(const Result &otherResult) const;
-    bool operator!=(const Result &otherResult) const;
+    Q_INVOKABLE Result &operator=(const Result &result)
+    {
+        if (Q_LIKELY(&result != this))
+        {
+            m_status = result.m_status;
+            m_value = result.m_value;
+        }
+
+        //    if (result.getStatus() == Error::Critical || result.getStatus() == Error::Fatal)
+        //    {
+        //        qFatal("");
+        //    }
+
+        return *this;
+    }
+    bool operator==(const Result &otherResult) const
+    {
+        return m_status == otherResult.getStatus() && m_value == otherResult.m_value;
+    }
+    bool operator!=(const Result &otherResult) const
+    {
+        return m_status != otherResult.getStatus() || m_value != otherResult.m_value;
+    }
 
     bool isOk() const
     {
-        return m_error.isNull();
+        return m_error.isOk();
     }
     bool isSuccess() const
     {
-        return m_error.isNull();
+        return m_error.isOk();
     }
 
     bool isError() const
     {
-        return !m_error.isNull();
+        return !m_error.isOk();
     }
 
     bool hasError() const
     {
-        return !m_error.isNull();
+        return !m_error.isOk();
     }
 
     T value() const
@@ -61,8 +85,14 @@ template <typename T> class Result
     {
         return m_error;
     }
-    Error::Status getStatus() const;
-    void setStatus(const Error::Status &status);
+    Error::Status getStatus() const
+    {
+        return m_status;
+    }
+    void setStatus(const Error::Status &status)
+    {
+        m_status = status;
+    }
 
   private:
     T m_value;

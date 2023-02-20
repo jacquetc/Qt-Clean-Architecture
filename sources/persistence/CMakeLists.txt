@@ -29,7 +29,8 @@ target_compile_definitions(skribisto-persistence PRIVATE SKRIBISTO_PERSISTENCE_L
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_link_libraries(skribisto-persistence PRIVATE skribisto-contracts skribisto-domain Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql  Qt${QT_VERSION_MAJOR}::Concurrent)
+target_link_libraries(skribisto-persistence PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql  Qt${QT_VERSION_MAJOR}::Concurrent)
+#target_link_libraries(skribisto-persistence PRIVATE )
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")

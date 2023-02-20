@@ -86,7 +86,7 @@ class Error
         return m_data;
     }
     //--------------------------------------------------------------
-    bool isNull() const
+    bool isOk() const
     {
         return m_status == Status::Ok;
     }

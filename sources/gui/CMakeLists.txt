@@ -38,7 +38,8 @@ add_dependencies(${PROJECT_NAME} skribisto-adapters)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
 add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_link_libraries(skribisto-gui PRIVATE skribisto-contracts skribisto-adapters skribisto-persistence skribisto-domain Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(skribisto-gui PRIVATE skribisto-contracts skribisto-adapters skribisto-persistence Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(skribisto-gui PUBLIC skribisto-domain)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/adapters/")

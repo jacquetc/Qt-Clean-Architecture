@@ -1,24 +1,28 @@
 #include "remove_author_command_handler.h"
 #include "automapper/automapper.h"
+#include "persistence/interface_author_repository.h"
 
 using namespace Contracts::DTO::Author;
 using namespace Contracts::Persistence;
 using namespace Contracts::CQRS::Author::Commands;
 using namespace Application::Features::Author::Commands;
 
-RemoveAuthorCommandHandler::RemoveAuthorCommandHandler(InterfaceAuthorRepository *repository) : m_repository(repository)
+RemoveAuthorCommandHandler::RemoveAuthorCommandHandler(InterfaceRepositories *repositories)
+    : Handler(), m_repositories(repositories)
 {
 }
 
 Result<AuthorDTO> RemoveAuthorCommandHandler::handle(const RemoveAuthorCommand &request)
 {
+    InterfaceAuthorRepository *repository =
+        dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
 
-    Result<Domain::Author> authorResult = m_repository->get(request.id);
+    Result<Domain::Author> authorResult = repository->get(request.id);
     if (authorResult.hasError())
     {
         return Result<AuthorDTO>(authorResult.error());
     }
-    auto deleteResult = m_repository->add(std::move(authorResult.value()));
+    auto deleteResult = repository->add(std::move(authorResult.value()));
     if (deleteResult.hasError())
     {
         return Result<AuthorDTO>(deleteResult.error());

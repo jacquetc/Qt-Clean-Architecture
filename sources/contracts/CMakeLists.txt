@@ -23,13 +23,16 @@ set(contracts_SRCS
     persistence/interface_repositories.h
     persistence/interface_repository.h
     error.h
-    result.h result.cpp
+    wait_in_event_loop.h
+    result.h
     dto/author/author_dto.h
     dto/author/create_author_dto.h
     dto/author/author_dto_base.h
     dto/author/update_author_dto.h
     cqrs/author/requests/get_author_with_details_request.h
     cqrs/author/commands/create_author_command.h
+    cqrs/author/commands/remove_author_command.h
+    cqrs/author/commands/update_author_command.h
     cqrs/author/validators/create_author_command_validator.h
     cqrs/author/validators/update_author_command_validator.h
 

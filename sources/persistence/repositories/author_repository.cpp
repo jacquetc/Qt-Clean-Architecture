@@ -2,11 +2,6 @@
 
 using namespace Repository;
 
-AuthorRepository::AuthorRepository() : Repository::GenericRepository<Domain::Author>()
+AuthorRepository::AuthorRepository(QObject *parent) : QObject(parent), Repository::GenericRepository<Domain::Author>()
 {
-}
-
-void AuthorRepository::setProgressChanged(int minimum, int maximum, int value)
-{
-    // emit progressChanged(minimum, maximum, value);
 }

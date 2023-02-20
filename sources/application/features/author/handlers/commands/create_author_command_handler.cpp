@@ -9,7 +9,7 @@ using namespace Contracts::CQRS::Author::Validators;
 using namespace Application::Features::Author::Commands;
 
 CreateAuthorCommandHandler::CreateAuthorCommandHandler(InterfaceRepositories *repositories)
-    : m_repositories(repositories)
+    : Handler(), m_repositories(repositories)
 {
 }
 
@@ -28,6 +28,10 @@ Result<QUuid> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &requ
 
     auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
     author.setUuid(QUuid::createUuid());
+
+    // set timestamp
+    author.setCreationDate(QDateTime::currentDateTime());
+    author.setUpdateDate(QDateTime::currentDateTime());
 
     // do
     auto authorResult = repository->add(std::move(author));

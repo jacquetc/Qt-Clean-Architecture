@@ -24,7 +24,7 @@ class AuthorData : public EntityData
     }
 };
 
-class SKRDOMAINEXPORT Author : public Entity
+export class SKRDOMAINEXPORT Author : public Entity
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName WRITE setName)

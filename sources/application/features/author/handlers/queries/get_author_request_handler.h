@@ -1,7 +1,8 @@
 #ifndef GET_AUTHOR_REQUEST_HANDLER_H
 #define GET_AUTHOR_REQUEST_HANDLER_H
 
-#include "persistence/interface_author_repository.h"
+#include "handler.h"
+#include "persistence/interface_repositories.h"
 
 #include "cqrs/author/requests/get_author_with_details_request.h"
 
@@ -13,14 +14,14 @@ using namespace Contracts::CQRS::Author::Requests;
 
 namespace Application::Features::Author::Queries
 {
-class GetAuthorRequestHandler
+class GetAuthorRequestHandler : public Handler
 {
   public:
-    GetAuthorRequestHandler(InterfaceAuthorRepository *repository);
+    GetAuthorRequestHandler(InterfaceRepositories *repositories);
     Result<AuthorDTO> handle(const GetAuthorRequest &request);
 
   private:
-    InterfaceAuthorRepository *m_repository;
+    InterfaceRepositories *m_repositories;
 };
 } // namespace Application::Features::Author::Queries
 

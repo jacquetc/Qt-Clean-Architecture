@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <QObject>
+#include <QReadWriteLock>
 
 #include "database/interface_database_context.h"
 #include "persistence/interface_repositories.h"
@@ -32,6 +33,8 @@ class Repositories : public InterfaceRepositories
 
     Repositories(const Repositories &) = delete;
     Repositories &operator=(const Repositories &) = delete;
+    mutable QReadWriteLock m_databaseLock;
+
   signals:
 };
 } // namespace Repository

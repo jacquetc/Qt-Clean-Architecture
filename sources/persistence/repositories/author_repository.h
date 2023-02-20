@@ -5,21 +5,20 @@
 #include "generic_repository.h"
 #include "persistence/interface_author_repository.h"
 #include "persistence_global.h"
+#include <QObject>
 
 namespace Repository
 {
-class SKRPERSISTENCEEXPORT AuthorRepository : public Repository::GenericRepository<Domain::Author>,
+class SKRPERSISTENCEEXPORT AuthorRepository : public QObject,
+                                              public Repository::GenericRepository<Domain::Author>,
                                               public Contracts::Persistence::InterfaceAuthorRepository
 {
-
+    Q_OBJECT
   public:
-    explicit AuthorRepository();
+    explicit AuthorRepository(QObject *parent = nullptr);
 
-  protected:
-    void setProgressChanged(int minimum, int maximum, int value) override;
-
-    //  signals:
-    //    void progressChanged(int minimum, int maximum, int value);
+  signals:
+    void progressChanged(int minimum, int maximum, int value) override;
 };
 
 } // namespace Repository

@@ -72,14 +72,16 @@ void UseCases::cleanup()
 void UseCases::getAuthor()
 {
 
+    DummyRepositories repositories;
     auto repository = new DummyAuthorRepository(this);
+    repositories.append(DummyRepositories::Author, repository);
 
     QUuid uuid = QUuid::createUuid();
     QUuid relative = QUuid::createUuid();
     Domain::Author author(uuid, "test", relative);
     repository->fillGet(author);
 
-    GetAuthorRequestHandler handler(repository);
+    GetAuthorRequestHandler handler(&repositories);
     GetAuthorRequest request;
     request.id = uuid;
 
@@ -133,7 +135,9 @@ void UseCases::addAuthor()
 }
 void UseCases::removeAuthor()
 {
+    DummyRepositories repositories;
     auto repository = new DummyAuthorRepository(this);
+    repositories.append(DummyRepositories::Author, repository);
 
     // Add an author to the repository
     AuthorDTO dto;
@@ -144,7 +148,7 @@ void UseCases::removeAuthor()
     repository->fillGetAll(QList<Domain::Author>() << author);
 
     // Remove the author
-    RemoveAuthorCommandHandler handler(repository);
+    RemoveAuthorCommandHandler handler(&repositories);
     RemoveAuthorCommand command;
     command.id = author.uuid();
     Result<AuthorDTO> result = handler.handle(command);
