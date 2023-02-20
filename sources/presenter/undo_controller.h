@@ -1,9 +1,8 @@
-#ifndef UNDOCONTROLLER_H
-#define UNDOCONTROLLER_H
+#pragma once
 
 #include <QUndoStack>
 
-namespace Adapters
+namespace Presenter
 {
 
 class UndoController
@@ -18,5 +17,4 @@ class UndoController
     static UndoController *s_instance;
     QScopedPointer<QUndoStack> m_undoStack;
 };
-} // namespace Adapters
-#endif // UNDOCONTROLLER_H
+} // namespace Presenter

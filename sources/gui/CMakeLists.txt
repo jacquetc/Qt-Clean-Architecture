@@ -34,17 +34,19 @@ qt_add_executable(skribisto-gui
 qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-adapters)
+add_dependencies(${PROJECT_NAME} skribisto-presenter)
+add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
 add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_link_libraries(skribisto-gui PRIVATE skribisto-contracts skribisto-adapters skribisto-persistence Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(skribisto-gui PRIVATE skribisto-contracts skribisto-presenter skribisto-application skribisto-persistence Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(skribisto-gui PUBLIC skribisto-domain)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/adapters/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/presenter/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/persistence/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/application/")
 
 set_target_properties(skribisto-gui PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

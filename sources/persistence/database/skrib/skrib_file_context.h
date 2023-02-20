@@ -1,5 +1,4 @@
-#ifndef SKRIBFILECONTEXT_H
-#define SKRIBFILECONTEXT_H
+#pragma once
 
 #include "database/interface_database_context.h"
 #include "result.h"
@@ -23,5 +22,3 @@ class SkribFileContext : public Contracts::Database::InterfaceDatabaseContext
     QString m_databaseName;
     Result<QString> loadSkribFile(const QUrl &fileName) const;
 };
-
-#endif // SKRIBFILECONTEXT_H

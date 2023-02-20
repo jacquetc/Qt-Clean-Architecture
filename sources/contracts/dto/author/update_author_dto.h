@@ -1,5 +1,4 @@
-#ifndef UPDATE_AUTHOR_DTO_H
-#define UPDATE_AUTHOR_DTO_H
+#pragma once
 
 #include "author_dto_base.h"
 #include <QUuid>
@@ -85,5 +84,3 @@ inline void UpdateAuthorDTO::setUuid(const QUuid &newUuid)
 }
 
 } // namespace Contracts::DTO::Author
-
-#endif // UPDATE_AUTHOR_DTO_H

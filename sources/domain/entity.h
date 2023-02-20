@@ -1,5 +1,4 @@
-#ifndef ENTITY_H
-#define ENTITY_H
+#pragma once
 
 #include <QDateTime>
 #include <QSharedData>
@@ -121,5 +120,3 @@ class Entity : public QObject
     QExplicitlySharedDataPointer<EntityData> m_data;
 };
 } // namespace Domain
-
-#endif // ENTITY_H

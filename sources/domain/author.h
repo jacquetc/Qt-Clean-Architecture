@@ -1,5 +1,4 @@
-#ifndef AUTHOR_H
-#define AUTHOR_H
+#pragma once
 
 #include "domain_global.h"
 #include "entity.h"
@@ -24,7 +23,7 @@ class AuthorData : public EntityData
     }
 };
 
-export class SKRDOMAINEXPORT Author : public Entity
+class SKRDOMAINEXPORT Author : public Entity
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName WRITE setName)
@@ -107,5 +106,3 @@ export class SKRDOMAINEXPORT Author : public Entity
 };
 
 } // namespace Domain
-
-#endif // AUTHOR_H

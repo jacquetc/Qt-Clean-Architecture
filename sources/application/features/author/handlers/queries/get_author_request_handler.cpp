@@ -11,9 +11,11 @@ GetAuthorRequestHandler::GetAuthorRequestHandler(InterfaceRepositories *reposito
 
 Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &request)
 {
+    // get repository
     InterfaceAuthorRepository *repository =
         dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
 
+    // do
     auto authorResult = repository->get(request.id);
 
     if (authorResult.isError())
@@ -21,7 +23,7 @@ Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &reques
         return Result<AuthorDTO>(authorResult.error());
     }
 
-    // do
+    // map
     auto dto = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
     return Result<AuthorDTO>(dto);
 }

@@ -1,5 +1,4 @@
-#ifndef PERSISTENCEREGISTRATION_H
-#define PERSISTENCEREGISTRATION_H
+#pragma once
 
 #include "repositories/repositories.h"
 #include <QObject>
@@ -14,5 +13,3 @@ class PersistenceRegistration : public QObject
   private:
     QScopedPointer<Repository::Repositories> m_repositories;
 };
-
-#endif // PERSISTENCEREGISTRATION_H

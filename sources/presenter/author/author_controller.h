@@ -1,22 +1,21 @@
-#ifndef AUTHOR_CONTROLLER_H
-#define AUTHOR_CONTROLLER_H
+#pragma once
 
 #include "author_undo_commands.h"
 #include "cqrs/author/commands/create_author_command.h"
 #include "cqrs/author/commands/update_author_command.h"
 #include "dto/author/author_dto.h"
 #include "dto/author/update_author_dto.h"
+#include "features/author/handlers/queries/get_author_list_request_handler.h"
 #include "features/author/handlers/queries/get_author_request_handler.h"
 #include "repositories/repositories.h"
 #include "result.h"
 #include "undo_controller.h"
-#include <QObject>
 
 using namespace Contracts::DTO::Author;
 using namespace Application::Features::Author::Queries;
 using namespace Contracts::CQRS::Author::Commands;
 
-namespace Adapters::Author
+namespace Presenter::Author
 {
 
 Result<AuthorDTO> get(const QUuid &uuid)
@@ -26,6 +25,14 @@ Result<AuthorDTO> get(const QUuid &uuid)
 
     GetAuthorRequestHandler handler(Repository::Repositories::instance());
     return handler.handle(request);
+}
+
+//-----------------------------------------------------------------
+
+Result<QList<AuthorDTO>> getAll()
+{
+    GetAuthorListRequestHandler handler(Repository::Repositories::instance());
+    return handler.handle();
 }
 
 //-----------------------------------------------------------------
@@ -51,5 +58,4 @@ Result<AuthorDTO> update(const UpdateAuthorDTO &dto)
     return command->result();
 }
 
-} // namespace Adapters::Author
-#endif // AUTHOR_CONTROLLER_H
+} // namespace Presenter::Author

@@ -18,23 +18,29 @@ set(contracts_SRCS
     database/interface_database.h
     database/interface_database_context.h
     automapper/automapper.h
+    error.h
+    wait_in_event_loop.h
+    result.h
+    # persistence:
     persistence/interface_generic_repository.h
     persistence/interface_author_repository.h
     persistence/interface_repositories.h
     persistence/interface_repository.h
-    error.h
-    wait_in_event_loop.h
-    result.h
+    # author:
     dto/author/author_dto.h
     dto/author/create_author_dto.h
     dto/author/author_dto_base.h
     dto/author/update_author_dto.h
-    cqrs/author/requests/get_author_with_details_request.h
+    cqrs/author/requests/get_author_request.h
     cqrs/author/commands/create_author_command.h
     cqrs/author/commands/remove_author_command.h
     cqrs/author/commands/update_author_command.h
     cqrs/author/validators/create_author_command_validator.h
     cqrs/author/validators/update_author_command_validator.h
+    # system:
+    dto/system/save_system_as_dto.h
+    cqrs/system/commands/save_system_as_command.h
+    cqrs/system/validators/save_system_as_command_validator.h
 
 )
 

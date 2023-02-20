@@ -1,5 +1,4 @@
-#ifndef INTERFACE_DATABASE_CONTEXT_H
-#define INTERFACE_DATABASE_CONTEXT_H
+#pragma once
 #include "contracts_global.h"
 
 namespace Contracts::Database
@@ -12,5 +11,3 @@ class SKRCONTRACTSEXPORT InterfaceDatabaseContext
     }
 };
 } // namespace Contracts::Database
-
-#endif // INTERFACE_DATABASE_CONTEXT_H

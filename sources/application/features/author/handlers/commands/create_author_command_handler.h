@@ -1,5 +1,4 @@
-#ifndef CREATE_AUTHOR_COMMAND_HANDLER_H
-#define CREATE_AUTHOR_COMMAND_HANDLER_H
+#pragma once
 
 #include "cqrs/author/commands/create_author_command.h"
 #include "handler.h"
@@ -22,5 +21,3 @@ class CreateAuthorCommandHandler : public Handler
     InterfaceRepositories *m_repositories;
 };
 } // namespace Application::Features::Author::Commands
-
-#endif // CREATE_AUTHOR_COMMAND_HANDLER_H

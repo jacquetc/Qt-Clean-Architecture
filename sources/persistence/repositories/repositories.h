@@ -1,5 +1,4 @@
-#ifndef REPOSITORIES_H
-#define REPOSITORIES_H
+#pragma once
 
 #include <QHash>
 #include <QObject>
@@ -38,5 +37,3 @@ class Repositories : public InterfaceRepositories
   signals:
 };
 } // namespace Repository
-
-#endif // REPOSITORIES_H

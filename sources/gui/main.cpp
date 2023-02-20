@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include "persistence_registration.h"
+#include "presenter_registration.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -24,6 +25,7 @@ int main(int argc, char *argv[])
     }
 
     new PersistenceRegistration(&app);
+    new PresenterRegistration(&app);
 
     MainWindow w;
     w.show();

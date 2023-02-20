@@ -1,5 +1,4 @@
-#ifndef AUTHORREPOSITORY_H
-#define AUTHORREPOSITORY_H
+#pragma once
 
 #include "author.h"
 #include "generic_repository.h"
@@ -22,4 +21,3 @@ class SKRPERSISTENCEEXPORT AuthorRepository : public QObject,
 };
 
 } // namespace Repository
-#endif // AUTHORREPOSITORY_H

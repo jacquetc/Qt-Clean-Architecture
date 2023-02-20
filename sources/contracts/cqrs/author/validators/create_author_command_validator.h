@@ -1,5 +1,4 @@
-#ifndef CREATE_AUTHOR_COMMAND_VALIDATOR_H
-#define CREATE_AUTHOR_COMMAND_VALIDATOR_H
+#pragma once
 
 #include "dto/author/create_author_dto.h"
 #include "persistence/interface_author_repository.h"
@@ -33,5 +32,3 @@ class CreateAuthorCommandValidator
     InterfaceAuthorRepository *m_repository;
 };
 } // namespace Contracts::CQRS::Author::Validators
-
-#endif // CREATE_AUTHOR_COMMAND_VALIDATOR_H

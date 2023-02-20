@@ -6,33 +6,34 @@ cmake_minimum_required(VERSION 3.16.0)
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-project(skribisto-adapters LANGUAGES CXX VERSION ${VERSION})
+project(skribisto-presenter LANGUAGES CXX VERSION ${VERSION})
 
 find_package(QT NAMES Qt6 COMPONENTS Core Gui CONFIG REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui CONFIG REQUIRED)
 
-set(adapters_SRCS
+set(presenter_SRCS
 
-    adapters_global.h
-    adapters_registration.h adapters_registration.cpp
+    presenter_global.h
+    presenter_registration.h presenter_registration.cpp
     author/author_controller.h
     author/author_undo_commands.h author/author_undo_commands.cpp
     undo_controller.h undo_controller.cpp
+    system/system_controller.h
 )
 
-add_library(skribisto-adapters SHARED ${adapters_SRCS})
+add_library(skribisto-presenter SHARED ${presenter_SRCS})
 
+add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_compile_definitions(skribisto-adapters PRIVATE SKRIBISTO_ADAPTERS_LIBRARY)
+target_compile_definitions(skribisto-presenter PRIVATE SKRIBISTO_PRESENTER_LIBRARY)
 
-target_link_libraries(skribisto-adapters PRIVATE
-    skribisto-application
-    skribisto-contracts
+target_link_libraries(skribisto-presenter PRIVATE
     skribisto-domain
+    skribisto-contracts
+    skribisto-application
     skribisto-persistence
     Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)
 
@@ -43,15 +44,15 @@ include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
 
 # ---------------------------------
 if(IOS)
-    install(TARGETS skribisto-adapters LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS skribisto-presenter LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(IOS)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    install(TARGETS skribisto-adapters LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS skribisto-presenter LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    install(TARGETS skribisto-adapters
+    install(TARGETS skribisto-presenter
         RUNTIME DESTINATION ${BINDIR}
         LIBRARY DESTINATION ${LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Windows")

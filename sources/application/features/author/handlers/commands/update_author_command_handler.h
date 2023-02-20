@@ -1,5 +1,4 @@
-#ifndef UPDATEAUTHORCOMMANDHANDLER_H
-#define UPDATEAUTHORCOMMANDHANDLER_H
+#pragma once
 
 #include "cqrs/author/commands/update_author_command.h"
 #include "dto/author/author_dto.h"
@@ -24,5 +23,3 @@ class UpdateAuthorCommandHandler : public Handler
     InterfaceRepositories *m_repositories;
 };
 } // namespace Application::Features::Author::Commands
-
-#endif // UPDATEAUTHORCOMMANDHANDLER_H

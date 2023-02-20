@@ -1,5 +1,4 @@
-#ifndef INTERFACE_AUTHOR_REPOSITORY_H
-#define INTERFACE_AUTHOR_REPOSITORY_H
+#pragma once
 
 #include "author.h"
 #include "contracts_global.h"
@@ -19,5 +18,3 @@ class SKRCONTRACTSEXPORT InterfaceAuthorRepository
     }
 };
 } // namespace Contracts::Persistence
-
-#endif // INTERFACE_AUTHOR_REPOSITORY_H

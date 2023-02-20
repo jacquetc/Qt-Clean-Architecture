@@ -1,6 +1,4 @@
-#ifndef RESULT_H
-#define RESULT_H
-
+#pragma once
 #include "error.h"
 #include <QMetaType>
 #include <QString>
@@ -11,6 +9,7 @@ template <typename T> class Result
   public:
     explicit Result(const T &value) : m_value(value), m_error(Error())
     {
+        m_error.setStatus(Error::Ok);
     }
 
     explicit Result(const Error &error) : m_error(error)
@@ -72,10 +71,16 @@ template <typename T> class Result
         return !m_error.isOk();
     }
 
+    bool isEmpty() const
+    {
+        return m_error.isEmpty();
+    }
+
     T value() const
     {
         if (!isOk())
         {
+            qCritical("Result in error while calling value()");
             throw m_error;
         }
         return m_value;
@@ -99,5 +104,3 @@ template <typename T> class Result
     Error m_error;
     Error::Status m_status;
 };
-
-#endif // RESULT_H

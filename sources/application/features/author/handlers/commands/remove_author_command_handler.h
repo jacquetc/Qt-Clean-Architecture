@@ -1,5 +1,4 @@
-#ifndef REMOVE_AUTHOR_COMMAND_HANDLER_H
-#define REMOVE_AUTHOR_COMMAND_HANDLER_H
+#pragma once
 
 #include "cqrs/author/commands/remove_author_command.h"
 #include "dto/author/author_dto.h"
@@ -23,5 +22,3 @@ class RemoveAuthorCommandHandler : public Handler
     InterfaceRepositories *m_repositories;
 };
 } // namespace Application::Features::Author::Commands
-
-#endif // REMOVEAUTHORCOMMANDHANDLER_H

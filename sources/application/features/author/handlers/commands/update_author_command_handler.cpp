@@ -17,6 +17,7 @@ UpdateAuthorCommandHandler::UpdateAuthorCommandHandler(InterfaceRepositories *re
 Result<AuthorDTO> Application::Features::Author::Commands::UpdateAuthorCommandHandler::handle(
     const UpdateAuthorCommand &request)
 {
+    // get repository
     InterfaceAuthorRepository *repository =
         dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
 

@@ -1,5 +1,4 @@
-#ifndef INTERFACE_REPOSITORIES_H
-#define INTERFACE_REPOSITORIES_H
+#pragma once
 
 #include "database/interface_database_context.h"
 #include "persistence/interface_repository.h"
@@ -26,5 +25,3 @@ class InterfaceRepositories
     virtual void setDatabaseContext(InterfaceDatabaseContext *context) = 0;
 };
 } // namespace Contracts::Persistence
-
-#endif // INTERFACE_REPOSITORIES_H

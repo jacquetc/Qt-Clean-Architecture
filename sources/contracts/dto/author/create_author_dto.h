@@ -1,5 +1,4 @@
-#ifndef CREATE_AUTHOR_DTO_H
-#define CREATE_AUTHOR_DTO_H
+#pragma once
 
 #include "QtCore/qobject.h"
 #include "author_dto_base.h"
@@ -62,4 +61,3 @@ class CreateAuthorDTO : public AuthorDTOBase
 };
 
 } // namespace Contracts::DTO::Author
-#endif // CREATE_AUTHOR_DTO_H

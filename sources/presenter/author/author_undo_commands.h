@@ -1,5 +1,4 @@
-#ifndef AUTHOR_UNDO_COMMANDS_H
-#define AUTHOR_UNDO_COMMANDS_H
+#pragma once
 
 #include "cqrs/author/commands/create_author_command.h"
 #include "cqrs/author/commands/remove_author_command.h"
@@ -12,7 +11,7 @@
 using namespace Contracts::DTO::Author;
 using namespace Contracts::CQRS::Author::Commands;
 
-namespace Adapters::Author
+namespace Presenter::Author
 {
 
 //------------------------------------------------------------------------------------------------------------
@@ -44,6 +43,7 @@ class UpdateUndoCommand : public QUndoCommand
   private:
     UpdateAuthorCommand m_request;
     Result<AuthorDTO> m_result;
+    Result<AuthorDTO> m_oldState;
 };
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
@@ -57,9 +57,7 @@ class RemoveUndoCommand : public QUndoCommand
     Result<AuthorDTO> result() const;
 
   private:
-    CreateAuthorCommand m_request;
+    RemoveAuthorCommand m_request;
     Result<AuthorDTO> m_result;
 };
-} // namespace Adapters::Author
-
-#endif // AUTHORUNDOCOMMANDS_H
+} // namespace Presenter::Author

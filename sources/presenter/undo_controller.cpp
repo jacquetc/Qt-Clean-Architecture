@@ -1,6 +1,6 @@
 #include "undo_controller.h"
 
-using namespace Adapters;
+using namespace Presenter;
 
 UndoController::UndoController()
 {

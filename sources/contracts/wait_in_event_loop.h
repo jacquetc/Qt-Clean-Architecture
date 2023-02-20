@@ -1,5 +1,4 @@
-#ifndef WAIT_IN_EVENT_LOOP_H
-#define WAIT_IN_EVENT_LOOP_H
+#pragma once
 
 #include "result.h"
 #include <QEventLoop>
@@ -43,5 +42,3 @@ class WaitInEventLoop
   signals:
     virtual void progressChanged(int minimum, int maximum, int value) = 0;
 };
-
-#endif // WAIT_IN_EVENT_LOOP_H

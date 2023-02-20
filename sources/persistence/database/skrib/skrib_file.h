@@ -1,5 +1,4 @@
-#ifndef SKRIBFILE_H
-#define SKRIBFILE_H
+#pragma once
 
 #include "QtCore/qdebug.h"
 #include "QtCore/qmetaobject.h"
@@ -437,5 +436,3 @@ template <class T> Result<T> SkribFile<T>::mapToEntity(const QHash<QString, QVar
 }
 
 } // namespace Database::Skrib
-
-#endif // SKRIBFILE_H

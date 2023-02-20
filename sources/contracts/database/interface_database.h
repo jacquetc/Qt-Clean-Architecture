@@ -1,5 +1,4 @@
-#ifndef INTERFACE_DATABASE_H
-#define INTERFACE_DATABASE_H
+#pragma once
 
 #include <QFuture>
 #include <QUuid>
@@ -31,5 +30,3 @@ template <class T> class SKRCONTRACTSEXPORT InterfaceDatabase
 };
 
 } // namespace Contracts::Database
-
-#endif // INTERFACE_DATABASE_H

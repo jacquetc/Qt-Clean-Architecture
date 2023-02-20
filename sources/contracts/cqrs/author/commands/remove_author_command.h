@@ -1,5 +1,4 @@
-#ifndef REMOVE_AUTHOR_COMMAND_H
-#define REMOVE_AUTHOR_COMMAND_H
+#pragma once
 
 #include <QUuid>
 
@@ -15,5 +14,3 @@ class RemoveAuthorCommand
     QUuid id;
 };
 } // namespace Contracts::CQRS::Author::Commands
-
-#endif // REMOVE_AUTHOR_COMMAND_H

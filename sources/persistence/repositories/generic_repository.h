@@ -1,5 +1,4 @@
-#ifndef GENERIC_REPOSITORY_H
-#define GENERIC_REPOSITORY_H
+#pragma once
 
 #include "QtConcurrent/qtconcurrenttask.h"
 #include "database/interface_database.h"
@@ -23,7 +22,7 @@ namespace Repository
 
 template <class T>
 class SKRPERSISTENCEEXPORT GenericRepository : public virtual Contracts::Persistence::InterfaceGenericRepository<T>,
-                                               public WaitInEventLoop
+                                               public virtual WaitInEventLoop
 {
 
   public:
@@ -139,5 +138,3 @@ template <class T> Result<bool> GenericRepository<T>::exists(const QUuid &uuid)
 }
 
 } // namespace Repository
-
-#endif // GENERIC_REPOSITORY_H

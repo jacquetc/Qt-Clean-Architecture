@@ -19,8 +19,7 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with Skribisto.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
-#ifndef PERSISTENCE_GLOBAL_H
-#define PERSISTENCE_GLOBAL_H
+#pragma once
 
 #include <QtCore/QtGlobal>
 
@@ -29,5 +28,3 @@
 #else // if defined(SKRIBISTO_PERSISTENCE_LIBRARY)
 #define SKRPERSISTENCEEXPORT Q_DECL_IMPORT
 #endif // if defined(SKRIBISTO_PERSISTENCE_LIBRARY)
-
-#endif // PERSISTENCE_GLOBAL_H

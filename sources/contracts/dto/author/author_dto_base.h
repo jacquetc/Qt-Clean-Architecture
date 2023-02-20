@@ -1,5 +1,4 @@
-#ifndef AUTHOR_DTO_BASE_H
-#define AUTHOR_DTO_BASE_H
+#pragma once
 
 #include <QDateTime>
 #include <QObject>
@@ -136,4 +135,3 @@ inline void AuthorDTOBase::setName(const QString &newName)
 }
 
 } // namespace Contracts::DTO::Author
-#endif // AUTHOR_DTO_BASE_H

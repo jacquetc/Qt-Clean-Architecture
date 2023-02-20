@@ -1,5 +1,4 @@
-#ifndef ERROR_H
-#define ERROR_H
+#pragma once
 
 #include "QtCore/qobject.h"
 #include <QList>
@@ -15,7 +14,8 @@ class Error
         Ok,
         Warning,
         Critical,
-        Fatal
+        Fatal,
+        Empty
     };
     Q_ENUM(Status)
 
@@ -64,7 +64,7 @@ class Error
     //--------------------------------------------------------------
     explicit Error()
     {
-        m_status = Status::Ok;
+        m_status = Status::Empty;
     }
 
     //--------------------------------------------------------------
@@ -90,6 +90,11 @@ class Error
     {
         return m_status == Status::Ok;
     }
+    //--------------------------------------------------------------
+    bool isEmpty() const
+    {
+        return m_status == Status::Empty;
+    }
 
     //--------------------------------------------------------------
     Error::Status getStatus() const
@@ -112,5 +117,3 @@ class Error
     QString m_className;
     Error::Status m_status;
 };
-
-#endif // ERROR_H

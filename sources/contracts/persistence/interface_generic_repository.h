@@ -1,5 +1,4 @@
-#ifndef INTERFACE_GENERIC_REPOSITORY_H
-#define INTERFACE_GENERIC_REPOSITORY_H
+#pragma once
 
 #include <QFuture>
 #include <QUuid>
@@ -32,5 +31,3 @@ template <class T> class SKRCONTRACTSEXPORT InterfaceGenericRepository : public 
     virtual Contracts::Database::InterfaceDatabase<T> *database() = 0;
 };
 } // namespace Contracts::Persistence
-
-#endif // INTERFACE_GENERIC_REPOSITORY_H

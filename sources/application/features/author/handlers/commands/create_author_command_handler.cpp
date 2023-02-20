@@ -15,6 +15,7 @@ CreateAuthorCommandHandler::CreateAuthorCommandHandler(InterfaceRepositories *re
 
 Result<QUuid> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &request)
 {
+    // get repository
     InterfaceAuthorRepository *repository =
         dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
 

@@ -8,8 +8,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 project(skribisto-application LANGUAGES CXX VERSION ${VERSION})
 
-find_package(QT NAMES Qt6 COMPONENTS Core CONFIG REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core CONFIG REQUIRED)
+find_package(QT NAMES Qt6 COMPONENTS Core Sql CONFIG REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Sql CONFIG REQUIRED)
 
 set(application_SRCS
 
@@ -19,19 +19,23 @@ set(application_SRCS
     features/author/handlers/commands/remove_author_command_handler.h features/author/handlers/commands/remove_author_command_handler.cpp
 features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
 handler.h handler.cpp
+features/author/handlers/queries/get_author_list_request_handler.h features/author/handlers/queries/get_author_list_request_handler.cpp
+features/system/handlers/commands/save_system_as_command_handler.h features/system/handlers/commands/save_system_as_command_handler.cpp
 )
 
 add_library(skribisto-application SHARED ${application_SRCS})
 
 add_dependencies(${PROJECT_NAME} skribisto-domain)
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
+add_dependencies(${PROJECT_NAME} skribisto-persistence)
 
 target_compile_definitions(skribisto-application PRIVATE SKRIBISTO_APPLICATION_LIBRARY)
 
-target_link_libraries(skribisto-application PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(skribisto-application PRIVATE skribisto-domain skribisto-contracts skribisto-persistence Qt6::Core Qt6::Sql)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/persistence/")
 
 # ---------------------------------
 if(IOS)
