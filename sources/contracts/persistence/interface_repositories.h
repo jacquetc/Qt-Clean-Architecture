@@ -1,5 +1,6 @@
 #pragma once
 
+#include "contracts_global.h"
 #include "database/interface_database_context.h"
 #include "persistence/interface_repository.h"
 
@@ -7,7 +8,7 @@ using namespace Contracts::Database;
 
 namespace Contracts::Persistence
 {
-class InterfaceRepositories
+class SKRCONTRACTSEXPORT InterfaceRepositories
 {
 
   public:

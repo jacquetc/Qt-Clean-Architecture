@@ -1,10 +1,17 @@
 #include "skrib_file_context.h"
+#include "QtConcurrent/qtconcurrenttask.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QString>
 #include <QTemporaryFile>
 
-SkribFileContext::SkribFileContext(const QUrl &fileName) : m_fileName(fileName)
+SkribFileContext::SkribFileContext(const QUrl &fileName) : QObject(), m_fileName(fileName)
+{
+    m_threadPool.setMaxThreadCount(1);
+    m_threadPool.setExpiryTimeout(0);
+}
+
+SkribFileContext::~SkribFileContext()
 {
 }
 
@@ -48,90 +55,106 @@ void SkribFileContext::setFileName(const QUrl &newFileName)
 
 //-------------------------------------------------
 
-Result<QString> SkribFileContext::loadSkribFile(const QUrl &fileName) const
+Result<QString> SkribFileContext::loadSkribFile(const QUrl &fileName)
 {
-    // create temp file
-    QTemporaryFile tempFile;
-    tempFile.open();
-    tempFile.setAutoRemove(false);
-    QString tempFileName = tempFile.fileName();
+    return waitInEventLoop<QString>(
+        QtConcurrent::task([this](const QUrl &fileName) {
+            // create a temporary file to copy the database to
+            QTemporaryFile tempFile;
+            tempFile.open();
+            tempFile.setAutoRemove(false);
+            QString tempFileName = tempFile.fileName();
 
-    // copy db file to temp
-    QString fileNameString;
+            // copy db file to temp
+            QString fileNameString;
 
-    if (fileName.scheme() == "qrc")
-    {
-        fileNameString = fileName.toString(QUrl::RemoveScheme);
-        fileNameString = ":" + fileNameString;
-    }
-    else if (fileName.path().at(2) == ':')
-    { // means Windows
-        fileNameString = fileName.path().remove(0, 1);
-    }
-    else
-    {
-        fileNameString = fileName.path();
-    }
+            // check the file scheme, and create a valid file name string
+            if (fileName.scheme() == "qrc")
+            {
+                fileNameString = fileName.toString(QUrl::RemoveScheme);
+                fileNameString = ":" + fileNameString;
+            }
+            else if (fileName.path().at(2) == ':')
+            { // means Windows
+                fileNameString = fileName.path().remove(0, 1);
+            }
+            else
+            {
+                fileNameString = fileName.path();
+            }
 
-    QFile file(fileNameString);
+            // open the original database file and copy its contents to the temporary file
+            QFile file(fileNameString);
 
-    if (!file.exists())
-    {
-        return Result<QString>(Error("SkribFileContext", Error::Critical, "absent_filename",
-                                     fileNameString + " doesn't exist", fileNameString));
-    }
+            if (!file.exists())
+            {
+                return Result<QString>(Error("SkribFileContext", Error::Critical, "absent_filename",
+                                             fileNameString + " doesn't exist", fileNameString));
+            }
 
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        return Result<QString>(Error("SkribFileContext", Error::Critical, "readonly_filename",
-                                     fileNameString + " can't be opened", fileNameString));
-    }
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                return Result<QString>(Error("SkribFileContext", Error::Critical, "readonly_filename",
+                                             fileNameString + " can't be opened", fileNameString));
+            }
 
-    QByteArray array(file.readAll());
-    tempFile.write(array);
-    tempFile.close();
+            QByteArray array(file.readAll());
+            tempFile.write(array);
+            tempFile.close();
 
-    // open temp file
-    QSqlDatabase sqlDb = QSqlDatabase::addDatabase("QSQLITE", tempFileName);
-    sqlDb.setHostName("localhost");
-    sqlDb.setDatabaseName(tempFileName);
+            // open temp file
+            QSqlDatabase sqlDb = QSqlDatabase::addDatabase("QSQLITE", tempFileName);
+            sqlDb.setHostName("localhost");
+            sqlDb.setDatabaseName(tempFileName);
 
-    // QSqlDatabase memoryDb = copySQLiteDbToMemory(sqlDb, projectId);
-    //        QSqlDatabase db = QSqlDatabase::database("db_to_be_imported",
-    // false);
-    //        db.removeDatabase("db_to_be_imported");
-    bool ok = sqlDb.open();
+            // try to open the copied database file
+            bool ok = sqlDb.open();
 
-    if (!ok)
-    {
-        return Result<QString>(Error("SkribFileContext", Error::Critical, "cant_open_database",
-                                     "Can't open database " + tempFileName, tempFileName));
-    }
+            if (!ok)
+            {
+                return Result<QString>(Error("SkribFileContext", Error::Critical, "cant_open_database",
+                                             "Can't open database " + tempFileName, tempFileName));
+            }
 
-    // optimization :
-    QStringList optimization;
-    optimization << QStringLiteral("PRAGMA case_sensitive_like=true") << QStringLiteral("PRAGMA journal_mode=MEMORY")
-                 << QStringLiteral("PRAGMA temp_store=MEMORY") << QStringLiteral("PRAGMA locking_mode=EXCLUSIVE")
-                 << QStringLiteral("PRAGMA synchronous = OFF") << QStringLiteral("PRAGMA recursive_triggers=true");
-    sqlDb.transaction();
+            // database optimization options
+            QStringList optimization;
+            optimization << QStringLiteral("PRAGMA case_sensitive_like=true")
+                         << QStringLiteral("PRAGMA journal_mode=MEMORY") << QStringLiteral("PRAGMA temp_store=MEMORY")
+                         << QStringLiteral("PRAGMA locking_mode=EXCLUSIVE")
+                         << QStringLiteral("PRAGMA synchronous = OFF")
+                         << QStringLiteral("PRAGMA recursive_triggers=true");
 
-    // TODO: upgrade :
-    //     Result result = Upgrader::upgradeSQLite(tempFileName));
-    //     if (result)
-    //     {
-    //         return Result<QString>(
-    //             Error(this, Error::Critical, "upgrade_sqlite_failed", "Upgrade of database failed", tempFileName));
-    //     }
+            // start a transaction and execute each optimization option as a separate query
+            sqlDb.transaction();
 
-    for (const QString &string : qAsConst(optimization))
-    {
-        QSqlQuery query(sqlDb);
+            // TODO: upgrade :
+            //     Result result = Upgrader::upgradeSQLite(tempFileName));
+            //     if (result)
+            //     {
+            //         return Result<QString>(
+            //             Error(this, Error::Critical, "upgrade_sqlite_failed", "Upgrade of database failed",
+            //             tempFileName));
+            //     }
 
-        query.prepare(string);
-        query.exec();
-    }
+            for (const QString &string : qAsConst(optimization))
+            {
+                QSqlQuery query(sqlDb);
 
-    sqlDb.commit();
+                query.prepare(string);
+                query.exec();
+            }
 
-    return Result<QString>(sqlDb.databaseName());
+            sqlDb.commit();
+
+            // return the name of the copied database file
+            return Result<QString>(sqlDb.databaseName());
+        })
+            .withArguments(fileName)
+            .onThreadPool(m_threadPool)
+            .spawn());
+}
+
+QThreadPool &SkribFileContext::threadPool()
+{
+    return m_threadPool;
 }

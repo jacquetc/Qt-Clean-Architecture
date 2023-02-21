@@ -29,8 +29,8 @@ class AutoMapperTest : public QObject
     void init();
     void cleanup();
 
-    // void createTag();
     void basicMap();
+    void invertedMap();
 
   private:
 };
@@ -70,6 +70,20 @@ void AutoMapperTest::basicMap()
     AuthorDTO dto = AutoMapper::AutoMapper::map<AuthorDTO>(author);
 
     QCOMPARE(dto.getName(), "e");
+    QCOMPARE(dto.uuid(), uuid);
+}
+// ----------------------------------------------------------
+
+void AutoMapperTest::invertedMap()
+{
+
+    QUuid uuid = QUuid::createUuid();
+    AuthorDTO dto(uuid, "e", QUuid());
+
+    Domain::Author author = AutoMapper::AutoMapper::map<Domain::Author>(dto);
+
+    QCOMPARE(author.uuid(), uuid);
+    QCOMPARE(author.getName(), "e");
 }
 
 QTEST_MAIN(AutoMapperTest)

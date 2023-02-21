@@ -1,11 +1,12 @@
 #pragma once
 
+#include "presenter_global.h"
 #include <QUndoStack>
 
 namespace Presenter
 {
 
-class UndoController
+class SKRPRESENTEREXPORT UndoController
 {
   public:
     static UndoController *instance();

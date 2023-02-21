@@ -7,13 +7,14 @@
 #include "database/interface_database_context.h"
 #include "persistence/interface_repositories.h"
 #include "persistence/interface_repository.h"
+#include "persistence_global.h"
 
 using namespace Contracts::Database;
 using namespace Contracts::Persistence;
 
 namespace Repository
 {
-class Repositories : public InterfaceRepositories
+class SKRPERSISTENCEEXPORT Repositories : public InterfaceRepositories
 {
 
   public:

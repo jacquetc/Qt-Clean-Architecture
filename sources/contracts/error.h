@@ -1,33 +1,49 @@
 #pragma once
 
 #include "QtCore/qobject.h"
+#include "contracts_global.h"
 #include <QList>
 #include <QString>
 
-class Error
+/**
+ * @brief The Error class represents an error with an associated status, error code, and optional error message and
+ * data.
+ */
+class SKRCONTRACTSEXPORT Error
 {
-
     Q_GADGET
+
   public:
+    /**
+     * @brief The Status enum defines the possible error statuses.
+     */
     enum Status
     {
-        Ok,
-        Warning,
-        Critical,
-        Fatal,
-        Empty
+        Ok,       ///< The operation succeeded without any issues.
+        Warning,  ///< The operation succeeded but with some non-fatal issues or warnings.
+        Critical, ///< The operation failed with a critical error.
+        Fatal,    ///< The operation failed with a fatal error.
+        Empty     ///< The error is empty or uninitialized.
     };
     Q_ENUM(Status)
 
-    //--------------------------------------------------------------
+    /**
+     * @brief Constructs an Error object with the given QObject, status, and error code.
+     *
+     * @param object The QObject associated with the error.
+     * @param status The error status.
+     * @param code The error code.
+     */
+    explicit Error(const QObject *object, const Error::Status &status, const QString &code);
 
-    explicit Error(const QObject *object, const Error::Status &status, const QString &code)
-        : m_status(status), m_code(code)
-    {
-        m_className = object->metaObject()->className();
-    }
-
-    //--------------------------------------------------------------
+    /**
+     * @brief Constructs an Error object with the given QObject, status, error code, and error message.
+     *
+     * @param object The QObject associated with the error.
+     * @param status The error status.
+     * @param code The error code.
+     * @param message The error message.
+     */
     explicit Error(const QObject *object, const Error::Status &status, const QString &code, const QString &message)
         : m_status(status), m_code(code), m_message(message)
     {
@@ -61,7 +77,10 @@ class Error
     {
     }
 
-    //--------------------------------------------------------------
+    /**
+     *         @brief Constructs an empty Error object.
+     *   Initializes the Error with an empty error status.
+     */
     explicit Error()
     {
         m_status = Status::Empty;
@@ -74,35 +93,59 @@ class Error
     {
     }
 
-    //--------------------------------------------------------------
+    /**
+     * @brief Returns the error message.
+     *
+     * @return The error message.
+     */
     QString message() const
     {
         return m_message;
     }
-
-    //--------------------------------------------------------------
+    /**
+     * @brief Returns the error data.
+     *
+     * @return The error data.
+     */
     QString data() const
     {
         return m_data;
     }
-    //--------------------------------------------------------------
+    /**
+     * @brief Returns true if the error status is Ok, false otherwise.
+     *
+     * @return True if the error status is Ok, false otherwise.
+     */
     bool isOk() const
     {
         return m_status == Status::Ok;
     }
-    //--------------------------------------------------------------
+
+    /**
+     * @brief Returns true if the error status is Empty, false otherwise.
+     *
+     * @return True if the error status is Empty, false otherwise.
+     */
     bool isEmpty() const
     {
         return m_status == Status::Empty;
     }
 
-    //--------------------------------------------------------------
+    /**
+     * @brief Returns the error status.
+     *
+     * @return The error status.
+     */
     Error::Status getStatus() const
     {
         return m_status;
     }
 
-    //--------------------------------------------------------------
+    /**
+     * @brief Sets the error status.
+     *
+     * @param status The new error status.
+     */
     void setStatus(const Error::Status &status)
     {
         m_status = status;

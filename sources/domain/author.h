@@ -2,26 +2,9 @@
 
 #include "domain_global.h"
 #include "entity.h"
-#include <QSharedData>
 
 namespace Domain
 {
-
-class AuthorData : public EntityData
-{
-  public:
-    AuthorData() : relative(QUuid())
-    {
-    }
-
-    QString name;
-    QUuid relative;
-
-    AuthorData *clone() const
-    {
-        return new AuthorData(*this);
-    }
-};
 
 class SKRDOMAINEXPORT Author : public Entity
 {
@@ -30,29 +13,21 @@ class SKRDOMAINEXPORT Author : public Entity
     Q_PROPERTY(QUuid relative READ getRelative WRITE setRelative)
 
   public:
-    Author() : Entity()
-    {
-
-        m_data.reset(new AuthorData);
-    };
+    Author() : Entity(){};
 
     Author(const QUuid &uuid, const QString &name, const QUuid &relative) : Entity(uuid)
     {
-        m_data.reset(new AuthorData);
-        m_data->name = name;
-        m_data->relative = relative;
+        m_name = name;
+        m_relative = relative;
     }
 
     Author(const QUuid &uuid, const QString &name, const QUuid &relative, const QDateTime &creationDate,
            const QDateTime &updateDate)
-        : Entity(uuid, creationDate, updateDate)
+        : Entity(uuid, creationDate, updateDate), m_name(name), m_relative(relative)
     {
-        m_data.reset(new AuthorData);
-        m_data->name = name;
-        m_data->relative = relative;
     }
 
-    Author(const Author &other) : Entity(other), m_data(other.m_data->clone())
+    Author(const Author &other) : Entity(other), m_name(other.m_name), m_relative(other.m_relative)
     {
     }
 
@@ -60,49 +35,46 @@ class SKRDOMAINEXPORT Author : public Entity
     {
         if (this != &other)
         {
-            m_data.reset(other.m_data->clone());
             Entity::operator=(other);
+            m_name = other.m_name;
+            m_relative = other.m_relative;
         }
         return *this;
     }
 
-    Author clone() const
-    {
-        return Author(*this);
-    }
-
     QString getName() const
     {
-        return m_data->name;
+        return m_name;
     }
 
     QString name() const
     {
-        return m_data->name;
+        return m_name;
     }
 
     void setName(const QString &name)
     {
-        m_data->name = name;
+        m_name = name;
     }
 
     QUuid getRelative() const
     {
-        return m_data->relative;
+        return m_relative;
     }
 
     QUuid relative() const
     {
-        return m_data->relative;
+        return m_relative;
     }
 
     void setRelative(const QUuid &relative)
     {
-        m_data->relative = relative;
+        m_relative = relative;
     }
 
   private:
-    QExplicitlySharedDataPointer<AuthorData> m_data;
+    QString m_name;
+    QUuid m_relative;
 };
 
 } // namespace Domain

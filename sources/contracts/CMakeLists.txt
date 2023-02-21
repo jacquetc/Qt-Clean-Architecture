@@ -39,8 +39,11 @@ set(contracts_SRCS
     cqrs/author/validators/update_author_command_validator.h
     # system:
     dto/system/save_system_as_dto.h
+    dto/system/load_system_dto.h
     cqrs/system/commands/save_system_as_command.h
+    cqrs/system/commands/load_system_command.h
     cqrs/system/validators/save_system_as_command_validator.h
+    cqrs/system/validators/load_system_command_validator.h
 
 )
 

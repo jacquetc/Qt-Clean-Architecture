@@ -1,86 +1,60 @@
 #pragma once
 
 #include "author_dto_base.h"
+#include "contracts_global.h"
 #include <QUuid>
 
 namespace Contracts::DTO::Author
 {
 
-class UpdateAuthorDTOData : public AuthorBaseData
-{
-  public:
-    UpdateAuthorDTOData() : uuid(QUuid::createUuid())
-    {
-    }
-
-    QUuid uuid;
-
-    UpdateAuthorDTOData *clone() const
-    {
-        return new UpdateAuthorDTOData(*this);
-    }
-};
-
-//-------------------------------------------------
-
-class UpdateAuthorDTO : public AuthorDTOBase
+class SKRCONTRACTSEXPORT UpdateAuthorDTO : public AuthorDTOBase
 {
     Q_OBJECT
     Q_PROPERTY(QUuid uuid READ getUuid WRITE setUuid)
   public:
     UpdateAuthorDTO(QObject *parent = nullptr) : AuthorDTOBase(parent)
     {
-        m_data.reset(new UpdateAuthorDTOData);
-    }
-    UpdateAuthorDTO(const QUuid &uuid, const QString &name, const QUuid &relative) : AuthorDTOBase(nullptr)
-    {
-        m_data.reset(new UpdateAuthorDTOData);
-        m_data->uuid = uuid;
-        m_data->name = name;
-        m_data->relative = relative;
     }
 
-    UpdateAuthorDTO(const UpdateAuthorDTO &other) : AuthorDTOBase(other), m_data(other.m_data->clone())
+    UpdateAuthorDTO(const QUuid &uuid, const QString &name, const QUuid &relative)
+        : AuthorDTOBase(name, relative), m_uuid(uuid)
     {
     }
 
+    UpdateAuthorDTO(const UpdateAuthorDTO &other) : AuthorDTOBase(other), m_uuid(other.m_uuid)
+    {
+    }
     UpdateAuthorDTO &operator=(const UpdateAuthorDTO &other)
     {
         if (this != &other)
         {
-            m_data.reset(other.m_data->clone());
+            AuthorDTOBase::operator=(other);
+            m_uuid = other.m_uuid;
         }
         return *this;
     }
-
-    UpdateAuthorDTO clone()
-    {
-        return UpdateAuthorDTO(*this);
-    }
-
     QUuid getUuid() const;
     QUuid uuid() const;
     void setUuid(const QUuid &newUuid);
 
   private:
-    QExplicitlySharedDataPointer<UpdateAuthorDTOData> m_data;
+    QUuid m_uuid;
 };
 
 //-------------------------------------------------
 
 inline QUuid UpdateAuthorDTO::getUuid() const
 {
-    return static_cast<UpdateAuthorDTOData *>(m_data.data())->uuid;
+    return m_uuid;
 }
-
 inline QUuid UpdateAuthorDTO::uuid() const
 {
-    return static_cast<UpdateAuthorDTOData *>(m_data.data())->uuid;
+    return m_uuid;
 }
 
 inline void UpdateAuthorDTO::setUuid(const QUuid &newUuid)
 {
-    static_cast<UpdateAuthorDTOData *>(m_data.data())->uuid = newUuid;
+    m_uuid = newUuid;
 }
 
 } // namespace Contracts::DTO::Author

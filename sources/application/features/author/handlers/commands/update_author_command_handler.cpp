@@ -1,4 +1,5 @@
 #include "update_author_command_handler.h"
+#include "QtConcurrent/qtconcurrenttask.h"
 #include "automapper/automapper.h"
 #include "cqrs/author/validators/update_author_command_validator.h"
 #include "persistence/interface_author_repository.h"
@@ -14,34 +15,38 @@ UpdateAuthorCommandHandler::UpdateAuthorCommandHandler(InterfaceRepositories *re
 {
 }
 
-Result<AuthorDTO> Application::Features::Author::Commands::UpdateAuthorCommandHandler::handle(
-    const UpdateAuthorCommand &request)
+Result<AuthorDTO> UpdateAuthorCommandHandler::handle(const UpdateAuthorCommand &request)
 {
-    // get repository
-    InterfaceAuthorRepository *repository =
-        dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
+    return waitInEventLoop<AuthorDTO>(QtConcurrent::task([this](UpdateAuthorCommand request) {
+                                          // get repository
+                                          InterfaceAuthorRepository *repository =
+                                              dynamic_cast<InterfaceAuthorRepository *>(
+                                                  m_repositories->get(InterfaceRepositories::Entities::Author));
 
-    // validate:
-    auto validator = UpdateAuthorCommandValidator(repository);
-    Result<void *> validatorResult = validator.validate(request.req);
-    if (validatorResult.hasError())
-    {
-        return Result<AuthorDTO>(validatorResult.error());
-    }
+                                          // validate:
+                                          auto validator = UpdateAuthorCommandValidator(repository);
+                                          Result<void *> validatorResult = validator.validate(request.req);
+                                          if (validatorResult.hasError())
+                                          {
+                                              return Result<AuthorDTO>(validatorResult.error());
+                                          }
 
-    // map
-    auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
+                                          // map
+                                          auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
 
-    // set update timestamp
-    author.setUpdateDate(QDateTime::currentDateTime());
-    // do
-    auto authorResult = repository->update(std::move(author));
-    if (authorResult.hasError())
-    {
-        return Result<AuthorDTO>(authorResult.error());
-    }
-    // map
-    auto authorDto = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
+                                          // set update timestamp
+                                          author.setUpdateDate(QDateTime::currentDateTime());
+                                          // do
+                                          auto authorResult = repository->update(std::move(author));
+                                          if (authorResult.hasError())
+                                          {
+                                              return Result<AuthorDTO>(authorResult.error());
+                                          }
+                                          // map
+                                          auto authorDto = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
 
-    return Result<AuthorDTO>(authorDto);
+                                          return Result<AuthorDTO>(authorDto);
+                                      })
+                                          .withArguments(request)
+                                          .spawn());
 }

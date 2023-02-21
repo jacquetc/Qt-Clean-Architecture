@@ -1,9 +1,10 @@
 #pragma once
+#include "contracts_global.h"
 #include <QException>
 
 namespace Contracts
 {
-class Exception : public QException
+class SKRCONTRACTSEXPORT Exception : public QException
 {
   public:
     void raise() const override

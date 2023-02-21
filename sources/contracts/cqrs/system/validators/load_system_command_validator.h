@@ -1,7 +1,7 @@
 #pragma once
 
 #include "contracts_global.h"
-#include "dto/system/save_system_as_dto.h"
+#include "dto/system/load_system_dto.h"
 #include "result.h"
 
 #include <QFile>
@@ -10,25 +10,25 @@ using namespace Contracts::DTO::System;
 
 namespace Contracts::CQRS::Author::Validators
 {
-class SKRCONTRACTSEXPORT SaveSystemAsCommandValidator
+class SKRCONTRACTSEXPORT LoadSystemCommandValidator
 {
   public:
-    SaveSystemAsCommandValidator()
+    LoadSystemCommandValidator()
     {
     }
 
-    Result<void *> validate(const SaveSystemAsDTO &dto) const
+    Result<void *> validate(const LoadSystemDTO &dto) const
     {
         QUrl url = dto.fileName();
 
         if (!url.isValid())
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_filename"));
+            return Result<void *>(Error("LoadSystemCommandValidator", Error::Critical, "invalid_filename"));
         }
 
         if (!url.isLocalFile() && url.scheme() != "qrc")
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_not_local"));
+            return Result<void *>(Error("LoadSystemCommandValidator", Error::Critical, "invalid_not_local"));
         }
 
         QString fileNameString;
@@ -52,13 +52,13 @@ class SKRCONTRACTSEXPORT SaveSystemAsCommandValidator
         if (!file.exists())
         {
 
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "absent_filename",
+            return Result<void *>(Error("LoadSystemCommandValidator", Error::Critical, "absent_filename",
                                         fileNameString + " doesn't exist", fileNameString));
         }
 
         if (!file.open(QIODevice::ReadOnly))
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "readonly_filename",
+            return Result<void *>(Error("LoadSystemCommandValidator", Error::Critical, "readonly_filename",
                                         fileNameString + " can't be opened", fileNameString));
         }
 

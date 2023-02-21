@@ -1,9 +1,10 @@
 #pragma once
+#include "presenter_global.h"
 #include "undo_controller.h"
 
 #include <QObject>
 
-class PresenterRegistration : public QObject
+class SKRPRESENTEREXPORT PresenterRegistration : public QObject
 {
     Q_OBJECT
   public:

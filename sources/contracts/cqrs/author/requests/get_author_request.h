@@ -1,10 +1,11 @@
 #pragma once
 
+#include "contracts_global.h"
 #include <QUuid>
 
 namespace Contracts::CQRS::Author::Requests
 {
-class GetAuthorRequest
+class SKRCONTRACTSEXPORT GetAuthorRequest
 {
   public:
     GetAuthorRequest()

@@ -109,6 +109,8 @@ void SkribDatabase::add()
     SkribFile<Domain::Author> skribFile(m_context);
 
     Domain::Author author(QUuid::createUuid(), "New Author", QUuid::createUuid());
+    author.setCreationDate(QDateTime::currentDateTime());
+    author.setUpdateDate(QDateTime::currentDateTime());
 
     Result<Domain::Author> result = skribFile.add(std::move(author));
     if (!result)

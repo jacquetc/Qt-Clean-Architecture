@@ -1,28 +1,15 @@
 #pragma once
 
+#include "contracts_global.h"
 #include <QDateTime>
 #include <QObject>
-#include <QSharedData>
 #include <QString>
 #include <QUuid>
 
 namespace Contracts::DTO::Author
 {
 
-class AuthorBaseData : public QSharedData
-{
-  public:
-    AuthorBaseData() : creationDate(QDateTime::currentDateTime()), updateDate(QDateTime::currentDateTime())
-    {
-    }
-
-    QDateTime creationDate;
-    QDateTime updateDate;
-    QString name;
-    QUuid relative;
-};
-
-class AuthorDTOBase : public QObject
+class SKRCONTRACTSEXPORT AuthorDTOBase : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName WRITE setName)
@@ -33,30 +20,24 @@ class AuthorDTOBase : public QObject
   public:
     AuthorDTOBase(QObject *parent = nullptr) : QObject(parent)
     {
-        m_data = new AuthorBaseData;
     }
-
-    AuthorDTOBase(const AuthorDTOBase &other) : QObject(other.parent()), m_data(other.m_data)
+    AuthorDTOBase(const QString &name, const QUuid &relative) : QObject(), m_name(name), m_relative(relative)
+    {
+    }
+    AuthorDTOBase(const AuthorDTOBase &other)
+        : QObject(), m_name(other.m_name), m_relative(other.m_relative), m_creationDate(other.m_creationDate),
+          m_updateDate(other.m_updateDate)
     {
     }
 
     AuthorDTOBase &operator=(const AuthorDTOBase &other)
     {
-        if (this != &other)
-        {
-            m_data.detach();
-            m_data = other.m_data;
-        }
+        m_name = other.m_name;
+        m_relative = other.m_relative;
+        m_creationDate = other.m_creationDate;
+        m_updateDate = other.m_updateDate;
         return *this;
     }
-
-    AuthorDTOBase clone()
-    {
-        AuthorDTOBase dto(this);
-        dto.m_data.detach();
-        return dto;
-    }
-
     QDateTime getCreationDate() const;
     QDateTime creationDate() const;
     void setCreationDate(const QDateTime &newCreationDate);
@@ -71,67 +52,70 @@ class AuthorDTOBase : public QObject
     void setRelative(const QUuid &newRelative);
 
   private:
-    QExplicitlySharedDataPointer<AuthorBaseData> m_data;
+    QDateTime m_creationDate;
+    QDateTime m_updateDate;
+    QString m_name;
+    QUuid m_relative;
 };
 
 inline QDateTime AuthorDTOBase::getCreationDate() const
 {
-    return m_data->creationDate;
+    return m_creationDate;
 }
 
 inline QDateTime AuthorDTOBase::creationDate() const
 {
-    return m_data->creationDate;
+    return m_creationDate;
 }
 
 inline void AuthorDTOBase::setCreationDate(const QDateTime &newCreationDate)
 {
-    m_data->creationDate = newCreationDate;
+    m_creationDate = newCreationDate;
 }
 
 inline QDateTime AuthorDTOBase::getUpdateDate() const
 {
-    return m_data->updateDate;
+    return m_updateDate;
 }
 
 inline QDateTime AuthorDTOBase::updateDate() const
 {
-    return m_data->updateDate;
+    return m_updateDate;
 }
 
 inline void AuthorDTOBase::setUpdateDate(const QDateTime &newUpdateDate)
 {
-    m_data->updateDate = newUpdateDate;
+    m_updateDate = newUpdateDate;
 }
 
 inline QUuid AuthorDTOBase::getRelative() const
 {
-    return m_data->relative;
+    return m_relative;
 }
 
 inline QUuid AuthorDTOBase::relative() const
 {
-    return m_data->relative;
+    return m_relative;
 }
 
 inline void AuthorDTOBase::setRelative(const QUuid &newRelative)
 {
-    m_data->relative = newRelative;
+    m_relative = newRelative;
 }
 
 inline QString AuthorDTOBase::getName() const
 {
-    return m_data->name;
+    return m_name;
 }
 
 inline QString AuthorDTOBase::name() const
 {
-    return m_data->name;
+    return m_name;
 }
 
 inline void AuthorDTOBase::setName(const QString &newName)
 {
-    m_data->name = newName;
+    m_name = newName;
 }
 
 } // namespace Contracts::DTO::Author

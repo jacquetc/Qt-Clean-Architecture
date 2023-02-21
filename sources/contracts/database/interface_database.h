@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QFuture>
-#include <QUuid>
-
 #include "contracts_global.h"
 #include "database/interface_database_context.h"
 #include "result.h"
+#include <QFuture>
+#include <QUuid>
 
 namespace Contracts::Database
 {

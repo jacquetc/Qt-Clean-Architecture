@@ -85,7 +85,6 @@ template <class T> InterfaceDatabase<T> *GenericRepository<T>::database()
 
 template <class T> Result<T> GenericRepository<T>::get(const QUuid &uuid)
 {
-    QReadLocker locker(&m_lock);
     return waitInEventLoop(
         QtConcurrent::task([](InterfaceDatabase<T> *database, QUuid uuid) { return database->get(uuid); })
             .withArguments(m_database, uuid)
@@ -94,7 +93,6 @@ template <class T> Result<T> GenericRepository<T>::get(const QUuid &uuid)
 
 template <class T> Result<QList<T>> GenericRepository<T>::getAll()
 {
-    QReadLocker locker(&m_lock);
     return waitInEventLoop(QtConcurrent::task([](InterfaceDatabase<T> *database) { return database->getAll(); })
                                .withArguments(m_database)
                                .spawn());
@@ -102,7 +100,6 @@ template <class T> Result<QList<T>> GenericRepository<T>::getAll()
 
 template <class T> Result<T> GenericRepository<T>::remove(T &&entity)
 {
-    QWriteLocker locker(&m_lock);
     return waitInEventLoop(
         QtConcurrent::task([](InterfaceDatabase<T> *database, T entity) { return database->remove(std::move(entity)); })
             .withArguments(m_database, std::move(entity))
@@ -111,7 +108,7 @@ template <class T> Result<T> GenericRepository<T>::remove(T &&entity)
 
 template <class T> Result<T> GenericRepository<T>::add(T &&entity)
 {
-    QWriteLocker locker(&m_lock);
+    // QWriteLocker locker(&m_lock);
     return waitInEventLoop(
         QtConcurrent::task([](InterfaceDatabase<T> *database, T entity) { return database->add(std::move(entity)); })
             .withArguments(m_database, std::move(entity))
@@ -120,7 +117,6 @@ template <class T> Result<T> GenericRepository<T>::add(T &&entity)
 
 template <class T> Result<T> GenericRepository<T>::update(T &&entity)
 {
-    QWriteLocker locker(&m_lock);
     return waitInEventLoop(
         QtConcurrent::task([](InterfaceDatabase<T> *database, T entity) { return database->update(std::move(entity)); })
             .withArguments(m_database, std::move(entity))
@@ -129,7 +125,6 @@ template <class T> Result<T> GenericRepository<T>::update(T &&entity)
 
 template <class T> Result<bool> GenericRepository<T>::exists(const QUuid &uuid)
 {
-    QReadLocker locker(&m_lock);
 
     return waitInEventLoop(
         QtConcurrent::task([](InterfaceDatabase<T> *database, QUuid uuid) { return database->exists(uuid); })

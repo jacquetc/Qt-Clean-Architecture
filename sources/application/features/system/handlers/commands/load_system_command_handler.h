@@ -1,7 +1,7 @@
 #pragma once
 
 #include "application_global.h"
-#include "cqrs/system/commands/save_system_as_command.h"
+#include "cqrs/system/commands/load_system_command.h"
 #include "handler.h"
 #include "persistence/interface_repositories.h"
 #include "result.h"
@@ -12,11 +12,11 @@ using namespace Contracts::CQRS::System::Commands;
 
 namespace Application::Features::System::Commands
 {
-class SKRAPPLICATIONEXPORT SaveSystemAsCommandHandler : public Handler
+class SKRAPPLICATIONEXPORT LoadSystemCommandHandler : public Handler
 {
   public:
-    SaveSystemAsCommandHandler(InterfaceRepositories *repositories);
-    Result<void *> handle(const SaveSystemAsCommand &request);
+    LoadSystemCommandHandler(InterfaceRepositories *repositories);
+    Result<void *> handle(const LoadSystemCommand &request);
 
   private:
     InterfaceRepositories *m_repositories;

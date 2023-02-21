@@ -1,5 +1,6 @@
 #pragma once
 
+#include "application_global.h"
 #include "cqrs/author/commands/remove_author_command.h"
 #include "dto/author/author_dto.h"
 #include "handler.h"
@@ -12,7 +13,7 @@ using namespace Contracts::CQRS::Author::Commands;
 
 namespace Application::Features::Author::Commands
 {
-class RemoveAuthorCommandHandler : public Handler
+class SKRAPPLICATIONEXPORT RemoveAuthorCommandHandler : public Handler
 {
   public:
     RemoveAuthorCommandHandler(InterfaceRepositories *repositories);

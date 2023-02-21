@@ -3,7 +3,7 @@
 #include "repositories/repositories.h"
 #include <QObject>
 
-class PersistenceRegistration : public QObject
+class SKRPERSISTENCEEXPORT PersistenceRegistration : public QObject
 {
     Q_OBJECT
   public:

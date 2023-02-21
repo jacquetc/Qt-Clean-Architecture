@@ -1,17 +1,17 @@
 #pragma once
 
 #include "contracts_global.h"
-#include "dto/system/save_system_as_dto.h"
+#include "dto/system/load_system_dto.h"
 
 namespace Contracts::CQRS::System::Commands
 {
-class SKRCONTRACTSEXPORT SaveSystemAsCommand
+class SKRCONTRACTSEXPORT LoadSystemCommand
 {
   public:
-    SaveSystemAsCommand()
+    LoadSystemCommand()
     {
     }
 
-    Contracts::DTO::System::SaveSystemAsDTO req;
+    Contracts::DTO::System::LoadSystemDTO req;
 };
 } // namespace Contracts::CQRS::System::Commands

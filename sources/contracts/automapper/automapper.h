@@ -1,6 +1,7 @@
 #ifndef AUTOMAPPER_H
 #define AUTOMAPPER_H
 
+#include "contracts_global.h"
 #include <QDateTime>
 #include <QVariant>
 #include <QtCore/QMetaObject>
@@ -8,7 +9,7 @@
 
 namespace AutoMapper
 {
-class AutoMapper
+class SKRCONTRACTSEXPORT AutoMapper
 {
   public:
     template <class Destination> static Destination map(const QObject &sourceObject)

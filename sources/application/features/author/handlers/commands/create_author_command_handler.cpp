@@ -1,4 +1,5 @@
 #include "create_author_command_handler.h"
+#include "QtConcurrent/qtconcurrenttask.h"
 #include "automapper/automapper.h"
 #include "cqrs/author/validators/create_author_command_validator.h"
 #include "persistence/interface_author_repository.h"
@@ -15,31 +16,41 @@ CreateAuthorCommandHandler::CreateAuthorCommandHandler(InterfaceRepositories *re
 
 Result<QUuid> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &request)
 {
-    // get repository
-    InterfaceAuthorRepository *repository =
-        dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
+    // Execute a task asynchronously in a separate thread, and return the result as a future
+    return waitInEventLoop<QUuid>(
+        QtConcurrent::task([this](CreateAuthorCommand request) {
+            // Get the author repository from the repository manager
+            InterfaceAuthorRepository *repository =
+                dynamic_cast<InterfaceAuthorRepository *>(m_repositories->get(InterfaceRepositories::Entities::Author));
 
-    // validate:
-    auto validator = CreateAuthorCommandValidator(repository);
-    Result<void *> validatorResult = validator.validate(request.req);
-    if (validatorResult.hasError())
-    {
-        return Result<QUuid>(validatorResult.error());
-    }
+            // Validate the create author command using the validator
+            auto validator = CreateAuthorCommandValidator(repository);
+            Result<void *> validatorResult = validator.validate(request.req);
+            if (validatorResult.hasError())
+            {
+                // Return the validation error as a Result object
+                return Result<QUuid>(validatorResult.error());
+            }
 
-    auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
-    author.setUuid(QUuid::createUuid());
+            // Map the create author command to a domain author object and generate a UUID
+            auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
+            author.setUuid(QUuid::createUuid());
 
-    // set timestamp
-    author.setCreationDate(QDateTime::currentDateTime());
-    author.setUpdateDate(QDateTime::currentDateTime());
+            // Set the creation and update timestamps to the current date and time
+            author.setCreationDate(QDateTime::currentDateTime());
+            author.setUpdateDate(QDateTime::currentDateTime());
 
-    // do
-    auto authorResult = repository->add(std::move(author));
-    if (authorResult.hasError())
-    {
-        return Result<QUuid>(authorResult.error());
-    }
+            // Add the author to the repository
+            auto authorResult = repository->add(std::move(author));
+            if (authorResult.hasError())
+            {
+                // Return the repository error as a Result object
+                return Result<QUuid>(authorResult.error());
+            }
 
-    return Result<QUuid>(authorResult.value().uuid());
+            // Return the UUID of the newly created author as a Result object
+            return Result<QUuid>(authorResult.value().uuid());
+        })
+            .withArguments(request) // Pass the request object as an argument to the task function
+            .spawn());              // Start the task and return the future as a Result object
 }

@@ -1,6 +1,7 @@
 #ifndef UPDATE_AUTHOR_COMMAND_VALIDATOR_H
 #define UPDATE_AUTHOR_COMMAND_VALIDATOR_H
 
+#include "contracts_global.h"
 #include "dto/author/update_author_dto.h"
 #include "persistence/interface_author_repository.h"
 #include "result.h"
@@ -10,7 +11,7 @@ using namespace Contracts::DTO::Author;
 
 namespace Contracts::CQRS::Author::Validators
 {
-class UpdateAuthorCommandValidator
+class SKRCONTRACTSEXPORT UpdateAuthorCommandValidator
 {
   public:
     UpdateAuthorCommandValidator(InterfaceAuthorRepository *authorRepository) : m_repository(authorRepository)

@@ -14,13 +14,17 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Sql CONFIG REQUIRED)
 set(application_SRCS
 
     application_global.h
+    application_registration.h application_registration.cpp
+    handler.h handler.cpp
+    # author:
     features/author/handlers/queries/get_author_request_handler.h features/author/handlers/queries/get_author_request_handler.cpp
     features/author/handlers/commands/create_author_command_handler.h features/author/handlers/commands/create_author_command_handler.cpp
     features/author/handlers/commands/remove_author_command_handler.h features/author/handlers/commands/remove_author_command_handler.cpp
-features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
-handler.h handler.cpp
-features/author/handlers/queries/get_author_list_request_handler.h features/author/handlers/queries/get_author_list_request_handler.cpp
-features/system/handlers/commands/save_system_as_command_handler.h features/system/handlers/commands/save_system_as_command_handler.cpp
+    features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
+    features/author/handlers/queries/get_author_list_request_handler.h features/author/handlers/queries/get_author_list_request_handler.cpp
+    # system:
+    features/system/handlers/commands/save_system_as_command_handler.h features/system/handlers/commands/save_system_as_command_handler.cpp
+    features/system/handlers/commands/load_system_command_handler.h features/system/handlers/commands/load_system_command_handler.cpp
 )
 
 add_library(skribisto-application SHARED ${application_SRCS})

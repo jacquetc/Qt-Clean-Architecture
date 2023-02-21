@@ -1,5 +1,6 @@
 #pragma once
 
+#include "application_global.h"
 #include "cqrs/author/commands/update_author_command.h"
 #include "dto/author/author_dto.h"
 #include "handler.h"
@@ -12,7 +13,7 @@ using namespace Contracts::CQRS::Author::Commands;
 
 namespace Application::Features::Author::Commands
 {
-class UpdateAuthorCommandHandler : public Handler
+class SKRAPPLICATIONEXPORT UpdateAuthorCommandHandler : public Handler
 
 {
   public:

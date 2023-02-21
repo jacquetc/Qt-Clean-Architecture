@@ -1,7 +1,8 @@
 #pragma once
+#include "contracts_global.h"
 #include "database/interface_database_context.h"
 
-class InterfaceRepository
+class SKRCONTRACTSEXPORT InterfaceRepository
 {
 
   public:

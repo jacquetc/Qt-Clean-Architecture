@@ -1,6 +1,8 @@
 #pragma once
 
+#include "features/system/handlers/commands/load_system_command_handler.h"
 #include "features/system/handlers/commands/save_system_as_command_handler.h"
+#include "presenter_global.h"
 #include "repositories/repositories.h"
 #include "result.h"
 
@@ -9,19 +11,27 @@ using namespace Application::Features::System::Commands;
 namespace Presenter::System
 {
 
-Result<void *> loadSystem(const QUrl &fileName)
+SKRPRESENTEREXPORT Result<void *> loadSystem(const LoadSystemDTO &dto)
 {
+    LoadSystemCommand command;
+    command.req = dto;
+    LoadSystemCommandHandler handler(Repository::Repositories::instance());
+    return handler.handle(command);
 }
 
-Result<void *> saveSystem()
+SKRPRESENTEREXPORT Result<void *> saveSystem()
 {
+    Q_UNIMPLEMENTED();
 }
 
-Result<void *> saveSystemAs(const SaveSystemAsCommand &request)
+SKRPRESENTEREXPORT Result<void *> saveSystemAs(const SaveSystemAsDTO &dto)
 {
+    Q_UNIMPLEMENTED();
+    SaveSystemAsCommand command;
+    command.req = dto;
 
     SaveSystemAsCommandHandler handler(Repository::Repositories::instance());
-    return handler.handle(request);
+    return handler.handle(command);
 }
 
 } // namespace Presenter::System

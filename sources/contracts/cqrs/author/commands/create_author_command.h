@@ -1,10 +1,11 @@
 #pragma once
 
+#include "contracts_global.h"
 #include "dto/author/create_author_dto.h"
 
 namespace Contracts::CQRS::Author::Commands
 {
-class CreateAuthorCommand
+class SKRCONTRACTSEXPORT CreateAuthorCommand
 {
   public:
     CreateAuthorCommand()

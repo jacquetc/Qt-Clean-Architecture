@@ -1,38 +1,11 @@
 #pragma once
 
 #include <QDateTime>
-#include <QSharedData>
+#include <QObject>
 #include <QUuid>
 
 namespace Domain
 {
-class EntityData : public QSharedData
-{
-  public:
-    EntityData()
-        : uuid(QUuid::createUuid()), creationDate(QDateTime::currentDateTime()),
-          updateDate(QDateTime::currentDateTime())
-    {
-    }
-
-    EntityData(const QUuid &uuid)
-        : uuid(uuid), creationDate(QDateTime::currentDateTime()), updateDate(QDateTime::currentDateTime())
-    {
-    }
-
-    EntityData(const QUuid &uuid, const QDateTime &creationDate, const QDateTime &updateDate)
-        : uuid(uuid), creationDate(creationDate), updateDate(updateDate)
-    {
-    }
-    EntityData *clone() const
-    {
-        return new EntityData(*this);
-    }
-
-    QUuid uuid;
-    QDateTime creationDate;
-    QDateTime updateDate;
-};
 
 class Entity : public QObject
 {
@@ -41,19 +14,19 @@ class Entity : public QObject
     Q_PROPERTY(QDateTime creationDate READ getCreationDate WRITE setCreationDate)
     Q_PROPERTY(QDateTime updateDate READ getUpdateDate WRITE setUpdateDate)
   public:
-    Entity() : QObject(), m_data(new EntityData)
+    Entity() : QObject()
     {
     }
-
-    Entity(const QUuid &uuid) : QObject(), m_data(new EntityData(uuid))
+    Entity(const QUuid &uuid) : QObject(), m_uuid(uuid)
     {
     }
     Entity(const QUuid &uuid, const QDateTime &creationDate, const QDateTime &updateDate)
-        : QObject(), m_data(new EntityData(uuid, creationDate, updateDate))
+        : QObject(), m_uuid(uuid), m_creationDate(creationDate), m_updateDate(updateDate)
     {
     }
 
-    Entity(const Entity &entity) : QObject(), m_data(entity.m_data->clone())
+    Entity(const Entity &other)
+        : m_uuid(other.m_uuid), m_creationDate(other.m_creationDate), m_updateDate(other.m_updateDate)
     {
     }
 
@@ -61,62 +34,61 @@ class Entity : public QObject
     {
         if (this != &other)
         {
-            m_data.reset(other.m_data->clone());
+            m_uuid = other.m_uuid;
+            m_creationDate = other.m_creationDate;
+            m_updateDate = other.m_updateDate;
         }
         return *this;
     }
 
-    Entity clone() const
-    {
-        return Entity(*this);
-    }
-
     QUuid getUuid() const
     {
-        return m_data->uuid;
+        return m_uuid;
     }
 
     QUuid uuid() const
     {
-        return m_data->uuid;
+        return m_uuid;
     }
 
     void setUuid(const QUuid &uuid)
     {
-        m_data->uuid = uuid;
+        m_uuid = uuid;
     }
 
     QDateTime getCreationDate() const
     {
-        return m_data->creationDate;
+        return m_creationDate;
     }
 
     QDateTime creationDate() const
     {
-        return m_data->creationDate;
+        return m_creationDate;
     }
 
     void setCreationDate(const QDateTime &creationDate)
     {
-        m_data->creationDate = creationDate;
+        m_creationDate = creationDate;
     }
 
     QDateTime getUpdateDate() const
     {
-        return m_data->updateDate;
+        return m_updateDate;
     }
 
     QDateTime updateDate() const
     {
-        return m_data->updateDate;
+        return m_updateDate;
     }
 
     void setUpdateDate(const QDateTime &updateDate)
     {
-        m_data->updateDate = updateDate;
+        m_updateDate = updateDate;
     }
 
   private:
-    QExplicitlySharedDataPointer<EntityData> m_data;
+    QUuid m_uuid;
+    QDateTime m_creationDate;
+    QDateTime m_updateDate;
 };
 } // namespace Domain
