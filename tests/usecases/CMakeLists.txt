@@ -20,7 +20,6 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Test Core REQUIRED)
 #qt_add_resources(RESOURCES ${QRC})
 
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp ${RESOURCES}
-    dummy_repositories.h
     dummy_author_repository.h)
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
@@ -34,6 +33,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-application)
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-domain)
 
-include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/application/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")

@@ -1,5 +1,4 @@
-#ifndef DUMMY_AUTHOR_REPOSITORY_H
-#define DUMMY_AUTHOR_REPOSITORY_H
+#pragma once
 
 #include "author.h"
 #include "database/interface_database.h"
@@ -30,9 +29,6 @@ class DummyDatabase : public Contracts::Database::InterfaceDatabase<Domain::Auth
     Result<Domain::Author> add(Domain::Author &&entity) override;
     Result<Domain::Author> update(Domain::Author &&entity) override;
     Result<bool> exists(const QUuid &uuid) override;
-
-    InterfaceDatabaseContext *databaseContext() const override;
-    void setDatabaseContext(InterfaceDatabaseContext *newDatabaseContext) override;
 
   private:
     Domain::Author m_getEntity;
@@ -102,14 +98,3 @@ inline Result<bool> DummyDatabase::exists(const QUuid &uuid)
 {
     return Result<bool>(m_exists);
 }
-
-inline InterfaceDatabaseContext *DummyDatabase::databaseContext() const
-{
-    return nullptr;
-}
-
-inline void DummyDatabase::setDatabaseContext(InterfaceDatabaseContext *newDatabaseContext)
-{
-}
-
-#endif // DUMMY_AUTHOR_REPOSITORY_H

@@ -52,5 +52,6 @@ compile_commands.json
 *creator.user*
 
 .DS_Store
+build
 
 *_qmlcache.qrc

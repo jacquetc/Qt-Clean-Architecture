@@ -68,8 +68,7 @@ void RepositoryTest::getAuthor()
 {
 
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     QUuid uuid = QUuid::createUuid();
     QUuid relative = QUuid::createUuid();
@@ -87,8 +86,7 @@ void RepositoryTest::getAuthor()
 void RepositoryTest::addAuthor()
 {
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     QUuid uuid = QUuid::createUuid();
     QUuid relative = QUuid::createUuid();
@@ -105,8 +103,7 @@ void RepositoryTest::addAuthor()
 void RepositoryTest::removeAuthor()
 {
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     QUuid uuid = QUuid::createUuid();
     Domain::Author author(uuid, "test", QUuid::createUuid());
@@ -125,8 +122,7 @@ void RepositoryTest::removeAuthor()
 void RepositoryTest::updateAuthor()
 {
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     QUuid uuid = QUuid::createUuid();
     QUuid relative = QUuid::createUuid();
@@ -146,8 +142,7 @@ void RepositoryTest::updateAuthor()
 void RepositoryTest::authorExists()
 {
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     QUuid uuid = QUuid::createUuid();
     database->fillExists(true);
@@ -164,8 +159,7 @@ void RepositoryTest::authorExists()
 void RepositoryTest::getAllAuthors()
 {
     auto database = new DummyDatabase;
-    Repository::AuthorRepository repository;
-    repository.setDatabase(database);
+    Repository::AuthorRepository repository(database);
 
     Domain::Author author1(QUuid::createUuid(), "test1", QUuid::createUuid());
     Domain::Author author2(QUuid::createUuid(), "test2", QUuid::createUuid());

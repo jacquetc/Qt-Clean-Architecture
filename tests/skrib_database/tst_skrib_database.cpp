@@ -39,7 +39,7 @@ class SkribDatabase : public QObject
   private:
     QUuid m_authorUuid;
     QUrl m_testProjectPath;
-    SkribFileContext *m_context;
+    Database::SkribFileContext *m_context;
 };
 
 SkribDatabase::SkribDatabase()
@@ -63,7 +63,7 @@ void SkribDatabase::cleanupTestCase()
 void SkribDatabase::init()
 {
 
-    m_context = new SkribFileContext(m_testProjectPath);
+    m_context = new Database::SkribFileContext();
     m_context->init();
 }
 

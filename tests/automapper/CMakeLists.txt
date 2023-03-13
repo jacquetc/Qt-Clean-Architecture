@@ -30,5 +30,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Test Qt${QT
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-domain)
 
-include_directories("${CMAKE_SOURCE_DIR}/sources/contracts/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/domain/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")

@@ -1,8 +1,6 @@
-#ifndef DUMMY_AUTHOR_REPOSITORY_H
-#define DUMMY_AUTHOR_REPOSITORY_H
+#pragma once
 
 #include "author.h"
-#include "database/interface_database.h"
 #include "persistence/interface_author_repository.h"
 
 #include <QObject>
@@ -40,35 +38,7 @@ class DummyAuthorRepository : public QObject, public Contracts::Persistence::Int
     Domain::Author m_addEntity;
     Domain::Author m_updateEntity;
     bool m_exists;
-
-    // InterfaceGenericRepository interface
-  public:
-    void setDatabase(Contracts::Database::InterfaceDatabase<Domain::Author> *database) override;
-    Contracts::Database::InterfaceDatabase<Domain::Author> *database() override;
-
-    // InterfaceRepository interface
-  public:
-    void setDatabaseContext(Contracts::Database::InterfaceDatabaseContext *databaseContext) override;
-    Contracts::Database::InterfaceDatabaseContext *databaseContext() override;
 };
-
-inline void DummyAuthorRepository::setDatabaseContext(Contracts::Database::InterfaceDatabaseContext *databaseContext)
-{
-}
-
-inline Contracts::Database::InterfaceDatabaseContext *DummyAuthorRepository::databaseContext()
-{
-    return nullptr;
-}
-
-inline void DummyAuthorRepository::setDatabase(Contracts::Database::InterfaceDatabase<Domain::Author> *database)
-{
-}
-
-inline Contracts::Database::InterfaceDatabase<Domain::Author> *DummyAuthorRepository::database()
-{
-    return nullptr;
-}
 
 inline void DummyAuthorRepository::fillGet(const Domain::Author &entity)
 {
@@ -129,5 +99,3 @@ inline Result<bool> DummyAuthorRepository::exists(const QUuid &uuid)
 {
     return Result<bool>(m_exists);
 }
-
-#endif // DUMMY_AUTHOR_REPOSITORY_H
