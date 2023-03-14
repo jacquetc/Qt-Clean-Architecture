@@ -15,6 +15,8 @@ class UndoRedoSystem : public QObject
   public:
     UndoRedoSystem(QObject *parent = nullptr);
 
+    Q_INVOKABLE void run();
+
     Q_INVOKABLE bool canUndo() const;
 
     Q_INVOKABLE bool canRedo() const;
@@ -37,6 +39,7 @@ class UndoRedoSystem : public QObject
 
   signals:
     void stateChanged();
+    void finished();
 
   private:
     void executeNextCommand(const UndoRedoCommand::Scope &scope);

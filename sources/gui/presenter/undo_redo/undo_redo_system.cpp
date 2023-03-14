@@ -1,10 +1,23 @@
 #include "undo_redo_system.h"
 #include "undo_redo/query_command.h"
 
+#include <QEventLoop>
+
 using namespace Presenter::UndoRedo;
 
 UndoRedoSystem::UndoRedoSystem(QObject *parent) : QObject(parent), m_currentIndex(-1), m_undoLimit(10)
 {
+}
+void UndoRedoSystem::run()
+{
+    // Create an event loop for the thread
+    QEventLoop eventLoop;
+
+    // Connect the thread started signal to the event loop quit slot
+    connect(this, &UndoRedoSystem::finished, &eventLoop, &QEventLoop::quit);
+
+    // Execute the event loop
+    eventLoop.exec();
 }
 
 bool UndoRedoSystem::canUndo() const
@@ -133,9 +146,16 @@ void UndoRedoSystem::executeNextCommand(const UndoRedoCommand::Scope &scope)
         // Add the new command to the end of the list
 
         m_generalCommandQueue.enqueue(m_scopedCommandQueueHash[scope].head());
+        // Increment the current index
+        m_currentIndex++;
+
+        // Remove excess commands from the general command queue if necessary
+        while (m_generalCommandQueue.size() > m_undoLimit)
+        {
+            m_generalCommandQueue.dequeue();
+            m_currentIndex--;
+        }
     }
-    // Increment the current index
-    m_currentIndex++;
 
     // Dequeue the next command
     QQueue<QSharedPointer<UndoRedoCommand>> &queue = m_scopedCommandQueueHash[scope];

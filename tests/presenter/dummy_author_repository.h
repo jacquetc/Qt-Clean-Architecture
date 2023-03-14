@@ -75,7 +75,7 @@ inline Result<Domain::Author> DummyAuthorRepository::get(const QUuid &uuid)
 
     int waitTime = 0;
 
-    while (waitTime < 500000000)
+    while (waitTime < 50000000)
     {
         waitTime++;
     }

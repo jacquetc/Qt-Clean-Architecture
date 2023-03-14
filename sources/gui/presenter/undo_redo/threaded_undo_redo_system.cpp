@@ -16,7 +16,7 @@ ThreadedUndoRedoSystem::ThreadedUndoRedoSystem(QObject *parent) : QObject(parent
     m_undoRedoSystem = new UndoRedoSystem();
 
     // Move the UndoRedoSystem to a new thread
-    m_thread = new QThread();
+    m_thread = new QThread(this);
     m_undoRedoSystem->moveToThread(m_thread);
 
     // Connect the thread started signal to the startUndoRedoSystem slot
@@ -34,8 +34,8 @@ ThreadedUndoRedoSystem::~ThreadedUndoRedoSystem()
     m_thread->wait();
 
     // Delete the UndoRedoSystem instance and the thread
-    delete m_undoRedoSystem;
-    delete m_thread;
+    m_undoRedoSystem->deleteLater();
+    // m_thread->deleteLater();
 }
 
 ThreadedUndoRedoSystem *ThreadedUndoRedoSystem::instance()
@@ -94,6 +94,7 @@ void ThreadedUndoRedoSystem::startUndoRedoSystem()
     // Connect the UndoRedoSystem's stateChanged signal to this class's stateChanged signal
     connect(m_undoRedoSystem, &UndoRedoSystem::stateChanged, this,
             &ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged);
+    QMetaObject::invokeMethod(m_undoRedoSystem, "run", Qt::QueuedConnection);
 }
 
 void ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged()
