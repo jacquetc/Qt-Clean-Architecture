@@ -1,6 +1,6 @@
 #pragma once
 #include "presenter_global.h"
-#include "undo_controller.h"
+#include "undo_redo/threaded_undo_redo_system.h"
 
 #include <QObject>
 
@@ -16,6 +16,6 @@ class SKRPRESENTEREXPORT PresenterRegistration : public QObject
   signals:
 
   private:
-    QScopedPointer<Presenter::UndoController> s_undoController;
+    QScopedPointer<UndoRedo::ThreadedUndoRedoSystem> s_undoRedoSystem;
 };
 } // namespace Presenter

@@ -7,11 +7,13 @@
 #include "persistence/interface_repository_provider.h"
 #include "presenter_global.h"
 #include "result.h"
+#include "undo_redo/threaded_undo_redo_system.h"
 
 using namespace Contracts::DTO::Author;
 using namespace Presenter;
 using namespace Contracts::Persistence;
 using namespace Presenter::Author::Private;
+using namespace Presenter::UndoRedo;
 
 namespace Presenter::Author
 {
@@ -24,20 +26,17 @@ class SKRPRESENTEREXPORT AuthorController : public QObject
 
     static AuthorController *instance();
 
-    void getAsync(const QUuid &uuid);
+    static void getAsync(const QUuid &uuid);
     Result<AuthorDTO> get(const QUuid &uuid);
 
-    void getAllAsync();
+    static void getAllAsync();
     Result<QList<AuthorDTO>> getAll();
 
-    void createAsync(const CreateAuthorDTO &dto);
-    Result<QUuid> create(const CreateAuthorDTO &dto);
+    static void createAsync(const CreateAuthorDTO &dto);
 
-    void updateAsync(const UpdateAuthorDTO &dto);
-    Result<AuthorDTO> update(const UpdateAuthorDTO &dto);
+    static void updateAsync(const UpdateAuthorDTO &dto);
 
-    void removeAsync(const QUuid &uuid);
-    Result<AuthorDTO> remove(const QUuid &uuid);
+    static void removeAsync(const QUuid &uuid);
 
   signals:
     void getAuthorReplied(Result<Contracts::DTO::Author::AuthorDTO> result);
@@ -48,8 +47,9 @@ class SKRPRESENTEREXPORT AuthorController : public QObject
 
   private:
     static QScopedPointer<AuthorController> s_instance;
-    AuthorSignalBridge *m_signal_bridge;
-    InterfaceRepositoryProvider *m_repositoryProvider;
+    static AuthorSignalBridge *s_signal_bridge;
+    static InterfaceRepositoryProvider *s_repositoryProvider;
+    static ThreadedUndoRedoSystem *s_undo_redo_system;
     AuthorController() = delete;
     AuthorController(const AuthorController &) = delete;
     AuthorController &operator=(const AuthorController &) = delete;

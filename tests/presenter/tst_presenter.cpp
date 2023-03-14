@@ -4,8 +4,6 @@
 #include "dto/author/author_dto.h"
 #include "dummy_author_repository.h"
 #include "dummy_repository_provider.h"
-#include "scoped_command_queue.h"
-#include "undo_controller.h"
 #include <QDate>
 #include <QDateTime>
 #include <QDebug>
@@ -35,7 +33,8 @@ class PresenterTest : public QObject
     void init();
     void cleanup();
 
-    void addAuthor();
+    void getAuthorAsync();
+    void getAuthorAsync_aLot();
     void addAuthorAsync();
     void addAuthorAsync_TwoRapid();
 
@@ -58,8 +57,7 @@ void PresenterTest::initTestCase()
 {
     m_repository.reset(new DummyAuthorRepository(this));
     m_repositoryProvider->registerRepository(DummyRepositoryProvider::Author, m_repository);
-    new ScopedCommandQueue(this, UndoController::instance());
-
+    new UndoRedo::ThreadedUndoRedoSystem(this);
     m_authorController = new AuthorController(m_repositoryProvider);
 }
 
@@ -77,49 +75,74 @@ void PresenterTest::cleanup()
 
 // ----------------------------------------------------------
 
-void PresenterTest::addAuthor()
+void PresenterTest::getAuthorAsync()
 {
-
     // Create an AuthorDTO to add
-    CreateAuthorDTO dto;
+    AuthorDTO dto;
+    dto.setUuid(QUuid::createUuid());
     dto.setName("new author");
     dto.setRelative(QUuid::createUuid());
 
     // prefill the dummy repo:
     auto author = AutoMapper::AutoMapper::map<Domain::Author>(dto);
-    author.setUuid(QUuid::createUuid());
-    m_repository->fillAdd(author);
+    m_repository->fillGet(author);
 
     // invoke
 
-    QSignalSpy spy(m_authorController, &AuthorController::authorCreated);
+    QSignalSpy spy(m_authorController, &AuthorController::getAuthorReplied);
     QVERIFY(spy.isValid());
 
-    // Call the create method and wait for it to finish
-    QFuture<Result<QUuid>> future = QtConcurrent::run([&]() { return m_authorController->create(dto); });
-    QTRY_COMPARE_WITH_TIMEOUT(future.isFinished(), true, 5000);
-
-    // Check that the result is successful and that a valid UUID was returned
-    Result<QUuid> result = future.result();
-    QVERIFY(result.isSuccess());
-    QVERIFY(!result.value().isNull());
-
-    if (!result)
-    {
-        qDebug() << result.error().message() << result.error().data();
-    }
-    QVERIFY(result.isSuccess());
+    AuthorController::getAsync(dto.uuid());
 
     QVERIFY(spy.wait(5000));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    Result<QUuid> signalResult = arguments.at(0).value<Result<QUuid>>();
+    Result<AuthorDTO> signalResult = arguments.at(0).value<Result<AuthorDTO>>();
     if (!signalResult)
     {
         qDebug() << signalResult.error().message() << signalResult.error().data();
     }
 
     QVERIFY(signalResult.isSuccess());
+    QVERIFY(signalResult.value().uuid() == dto.uuid());
+}
+// ----------------------------------------------------------
+
+void PresenterTest::getAuthorAsync_aLot()
+{
+    // Create an AuthorDTO to add
+    AuthorDTO dto;
+    dto.setUuid(QUuid::createUuid());
+    dto.setName("new author");
+    dto.setRelative(QUuid::createUuid());
+
+    // prefill the dummy repo:
+    auto author = AutoMapper::AutoMapper::map<Domain::Author>(dto);
+    m_repository->fillGet(author);
+
+    // invoke
+
+    QSignalSpy spy(m_authorController, &AuthorController::getAuthorReplied);
+    QVERIFY(spy.isValid());
+
+    for (int i = 0; i < 30; i++)
+        AuthorController::getAsync(dto.uuid());
+
+    for (int i = 0; i < 30; i++)
+    {
+        QVERIFY(spy.wait(5000));
+        qDebug() << "z";
+    }
+    QCOMPARE(spy.count(), 30);
+    QList<QVariant> arguments = spy.takeFirst();
+    Result<AuthorDTO> signalResult = arguments.at(0).value<Result<AuthorDTO>>();
+    if (!signalResult)
+    {
+        qDebug() << signalResult.error().message() << signalResult.error().data();
+    }
+
+    QVERIFY(signalResult.isSuccess());
+    QVERIFY(signalResult.value().uuid() == dto.uuid());
 }
 // ----------------------------------------------------------
 
@@ -140,7 +163,7 @@ void PresenterTest::addAuthorAsync()
     QSignalSpy spy(m_authorController, &AuthorController::authorCreated);
     QVERIFY(spy.isValid());
 
-    m_authorController->createAsync(dto);
+    AuthorController::createAsync(dto);
 
     QVERIFY(spy.wait(5000));
     QCOMPARE(spy.count(), 1);

@@ -1,5 +1,4 @@
 #include "get_author_list_request_handler.h"
-#include "QtConcurrent/qtconcurrentrun.h"
 #include "automapper/automapper.h"
 #include "persistence/interface_author_repository.h"
 
@@ -19,29 +18,14 @@ Result<QList<AuthorDTO>> GetAuthorListRequestHandler::handle()
     try
     {
         result = handleImpl();
-        emit getAuthorListReplied(result);
     }
     catch (const std::exception &ex)
     {
         result = Result<QList<AuthorDTO>>(Error(this, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling GetAuthorListRequest:" << ex.what();
-        emit getAuthorListReplied(result);
     }
 
     return result;
-}
-
-void GetAuthorListRequestHandler::handleAsync()
-{
-    qDebug() << "GetAuthorListRequestHandler::handleAsync called";
-
-    QtConcurrent::run([=]() {
-        auto authorListResult = handleImpl();
-        emit getAuthorListReplied(authorListResult);
-    }).onFailed([=](const std::exception &ex) {
-        qDebug() << "Error handling GetAuthorListRequest asynchronously:" << ex.what();
-        emit getAuthorListReplied(Result<QList<AuthorDTO>>(Error(this, Error::Critical, "Unknown error", ex.what())));
-    });
 }
 
 Result<QList<AuthorDTO>> GetAuthorListRequestHandler::handleImpl()

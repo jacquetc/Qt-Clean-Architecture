@@ -8,8 +8,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 project(skribisto-presenter LANGUAGES CXX VERSION ${VERSION})
 
-find_package(QT NAMES Qt6 COMPONENTS Core Gui CONFIG REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui CONFIG REQUIRED)
+find_package(QT NAMES Qt6 COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
 
 set(presenter_SRCS
 
@@ -18,10 +18,11 @@ set(presenter_SRCS
     author/author_controller.h author/author_controller.cpp
     author/author_undo_commands.h author/author_undo_commands.cpp
     author/author_signal_bridge.h
-    undo_controller.h undo_controller.cpp
     system/system_controller.h
-    scoped_command_queue.h
-    scoped_command_queue.cpp
+    undo_redo/undo_redo_command.h undo_redo/undo_redo_command.cpp
+    undo_redo/undo_redo_system.h undo_redo/undo_redo_system.cpp
+    undo_redo/threaded_undo_redo_system.h undo_redo/threaded_undo_redo_system.cpp
+    undo_redo/query_command.h undo_redo/query_command.cpp
 )
 
 add_library(skribisto-presenter SHARED ${presenter_SRCS})
@@ -38,7 +39,7 @@ target_link_libraries(skribisto-presenter PRIVATE
     skribisto-contracts
     skribisto-application
     skribisto-persistence
-    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)
+    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Concurrent)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/persistence/")

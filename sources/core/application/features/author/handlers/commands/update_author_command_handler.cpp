@@ -1,5 +1,4 @@
 #include "update_author_command_handler.h"
-#include "QtConcurrent/qtconcurrentrun.h"
 #include "automapper/automapper.h"
 #include "cqrs/author/validators/update_author_command_validator.h"
 #include "persistence/interface_author_repository.h"
@@ -21,27 +20,14 @@ Result<AuthorDTO> UpdateAuthorCommandHandler::handle(const UpdateAuthorCommand &
     try
     {
         result = handleImpl(request);
-        emit authorUpdated(result);
     }
     catch (const std::exception &ex)
     {
         result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling UpdateAuthorCommand:" << ex.what();
-        emit authorUpdated(result);
     }
 
     return result;
-}
-
-void UpdateAuthorCommandHandler::handleAsync(const UpdateAuthorCommand &request)
-{
-    QtConcurrent::run([=]() {
-        auto authorResult = handleImpl(request);
-        emit authorUpdated(authorResult);
-    }).onFailed([=](const std::exception &ex) {
-        qDebug() << "Error handling UpdateAuthorCommand asynchronously:" << ex.what();
-        emit authorUpdated(Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what())));
-    });
 }
 
 Result<AuthorDTO> UpdateAuthorCommandHandler::handleImpl(const UpdateAuthorCommand &request)

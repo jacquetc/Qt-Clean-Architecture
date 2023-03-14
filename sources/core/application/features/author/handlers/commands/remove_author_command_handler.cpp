@@ -1,5 +1,4 @@
 #include "remove_author_command_handler.h"
-#include "QtConcurrent/qtconcurrentrun.h"
 #include "automapper/automapper.h"
 #include "persistence/interface_author_repository.h"
 
@@ -17,32 +16,17 @@ Result<AuthorDTO> RemoveAuthorCommandHandler::handle(const RemoveAuthorCommand &
 {
     Result<AuthorDTO> result;
 
-    result = handleImpl(request);
-    emit authorRemoved(result);
     try
     {
         result = handleImpl(request);
-        emit authorRemoved(result);
     }
     catch (const std::exception &ex)
     {
         result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling RemoveAuthorCommand:" << ex.what();
-        emit authorRemoved(result);
     }
 
     return result;
-}
-
-void RemoveAuthorCommandHandler::handleAsync(const RemoveAuthorCommand &request)
-{
-    QtConcurrent::run([=]() {
-        auto authorResult = handleImpl(request);
-        emit authorRemoved(authorResult);
-    }).onFailed([this](const std::exception &ex) {
-        qDebug() << "Error handling RemoveAuthorCommand asynchronously:" << ex.what();
-        emit authorRemoved(Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what())));
-    });
 }
 
 Result<AuthorDTO> RemoveAuthorCommandHandler::handleImpl(const RemoveAuthorCommand &request)

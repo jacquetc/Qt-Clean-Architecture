@@ -1,26 +1,34 @@
 #include "author_controller.h"
 
-#include "QtConcurrent/qtconcurrentrun.h"
 #include "author_undo_commands.h"
 #include "cqrs/author/commands/create_author_command.h"
 #include "cqrs/author/commands/update_author_command.h"
 #include "features/author/handlers/queries/get_author_list_request_handler.h"
 #include "features/author/handlers/queries/get_author_request_handler.h"
-#include "scoped_command_queue.h"
+#include "undo_redo/query_command.h"
 
 using namespace Presenter::Author;
+using namespace Presenter::UndoRedo;
 using namespace Application::Features::Author::Queries;
 using namespace Contracts::CQRS::Author::Commands;
 
 QScopedPointer<AuthorController> AuthorController::s_instance = QScopedPointer<AuthorController>(nullptr);
+AuthorSignalBridge *AuthorController::s_signal_bridge;
+InterfaceRepositoryProvider *AuthorController::s_repositoryProvider;
+ThreadedUndoRedoSystem *AuthorController::s_undo_redo_system;
 
-AuthorController::AuthorController(InterfaceRepositoryProvider *repositoryProvider)
-    : QObject(nullptr), m_repositoryProvider(repositoryProvider), m_signal_bridge(new AuthorSignalBridge(this))
+AuthorController::AuthorController(InterfaceRepositoryProvider *repositoryProvider) : QObject(nullptr)
 {
+    s_repositoryProvider = repositoryProvider;
+    s_signal_bridge = new AuthorSignalBridge(this);
     // connections for undo commands:
-    connect(m_signal_bridge, &AuthorSignalBridge::authorCreated, this, &AuthorController::authorCreated);
-    connect(m_signal_bridge, &AuthorSignalBridge::authorRemoved, this, &AuthorController::authorRemoved);
-    connect(m_signal_bridge, &AuthorSignalBridge::authorUpdated, this, &AuthorController::authorUpdated);
+    connect(s_signal_bridge, &AuthorSignalBridge::authorCreated, this, &AuthorController::authorCreated);
+    connect(s_signal_bridge, &AuthorSignalBridge::authorRemoved, this, &AuthorController::authorRemoved);
+    connect(s_signal_bridge, &AuthorSignalBridge::authorUpdated, this, &AuthorController::authorUpdated);
+    connect(s_signal_bridge, &AuthorSignalBridge::getAuthorReplied, this, &AuthorController::getAuthorReplied);
+    connect(s_signal_bridge, &AuthorSignalBridge::getAuthorListReplied, this, &AuthorController::getAuthorListReplied);
+
+    s_undo_redo_system = ThreadedUndoRedoSystem::instance();
 
     s_instance.reset(this);
 }
@@ -35,12 +43,15 @@ void AuthorController::getAsync(const QUuid &uuid)
     GetAuthorRequest request;
     request.id = uuid;
 
-    auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
-
-    GetAuthorRequestHandler handler(interface);
-    connect(&handler, &GetAuthorRequestHandler::getAuthorReplied, this, &AuthorController::getAuthorReplied);
-    handler.handleAsync(request);
+    auto queryCommand = new QueryCommand("get");
+    queryCommand->setQueryFunction([&]() {
+        auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
+            s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        GetAuthorRequestHandler handler(interface);
+        auto result = handler.handle(request);
+        emit s_signal_bridge->getAuthorReplied(result);
+    });
+    s_undo_redo_system->push(queryCommand, UndoRedoCommand::Scope::Author);
 }
 
 Result<AuthorDTO> AuthorController::get(const QUuid &uuid)
@@ -49,7 +60,7 @@ Result<AuthorDTO> AuthorController::get(const QUuid &uuid)
     request.id = uuid;
 
     auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
     GetAuthorRequestHandler handler(interface);
     return handler.handle(request);
@@ -57,20 +68,21 @@ Result<AuthorDTO> AuthorController::get(const QUuid &uuid)
 
 void AuthorController::getAllAsync()
 {
-    auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
-
-    GetAuthorListRequestHandler handler(interface);
-    connect(&handler, &GetAuthorListRequestHandler::getAuthorListReplied, this,
-            &AuthorController::getAuthorListReplied);
-
-    handler.handleAsync();
+    auto queryCommand = new QueryCommand("get");
+    queryCommand->setQueryFunction([&]() {
+        auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
+            s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        GetAuthorListRequestHandler handler(interface);
+        auto result = handler.handle();
+        emit s_signal_bridge->getAuthorListReplied(result);
+    });
+    s_undo_redo_system->push(queryCommand, UndoRedoCommand::Scope::Author);
 }
 
 Result<QList<AuthorDTO>> AuthorController::getAll()
 {
     auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
     GetAuthorListRequestHandler handler(interface);
     return handler.handle();
@@ -78,48 +90,14 @@ Result<QList<AuthorDTO>> AuthorController::getAll()
 
 void AuthorController::createAsync(const CreateAuthorDTO &dto)
 {
-
     CreateAuthorCommand request;
     request.req = dto;
 
     auto repository = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new CreateUndoCommand(m_signal_bridge, repository, request);
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-}
-
-Result<QUuid> AuthorController::create(const CreateAuthorDTO &dto)
-{
-    QWaitCondition condition;
-    QMutex mutex;
-    Result<QUuid> finalResult;
-
-    CreateAuthorCommand request;
-    request.req = dto;
-
-    auto repository = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
-
-    auto command = new CreateUndoCommand(m_signal_bridge, repository, request);
-
-    QObject::connect(
-        m_signal_bridge, &AuthorSignalBridge::authorCreated, this,
-        [this, &condition, &mutex, &finalResult](Result<QUuid> result) {
-            finalResult = result;
-            mutex.lock();
-            condition.wakeAll();
-            mutex.unlock();
-        },
-        Qt::QueuedConnection);
-
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-
-    mutex.lock();
-    condition.wait(&mutex);
-    mutex.unlock();
-
-    return finalResult;
+    auto command = new CreateUndoCommand(s_signal_bridge, repository, request);
+    s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }
 
 void AuthorController::updateAsync(const UpdateAuthorDTO &dto)
@@ -128,24 +106,10 @@ void AuthorController::updateAsync(const UpdateAuthorDTO &dto)
     request.req = dto;
 
     auto repository = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new UpdateUndoCommand(m_signal_bridge, repository, request, true);
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-}
-
-Result<AuthorDTO> AuthorController::update(const UpdateAuthorDTO &dto)
-{
-    UpdateAuthorCommand request;
-    request.req = dto;
-
-    auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
-
-    auto command = new UpdateUndoCommand(m_signal_bridge, interface, request, false);
-
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-    return command->result();
+    auto command = new UpdateUndoCommand(s_signal_bridge, repository, request);
+    s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }
 
 void AuthorController::removeAsync(const QUuid &uuid)
@@ -154,21 +118,8 @@ void AuthorController::removeAsync(const QUuid &uuid)
     request.id = uuid;
 
     auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
+        s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new RemoveUndoCommand(m_signal_bridge, interface, request, true);
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-}
-
-Result<AuthorDTO> AuthorController::remove(const QUuid &uuid)
-{
-    RemoveAuthorCommand request;
-    request.id = uuid;
-
-    auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
-        m_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
-
-    auto command = new RemoveUndoCommand(m_signal_bridge, interface, request, false);
-    ScopedCommandQueue::enqueueCommand(command, ScopedCommandQueue::Scope::Author);
-    return command->result();
+    auto command = new RemoveUndoCommand(s_signal_bridge, interface, request);
+    s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }

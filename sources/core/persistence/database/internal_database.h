@@ -308,14 +308,6 @@ template <class T> Result<T> InternalDatabase<T>::add(T &&entity)
             QSqlDatabase database = QSqlDatabase::database(m_databaseContext->databaseName());
 
             {
-
-                int waitTime = 0;
-
-                while (waitTime < 2000000000)
-                {
-                    waitTime++;
-                }
-
                 QSqlQuery query(database);
                 query.prepare(queryStr);
 

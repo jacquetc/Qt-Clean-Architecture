@@ -16,9 +16,6 @@ class SKRAPPLICATIONEXPORT GetAuthorListRequestHandler : public Handler
   public:
     GetAuthorListRequestHandler(QSharedPointer<InterfaceAuthorRepository> repository);
     Result<QList<AuthorDTO>> handle();
-    void handleAsync();
-  signals:
-    void getAuthorListReplied(Result<QList<Contracts::DTO::Author::AuthorDTO>> result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;

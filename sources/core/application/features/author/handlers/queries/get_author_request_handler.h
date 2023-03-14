@@ -18,9 +18,6 @@ class SKRAPPLICATIONEXPORT GetAuthorRequestHandler : public Handler
   public:
     GetAuthorRequestHandler(QSharedPointer<InterfaceAuthorRepository> repository);
     Result<AuthorDTO> handle(const GetAuthorRequest &request);
-    void handleAsync(const GetAuthorRequest &request);
-  signals:
-    void getAuthorReplied(Result<Contracts::DTO::Author::AuthorDTO> result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;

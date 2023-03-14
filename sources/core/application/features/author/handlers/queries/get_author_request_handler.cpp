@@ -1,5 +1,4 @@
 #include "get_author_request_handler.h"
-#include "QtConcurrent/qtconcurrentrun.h"
 #include "automapper/automapper.h"
 #include "persistence/interface_author_repository.h"
 
@@ -17,27 +16,14 @@ Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &reques
     try
     {
         result = handleImpl(request);
-        emit getAuthorReplied(result);
     }
     catch (const std::exception &ex)
     {
         result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling GetAuthorRequest:" << ex.what();
-        emit getAuthorReplied(result);
     }
 
     return result;
-}
-
-void GetAuthorRequestHandler::handleAsync(const GetAuthorRequest &request)
-{
-    QtConcurrent::run([=]() {
-        auto authorResult = handleImpl(request);
-        emit getAuthorReplied(authorResult);
-    }).onFailed([=](const std::exception &ex) {
-        qDebug() << "Error handling GetAuthorRequest asynchronously:" << ex.what();
-        emit getAuthorReplied(Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what())));
-    });
 }
 
 Result<AuthorDTO> GetAuthorRequestHandler::handleImpl(const GetAuthorRequest &request)

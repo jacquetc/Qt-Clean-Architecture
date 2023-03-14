@@ -19,10 +19,6 @@ class SKRAPPLICATIONEXPORT RemoveAuthorCommandHandler : public Handler
   public:
     RemoveAuthorCommandHandler(QSharedPointer<InterfaceAuthorRepository> repository);
     Result<AuthorDTO> handle(const RemoveAuthorCommand &request);
-    void handleAsync(const RemoveAuthorCommand &request);
-
-  signals:
-    void authorRemoved(Result<Contracts::DTO::Author::AuthorDTO> result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;

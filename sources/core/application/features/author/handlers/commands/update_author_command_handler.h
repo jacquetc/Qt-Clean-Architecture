@@ -21,10 +21,6 @@ class SKRAPPLICATIONEXPORT UpdateAuthorCommandHandler : public Handler
     UpdateAuthorCommandHandler(QSharedPointer<InterfaceAuthorRepository> repository);
     Result<AuthorDTO> handle(const UpdateAuthorCommand &request);
 
-    void handleAsync(const UpdateAuthorCommand &request);
-  signals:
-    void authorUpdated(Result<Contracts::DTO::Author::AuthorDTO> result);
-
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;
     Result<AuthorDTO> handleImpl(const UpdateAuthorCommand &request);

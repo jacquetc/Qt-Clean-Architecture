@@ -37,9 +37,6 @@ class SKRAPPLICATIONEXPORT CreateAuthorCommandHandler : public Handler
      * failed.
      */
     Result<QUuid> handle(const CreateAuthorCommand &request);
-    void handleAsync(const CreateAuthorCommand &request);
-  signals:
-    void authorCreated(Result<QUuid> result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository; // A pointer to the interface repositories object.

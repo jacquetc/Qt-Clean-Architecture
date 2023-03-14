@@ -72,6 +72,13 @@ inline void DummyAuthorRepository::fillExists(bool value)
 
 inline Result<Domain::Author> DummyAuthorRepository::get(const QUuid &uuid)
 {
+
+    int waitTime = 0;
+
+    while (waitTime < 500000000)
+    {
+        waitTime++;
+    }
     return Result<Domain::Author>(m_getEntity);
 }
 
@@ -90,7 +97,7 @@ inline Result<Domain::Author> DummyAuthorRepository::add(Domain::Author &&entity
 
     int waitTime = 0;
 
-    while (waitTime < 1000000000)
+    while (waitTime < 500000000)
     {
         waitTime++;
     }

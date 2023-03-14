@@ -25,26 +25,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         item->setText(author.name());
     }
 
-    connect(ui->addPushButton, &QPushButton::clicked, this, [this]() {
-        Contracts::DTO::Author::CreateAuthorDTO dto("test sync", QUuid::createUuid());
-
-        auto result = AuthorController::instance()->create(dto);
-        if (!result)
-        {
-            qDebug() << result.error().message() << result.error().data();
-        }
-        auto author = AuthorController::instance()->get(result.value());
-        if (!author)
-        {
-            qDebug() << author.error().message() << author.error().data();
-        }
-        auto *item = new QListWidgetItem(ui->listWidget);
-        item->setText(author.value().name());
-        item->setData(Qt::UserRole, author.value().uuid());
-    });
-
-    connect(AuthorController::instance(), &AuthorController::authorCreated, this, []() { qDebug() << "zzzzz"; });
-
     connect(ui->addAsyncPushButton, &QPushButton::clicked, this, [this]() {
         Contracts::DTO::Author::CreateAuthorDTO dto("test", QUuid::createUuid());
         auto authorController = AuthorController::instance();
@@ -72,13 +52,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     connect(ui->removePushButton, &QPushButton::clicked, this, [this]() {
         QListWidgetItem *item = ui->listWidget->item(0);
-        auto result = AuthorController::instance()->remove(item->data(Qt::UserRole).toUuid());
-        if (!result)
-        {
-            qDebug() << result.error().message() << result.error().data();
-        }
+        auto authorController = AuthorController::instance();
 
-        ui->listWidget->takeItem(0);
+        connect(
+            authorController, &AuthorController::authorRemoved, this,
+            [this](Result<Contracts::DTO::Author::AuthorDTO> result) {
+                if (!result)
+                {
+                    qDebug() << result.error().message() << result.error().data();
+                }
+
+                ui->listWidget->takeItem(0);
+            },
+            Qt::SingleShotConnection);
+
+        authorController->removeAsync(item->data(Qt::UserRole).toUuid());
     });
 }
 
