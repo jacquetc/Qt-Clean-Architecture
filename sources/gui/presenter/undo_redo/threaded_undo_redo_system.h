@@ -27,6 +27,15 @@ class ThreadedUndoRedoSystem : public QObject
 
     void push(UndoRedoCommand *command, const UndoRedoCommand::Scope &scope);
 
+    void clear();
+
+    void setUndoLimit(int limit);
+    int undoLimit() const;
+    QString undoText() const;
+    QString redoText() const;
+
+    QAction *createUndoAction(QObject *parent, const QString &prefix = QString()) const;
+    QAction *createRedoAction(QObject *parent, const QString &prefix = QString()) const;
   signals:
     void stateChanged();
 

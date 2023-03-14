@@ -42,10 +42,15 @@ void CreateUndoCommand::undo()
 
 void CreateUndoCommand::redo()
 {
+    if (!m_result.isEmpty())
+    {
+        m_request.req.setUuid(m_result.value());
+    }
+
     CreateAuthorCommandHandler handler(m_repository);
-    Result<QUuid> result = handler.handle(m_request);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->authorCreated(result);
+    m_result = handler.handle(m_request);
+    this->setObsolete(m_result.isError());
+    emit m_signalBridge->authorCreated(m_result);
 }
 
 //------------------------------------------------------------------------------------------------------------

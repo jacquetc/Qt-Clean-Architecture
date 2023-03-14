@@ -64,8 +64,8 @@ template <typename T> class SKRCONTRACTSEXPORT Result
     {
         if (Q_LIKELY(&result != this))
         {
-            m_status = result.m_status;
             m_value = result.m_value;
+            m_error = result.m_error;
         }
 
         return *this;
@@ -78,7 +78,7 @@ template <typename T> class SKRCONTRACTSEXPORT Result
      */
     bool operator==(const Result &otherResult) const
     {
-        return m_status == otherResult.getStatus() && m_value == otherResult.m_value;
+        return m_value == otherResult.m_value && m_error == otherResult.m_error;
     }
 
     /**
@@ -88,7 +88,7 @@ template <typename T> class SKRCONTRACTSEXPORT Result
      */
     bool operator!=(const Result &otherResult) const
     {
-        return m_status != otherResult.getStatus() || m_value != otherResult.m_value;
+        return m_value != otherResult.m_value || m_error != otherResult.m_erro;
     }
 
     /**
@@ -159,28 +159,9 @@ template <typename T> class SKRCONTRACTSEXPORT Result
         return m_error;
     }
 
-    /**
-     * @brief A method that returns the status of the Result object.
-     * @return The status of the Result object.
-     */
-    Error::Status getStatus() const
-    {
-        return m_status;
-    }
-
-    /**
-     * @brief A method that sets the status of the Result object.
-     * @param status The new status of the Result object.
-     */
-    void setStatus(const Error::Status &status)
-    {
-        m_status = status;
-    }
-
   private:
-    T m_value;              /**< The value contained in the Result object. */
-    Error m_error;          /**< The error message contained in the Result object. */
-    Error::Status m_status; /**< The status of the Result object. */
+    T m_value;     /**< The value contained in the Result object. */
+    Error m_error; /**< The error message contained in the Result object. */
 };
 
 // Register the Result class with the Qt meta object system

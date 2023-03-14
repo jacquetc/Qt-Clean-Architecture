@@ -1,6 +1,7 @@
 #pragma once
 
 #include "undo_redo_command.h"
+#include <QAction>
 #include <QHash>
 #include <QObject>
 #include <QQueue>
@@ -25,6 +26,12 @@ class UndoRedoSystem : public QObject
     Q_INVOKABLE void push(Presenter::UndoRedo::UndoRedoCommand *command,
                           const Presenter::UndoRedo::UndoRedoCommand::Scope &scope);
 
+    Q_INVOKABLE void clear();
+    Q_INVOKABLE void setUndoLimit(int limit);
+    Q_INVOKABLE int undoLimit() const;
+    Q_INVOKABLE QString undoText() const;
+    Q_INVOKABLE QString redoText() const;
+
   private slots:
     void onCommandFinished();
 
@@ -34,6 +41,7 @@ class UndoRedoSystem : public QObject
   private:
     void executeNextCommand(const UndoRedoCommand::Scope &scope);
 
+    int m_undoLimit;
     int m_currentIndex;
     QQueue<QSharedPointer<UndoRedoCommand>> m_generalCommandQueue;
     QHash<UndoRedoCommand::Scope, QQueue<QSharedPointer<UndoRedoCommand>>> m_scopedCommandQueueHash;

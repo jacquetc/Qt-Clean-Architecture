@@ -43,7 +43,12 @@ Result<QUuid> CreateAuthorCommandHandler::handleImpl(const CreateAuthorCommand &
 
     // Map the create author command to a domain author object and generate a UUID
     auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
-    author.setUuid(QUuid::createUuid());
+
+    // allow for forcing the uuid
+    if (author.uuid().isNull())
+    {
+        author.setUuid(QUuid::createUuid());
+    }
 
     // Set the creation and update timestamps to the current date and time
     author.setCreationDate(QDateTime::currentDateTime());
@@ -55,8 +60,8 @@ Result<QUuid> CreateAuthorCommandHandler::handleImpl(const CreateAuthorCommand &
     {
         return Result<QUuid>(authorResult.error());
     }
+    qDebug() << "Author added:" << authorResult.value().uuid();
 
     // Return the UUID of the newly created author as a Result object
-    qDebug() << "CreateAuthorCommandHandler::handleImpl done";
     return Result<QUuid>(authorResult.value().uuid());
 }

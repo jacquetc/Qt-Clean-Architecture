@@ -3,7 +3,7 @@
 
 using namespace Presenter::UndoRedo;
 
-UndoRedoSystem::UndoRedoSystem(QObject *parent) : QObject(parent), m_currentIndex(-1)
+UndoRedoSystem::UndoRedoSystem(QObject *parent) : QObject(parent), m_currentIndex(-1), m_undoLimit(10)
 {
 }
 
@@ -53,6 +53,57 @@ void UndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoCommand::Scope
     emit stateChanged();
 }
 
+void UndoRedoSystem::clear()
+{
+    // Clear the general command queue, not the scoped command queue
+    this->m_generalCommandQueue.clear();
+    // Set the current index to -1
+    this->m_currentIndex = -1;
+    // Emit the stateChanged signal
+    emit stateChanged();
+}
+void UndoRedoSystem::setUndoLimit(int limit)
+{
+    m_undoLimit = limit;
+    // Remove excess commands from the general command queue if necessary
+    while (m_generalCommandQueue.size() > m_undoLimit)
+    {
+        m_generalCommandQueue.dequeue();
+        m_currentIndex--;
+    }
+    // Emit the stateChanged signal
+    emit stateChanged();
+}
+
+int UndoRedoSystem::undoLimit() const
+{
+    return m_undoLimit;
+}
+
+QString UndoRedoSystem::undoText() const
+{
+    if (m_currentIndex >= 0)
+    {
+        return m_generalCommandQueue[m_currentIndex]->text();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
+QString UndoRedoSystem::redoText() const
+{
+    if (m_currentIndex < m_generalCommandQueue.size() - 1)
+    {
+        return m_generalCommandQueue[m_currentIndex + 1]->text();
+    }
+    else
+    {
+        return QString();
+    }
+}
+
 void UndoRedoSystem::onCommandFinished()
 {
 
@@ -74,23 +125,22 @@ void UndoRedoSystem::onCommandFinished()
 void UndoRedoSystem::executeNextCommand(const UndoRedoCommand::Scope &scope)
 {
     // keep in store only the true UndoRedoCommands, not QueryCommand
-    if (qSharedPointerCast<QueryCommand>(m_currentCommandHash[scope]).isNull())
+    if (qSharedPointerDynamicCast<QueryCommand>(m_scopedCommandQueueHash[scope].head()).isNull())
     {
         // Remove any redo commands that are after the current index
         m_generalCommandQueue.erase(m_generalCommandQueue.begin() + m_currentIndex + 1, m_generalCommandQueue.end());
 
         // Add the new command to the end of the list
 
-        m_generalCommandQueue.enqueue(m_currentCommandHash[scope]);
+        m_generalCommandQueue.enqueue(m_scopedCommandQueueHash[scope].head());
     }
     // Increment the current index
     m_currentIndex++;
 
+    // Dequeue the next command
     QQueue<QSharedPointer<UndoRedoCommand>> &queue = m_scopedCommandQueueHash[scope];
-
     QSharedPointer<UndoRedoCommand> command = queue.dequeue();
 
-    // Dequeue the next command
     m_currentCommandHash.insert(scope, command);
 
     // Connect the finished signal to the onCommandFinished slot

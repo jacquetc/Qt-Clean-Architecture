@@ -68,7 +68,7 @@ Result<AuthorDTO> AuthorController::get(const QUuid &uuid)
 
 void AuthorController::getAllAsync()
 {
-    auto queryCommand = new QueryCommand("get");
+    auto queryCommand = new QueryCommand("getAll");
     queryCommand->setQueryFunction([&]() {
         auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
             s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));

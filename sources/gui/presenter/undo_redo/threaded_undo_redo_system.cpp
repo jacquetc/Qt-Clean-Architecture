@@ -81,6 +81,13 @@ void ThreadedUndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoComman
                               Q_ARG(UndoRedoCommand::Scope, scope));
 }
 
+void ThreadedUndoRedoSystem::clear()
+{
+
+    QMutexLocker locker(&m_mutex);
+    QMetaObject::invokeMethod(m_undoRedoSystem, "clear", Qt::QueuedConnection);
+}
+
 void ThreadedUndoRedoSystem::startUndoRedoSystem()
 {
     QMutexLocker locker(&m_mutex);
@@ -94,4 +101,103 @@ void ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged()
     QMutexLocker locker(&m_mutex);
     // Emit the stateChanged signal
     emit stateChanged();
+}
+
+void ThreadedUndoRedoSystem::setUndoLimit(int limit)
+{
+    QMutexLocker locker(&m_mutex);
+    QMetaObject::invokeMethod(m_undoRedoSystem, "setUndoLimit", Qt::QueuedConnection, Q_ARG(int, limit));
+}
+
+int ThreadedUndoRedoSystem::undoLimit() const
+{
+    QMutexLocker locker(&m_mutex);
+    int result = 0;
+    QMetaObject::invokeMethod(m_undoRedoSystem, "undoLimit", Qt::QueuedConnection, Q_RETURN_ARG(int, result));
+    return result;
+}
+
+QString ThreadedUndoRedoSystem::undoText() const
+{
+    QMutexLocker locker(&m_mutex);
+    QString result;
+    QMetaObject::invokeMethod(m_undoRedoSystem, "undoText", Qt::QueuedConnection, Q_RETURN_ARG(QString, result));
+    return result;
+}
+
+QString ThreadedUndoRedoSystem::redoText() const
+{
+    QMutexLocker locker(&m_mutex);
+    QString result;
+    QMetaObject::invokeMethod(m_undoRedoSystem, "redoText", Qt::QueuedConnection, Q_RETURN_ARG(QString, result));
+    return result;
+}
+QAction *ThreadedUndoRedoSystem::createRedoAction(QObject *parent, const QString &prefix) const
+{
+    QMutexLocker locker(&m_mutex);
+    QAction *action = new QAction(parent);
+    bool canRedo = false;
+    QMetaObject::invokeMethod(m_undoRedoSystem, "canRedo", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, canRedo));
+    QString text;
+    if (canRedo)
+    {
+        QMetaObject::invokeMethod(m_undoRedoSystem, "redoText", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(QString, text));
+        if (!text.isEmpty())
+        {
+            text = prefix.isEmpty() ? tr("Redo %1").arg(text) : prefix.arg(text);
+            action->setText(text);
+        }
+    }
+
+    connect(this, &ThreadedUndoRedoSystem::stateChanged, action, [action, this, prefix]() {
+        QString text;
+        QMetaObject::invokeMethod(m_undoRedoSystem, "redoText", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(QString, text));
+        action->setText(prefix.isEmpty() ? tr("Redo %1").arg(text) : prefix.arg(text));
+        bool canRedo = false;
+        QMetaObject::invokeMethod(m_undoRedoSystem, "canRedo", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(bool, canRedo));
+        action->setEnabled(canRedo);
+    });
+    action->setEnabled(canRedo);
+    action->setShortcut(QKeySequence::Redo);
+
+    connect(action, &QAction::triggered, this, &ThreadedUndoRedoSystem::redo);
+    return action;
+}
+
+QAction *ThreadedUndoRedoSystem::createUndoAction(QObject *parent, const QString &prefix) const
+{
+    QMutexLocker locker(&m_mutex);
+    QAction *action = new QAction(parent);
+    bool canUndo = false;
+    QMetaObject::invokeMethod(m_undoRedoSystem, "canUndo", Qt::BlockingQueuedConnection, Q_RETURN_ARG(bool, canUndo));
+    QString text;
+    if (canUndo)
+    {
+        QMetaObject::invokeMethod(m_undoRedoSystem, "undoText", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(QString, text));
+        if (!text.isEmpty())
+        {
+            text = prefix.isEmpty() ? tr("Undo %1").arg(text) : prefix.arg(text);
+
+            action->setText(text);
+        }
+    }
+
+    connect(this, &ThreadedUndoRedoSystem::stateChanged, action, [action, this, prefix]() {
+        QString text;
+        QMetaObject::invokeMethod(m_undoRedoSystem, "undoText", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(QString, text));
+        action->setText(prefix.isEmpty() ? tr("Undo %1").arg(text) : prefix.arg(text));
+        bool canUndo = false;
+        QMetaObject::invokeMethod(m_undoRedoSystem, "canUndo", Qt::BlockingQueuedConnection,
+                                  Q_RETURN_ARG(bool, canUndo));
+        action->setEnabled(canUndo);
+    });
+    action->setEnabled(canUndo);
+    action->setShortcut(QKeySequence::Undo);
+    connect(action, &QAction::triggered, this, &ThreadedUndoRedoSystem::undo);
+    return action;
 }
