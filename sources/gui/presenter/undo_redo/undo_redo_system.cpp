@@ -43,6 +43,7 @@ void UndoRedoSystem::redo()
 {
     if (canRedo())
     {
+
         m_generalCommandQueue[++m_currentIndex]->asyncRedo();
         emit stateChanged();
     }
@@ -121,9 +122,16 @@ void UndoRedoSystem::onCommandFinished()
 {
 
     auto command = dynamic_cast<UndoRedoCommand *>(QObject::sender());
+
     const UndoRedoCommand::Scope &scope = command->scope();
+
     // Set the current command to nullptr
     m_currentCommandHash.insert(scope, QSharedPointer<UndoRedoCommand>());
+
+    if (command->obsolete())
+    {
+        m_generalCommandQueue.removeLast();
+    }
 
     // If there are commands in the queue, execute the next one
     if (!m_scopedCommandQueueHash[scope].isEmpty())
@@ -137,6 +145,7 @@ void UndoRedoSystem::onCommandFinished()
 
 void UndoRedoSystem::executeNextCommand(const UndoRedoCommand::Scope &scope)
 {
+
     // keep in store only the true UndoRedoCommands, not QueryCommand
     if (qSharedPointerDynamicCast<QueryCommand>(m_scopedCommandQueueHash[scope].head()).isNull())
     {

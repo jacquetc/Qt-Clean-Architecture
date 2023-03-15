@@ -1,6 +1,6 @@
 add_subdirectory(usecases)
 add_subdirectory(automapper)
-#add_subdirectory(skrib_database)
+add_subdirectory(undo_redo)
 add_subdirectory(repository)
 add_subdirectory(dto)
 add_subdirectory(presenter)
