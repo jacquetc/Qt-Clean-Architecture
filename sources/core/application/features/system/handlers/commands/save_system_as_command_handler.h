@@ -14,7 +14,7 @@ class SKRAPPLICATIONEXPORT SaveSystemAsCommandHandler : public Handler
 {
   public:
     SaveSystemAsCommandHandler();
-    Result<void *> handle(const SaveSystemAsCommand &request);
+    Result<void> handle(const SaveSystemAsCommand &request);
 
   private:
 };

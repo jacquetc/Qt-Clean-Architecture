@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     Contracts::DTO::System::LoadSystemDTO dto;
     dto.setFileName(QUrl::fromLocalFile("/Users/cyril/Documents/test_clean.skrib"));
 
-    //    Result<void *> result = Presenter::System::loadSystem(dto);
+    //    Result<void> result = Presenter::System::loadSystem(dto);
     //    if (!result)
     //    {
     //        qDebug() << result.error().message() << result.error().data();

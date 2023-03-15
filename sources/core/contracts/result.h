@@ -5,6 +5,83 @@
 #include <QMetaType>
 #include <QString>
 
+template <typename T> class SKRCONTRACTSEXPORT Result;
+
+template <> class SKRCONTRACTSEXPORT Result<void>
+{
+  public:
+    explicit Result() : m_error(Error())
+    {
+    }
+
+    explicit Result(const Error &error) : m_error(error)
+    {
+    }
+
+    operator bool() const
+    {
+        return isOk();
+    }
+
+    bool operator!() const
+    {
+        return !isOk();
+    }
+
+    Q_INVOKABLE Result &operator=(const Result &result)
+    {
+        if (Q_LIKELY(&result != this))
+        {
+            m_error = result.m_error;
+        }
+
+        return *this;
+    }
+
+    bool operator==(const Result &otherResult) const
+    {
+        return m_error == otherResult.m_error;
+    }
+
+    bool operator!=(const Result &otherResult) const
+    {
+        return m_error != otherResult.m_error;
+    }
+
+    bool isOk() const
+    {
+        return m_error.isOk() || m_error.isEmpty();
+    }
+
+    bool isSuccess() const
+    {
+        return m_error.isOk() || m_error.isEmpty();
+    }
+
+    bool isError() const
+    {
+        return !m_error.isOk() && !m_error.isEmpty();
+    }
+
+    bool hasError() const
+    {
+        return !m_error.isOk() && !m_error.isEmpty();
+    }
+
+    bool isEmpty() const
+    {
+        return m_error.isEmpty();
+    }
+
+    Error error() const
+    {
+        return m_error;
+    }
+
+  private:
+    Error m_error; /**< The error message contained in the Result object. */
+};
+
 /**
  * @brief A class that represents the result of an operation, which can be either a value or an error message.
  * @tparam T The type of the result value.
@@ -165,6 +242,7 @@ template <typename T> class SKRCONTRACTSEXPORT Result
 };
 
 // Register the Result class with the Qt meta object system
+Q_DECLARE_METATYPE(Result<void>)
 Q_DECLARE_METATYPE(Result<int>)
 Q_DECLARE_METATYPE(Result<QString>)
 Q_DECLARE_METATYPE(Result<QUuid>)

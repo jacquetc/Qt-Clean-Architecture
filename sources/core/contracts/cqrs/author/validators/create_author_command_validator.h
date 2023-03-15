@@ -18,16 +18,16 @@ class SKRCONTRACTSEXPORT CreateAuthorCommandValidator
     {
     }
 
-    Result<void *> validate(const CreateAuthorDTO &dto) const
+    Result<void> validate(const CreateAuthorDTO &dto) const
     {
 
         if (dto.relative().isNull())
         {
-            return Result<void *>(Error("CreateAuthorCommandValidator", Error::Critical, "relative_uuid_missing"));
+            return Result<void>(Error("CreateAuthorCommandValidator", Error::Critical, "relative_uuid_missing"));
         }
 
         // Return that is Ok :
-        return Result<void *>(nullptr);
+        return Result<void>();
     }
 
   private:

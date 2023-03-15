@@ -20,6 +20,7 @@ class SKRPRESENTEREXPORT AuthorSignalBridge : public QObject
     }
 
   signals:
+    void errorSent(Result<Contracts::DTO::Author::AuthorDTO> result);
     void getAuthorReplied(Result<Contracts::DTO::Author::AuthorDTO> result);
     void getAuthorListReplied(Result<QList<Contracts::DTO::Author::AuthorDTO>> result);
     void authorCreated(Result<QUuid> result);

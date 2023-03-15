@@ -18,6 +18,6 @@ class SKRAPPLICATIONEXPORT LoadSystemCommandHandler : public Handler
 
   private:
   signals:
-    void systemLoaded(Result<void *>);
+    void systemLoaded(Result<void>);
 };
 } // namespace Application::Features::System::Commands

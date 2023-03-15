@@ -35,7 +35,7 @@ Result<QUuid> CreateAuthorCommandHandler::handleImpl(const CreateAuthorCommand &
 
     // Validate the create author command using the validator
     auto validator = CreateAuthorCommandValidator(m_repository);
-    Result<void *> validatorResult = validator.validate(request.req);
+    Result<void> validatorResult = validator.validate(request.req);
     if (validatorResult.hasError())
     {
         return Result<QUuid>(validatorResult.error());

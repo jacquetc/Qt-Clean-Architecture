@@ -36,7 +36,7 @@ Result<AuthorDTO> UpdateAuthorCommandHandler::handleImpl(const UpdateAuthorComma
 
     // validate:
     auto validator = UpdateAuthorCommandValidator(m_repository);
-    Result<void *> validatorResult = validator.validate(request.req);
+    Result<void> validatorResult = validator.validate(request.req);
     if (validatorResult.hasError())
     {
         return Result<AuthorDTO>(validatorResult.error());

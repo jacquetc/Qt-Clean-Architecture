@@ -13,11 +13,11 @@ void LoadSystemCommandHandler::handle(const LoadSystemCommand &request)
 
     // validate:
     auto validator = LoadSystemCommandValidator();
-    Result<void *> validatorResult = validator.validate(request.req);
+    Result<void> validatorResult = validator.validate(request.req);
     if (validatorResult.hasError())
     {
-        // return Result<void *>(validatorResult.error());
+        // return Result<void>(validatorResult.error());
     }
 
-    // return Result<void *>();
+    // return Result<void>();
 }

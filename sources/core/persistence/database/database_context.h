@@ -31,7 +31,7 @@ class SKRPERSISTENCEEXPORT DatabaseContext : public QObject, public Contracts::D
      * @brief Initializes the Skrib file database.
      * @return A Result object with a value of nullptr if successful, or an Error object if an error occurred.
      */
-    Result<void *> init();
+    Result<void> init();
 
     /**
      * @brief Returns the name of the Skrib file database.

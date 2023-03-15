@@ -10,7 +10,7 @@ using namespace Application::Features::System::Commands;
 namespace Presenter::System
 {
 
-SKRPRESENTEREXPORT Result<void *> loadSystem(const LoadSystemDTO &dto)
+SKRPRESENTEREXPORT Result<void> loadSystem(const LoadSystemDTO &dto)
 {
     LoadSystemCommand command;
     command.req = dto;
@@ -18,12 +18,12 @@ SKRPRESENTEREXPORT Result<void *> loadSystem(const LoadSystemDTO &dto)
     //    return handler.handle(command);
 }
 
-SKRPRESENTEREXPORT Result<void *> saveSystem()
+SKRPRESENTEREXPORT Result<void> saveSystem()
 {
     Q_UNIMPLEMENTED();
 }
 
-SKRPRESENTEREXPORT Result<void *> saveSystemAs(const SaveSystemAsDTO &dto)
+SKRPRESENTEREXPORT Result<void> saveSystemAs(const SaveSystemAsDTO &dto)
 {
     Q_UNIMPLEMENTED();
     SaveSystemAsCommand command;

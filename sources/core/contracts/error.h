@@ -99,6 +99,12 @@ class SKRCONTRACTSEXPORT Error
                m_code == otherError.m_code && m_message == otherError.m_message;
     }
 
+    bool operator!=(const Error &otherError) const
+    {
+        return m_status != otherError.m_status || m_className != otherError.m_className ||
+               m_code != otherError.m_code || m_message != otherError.m_message;
+    }
+
     /**
      * @brief Returns the error message.
      *

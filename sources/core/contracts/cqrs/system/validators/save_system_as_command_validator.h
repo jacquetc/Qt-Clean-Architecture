@@ -17,18 +17,18 @@ class SKRCONTRACTSEXPORT SaveSystemAsCommandValidator
     {
     }
 
-    Result<void *> validate(const SaveSystemAsDTO &dto) const
+    Result<void> validate(const SaveSystemAsDTO &dto) const
     {
         QUrl url = dto.fileName();
 
         if (!url.isValid())
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_filename"));
+            return Result<void>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_filename"));
         }
 
         if (!url.isLocalFile() && url.scheme() != "qrc")
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_not_local"));
+            return Result<void>(Error("SaveSystemAsCommandValidator", Error::Critical, "invalid_not_local"));
         }
 
         QString fileNameString;
@@ -52,18 +52,18 @@ class SKRCONTRACTSEXPORT SaveSystemAsCommandValidator
         if (!file.exists())
         {
 
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "absent_filename",
+            return Result<void>(Error("SaveSystemAsCommandValidator", Error::Critical, "absent_filename",
                                         fileNameString + " doesn't exist", fileNameString));
         }
 
         if (!file.open(QIODevice::ReadOnly))
         {
-            return Result<void *>(Error("SaveSystemAsCommandValidator", Error::Critical, "readonly_filename",
+            return Result<void>(Error("SaveSystemAsCommandValidator", Error::Critical, "readonly_filename",
                                         fileNameString + " can't be opened", fileNameString));
         }
 
         // Return that is Ok :
-        return Result<void *>(nullptr);
+        return Result<void>();
     }
 };
 } // namespace Contracts::CQRS::Author::Validators

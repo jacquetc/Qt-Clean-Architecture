@@ -19,19 +19,19 @@ DatabaseContext::~DatabaseContext()
 
 //-------------------------------------------------
 
-Result<void *> DatabaseContext::init()
+Result<void> DatabaseContext::init()
 {
 
     Result<QString> databaseNameResult = createEmptyDatabase();
 
     if (databaseNameResult.isError())
     {
-        return Result<void *>(databaseNameResult.error());
+        return Result<void>(databaseNameResult.error());
     }
 
     m_databaseName = databaseNameResult.value();
 
-    return Result<void *>(nullptr);
+    return Result<void>();
 }
 
 //-------------------------------------------------

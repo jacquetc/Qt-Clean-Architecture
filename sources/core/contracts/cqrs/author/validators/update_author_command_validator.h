@@ -19,21 +19,21 @@ class SKRCONTRACTSEXPORT UpdateAuthorCommandValidator
     {
     }
 
-    Result<void *> validate(const UpdateAuthorDTO &dto) const
+    Result<void> validate(const UpdateAuthorDTO &dto) const
     {
 
         Result<bool> exists = m_repository->exists(dto.uuid());
         if (!exists.value())
         {
-            return Result<void *>(Error("UpdateAuthorCommandValidator", Error::Critical, "uuid_missing"));
+            return Result<void>(Error("UpdateAuthorCommandValidator", Error::Critical, "uuid_missing"));
         }
         //        if (!dto.relative().isNull())
         //        {
-        //            return Result<void *>(Error("CreateAuthorValidator", Error::Critical, "project_uuid_missing"));
+        //            return Result<void>(Error("CreateAuthorValidator", Error::Critical, "project_uuid_missing"));
         //        }
 
         // Return that is Ok :
-        return Result<void *>(nullptr);
+        return Result<void>();
     }
 
   private:

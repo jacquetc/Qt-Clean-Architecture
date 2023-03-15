@@ -8,22 +8,22 @@ SaveSystemAsCommandHandler::SaveSystemAsCommandHandler() : Handler()
 {
 }
 
-Result<void *> SaveSystemAsCommandHandler::handle(const SaveSystemAsCommand &request)
+Result<void> SaveSystemAsCommandHandler::handle(const SaveSystemAsCommand &request)
 {
 
     // validate:
     auto validator = SaveSystemAsCommandValidator();
-    Result<void *> validatorResult = validator.validate(request.req);
+    Result<void> validatorResult = validator.validate(request.req);
     if (validatorResult.hasError())
     {
-        return Result<void *>(validatorResult.error());
+        return Result<void>(validatorResult.error());
     }
 
     //    SkribFileContext *context = new SkribFileContext(request.req.fileName());
     //    auto initResult = context->init();
     //    if (initResult.hasError())
     //    {
-    //        return Result<void *>(initResult.error());
+    //        return Result<void>(initResult.error());
     //    }
-    return Result<void *>();
+    return Result<void>();
 }
