@@ -4,6 +4,20 @@ using namespace Presenter::UndoRedo;
 
 ThreadedUndoRedoSystem *ThreadedUndoRedoSystem::m_instance = nullptr;
 
+/*!
+ * \class ThreadedUndoRedoSystem
+ * \inmodule Presenter::UndoRedo
+ * \brief A QObject encapsulating a threaded UndoRedoSystem that manages the undo and redo command history
+ * asynchronously.
+ *
+ * Implements a threaded undo-redo system by encapsulating the UndoRedoSystem functionality in a
+ * separate thread. This class ensures that undo and redo operations are performed asynchronously without blocking the
+ * main thread.
+ */
+
+/*!
+ * \brief Constructs an ThreadedUndoRedoSystem with the specified \a parent.
+ */
 ThreadedUndoRedoSystem::ThreadedUndoRedoSystem(QObject *parent) : QObject(parent)
 {
     QMutexLocker locker(&m_mutex);
@@ -38,6 +52,10 @@ ThreadedUndoRedoSystem::~ThreadedUndoRedoSystem()
     // m_thread->deleteLater();
 }
 
+/*!
+ * \brief Returns the singleton instance of ThreadedUndoRedoSystem.
+ * \note If no instance exists, a fatal error occurs.
+ */
 ThreadedUndoRedoSystem *ThreadedUndoRedoSystem::instance()
 {
     if (!m_instance)
@@ -45,6 +63,9 @@ ThreadedUndoRedoSystem *ThreadedUndoRedoSystem::instance()
     return m_instance;
 }
 
+/*!
+ * \brief Returns true if an undo operation can be performed, otherwise false.
+ */
 bool ThreadedUndoRedoSystem::canUndo() const
 {
     QMutexLocker locker(&m_mutex);
@@ -53,6 +74,9 @@ bool ThreadedUndoRedoSystem::canUndo() const
     return result;
 }
 
+/*!
+ * \brief Returns true if a redo operation can be performed, otherwise false.
+ */
 bool ThreadedUndoRedoSystem::canRedo() const
 {
     QMutexLocker locker(&m_mutex);
@@ -61,18 +85,27 @@ bool ThreadedUndoRedoSystem::canRedo() const
     return result;
 }
 
+/*!
+ * \brief Performs an undo operation.
+ */
 void ThreadedUndoRedoSystem::undo()
 {
     QMutexLocker locker(&m_mutex);
     QMetaObject::invokeMethod(m_undoRedoSystem, "undo", Qt::QueuedConnection);
 }
 
+/*!
+ * \brief Performs a redo operation.
+ */
 void ThreadedUndoRedoSystem::redo()
 {
     QMutexLocker locker(&m_mutex);
     QMetaObject::invokeMethod(m_undoRedoSystem, "redo", Qt::QueuedConnection);
 }
 
+/*!
+ * \brief Adds a new command to the command history with the specified \a scope.
+ */
 void ThreadedUndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoCommand::Scope &scope)
 {
     QMutexLocker locker(&m_mutex);
@@ -81,6 +114,9 @@ void ThreadedUndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoComman
                               Q_ARG(UndoRedoCommand::Scope, scope));
 }
 
+/*!
+ * \brief Clears the command history.
+ */
 void ThreadedUndoRedoSystem::clear()
 {
 
@@ -88,6 +124,9 @@ void ThreadedUndoRedoSystem::clear()
     QMetaObject::invokeMethod(m_undoRedoSystem, "clear", Qt::QueuedConnection);
 }
 
+/*!
+ * \brief Starts the UndoRedoSystem when the encapsulated thread is started.
+ */
 void ThreadedUndoRedoSystem::startUndoRedoSystem()
 {
     QMutexLocker locker(&m_mutex);
@@ -97,6 +136,9 @@ void ThreadedUndoRedoSystem::startUndoRedoSystem()
     QMetaObject::invokeMethod(m_undoRedoSystem, "run", Qt::QueuedConnection);
 }
 
+/*!
+ * \brief Handles the UndoRedoSystem stateChanged signal and emits the stateChanged signal for this class.
+ */
 void ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged()
 {
     QMutexLocker locker(&m_mutex);
@@ -104,12 +146,18 @@ void ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged()
     emit stateChanged();
 }
 
+/*!
+ * \brief Sets the undo limit to \a limit.
+ */
 void ThreadedUndoRedoSystem::setUndoLimit(int limit)
 {
     QMutexLocker locker(&m_mutex);
     QMetaObject::invokeMethod(m_undoRedoSystem, "setUndoLimit", Qt::QueuedConnection, Q_ARG(int, limit));
 }
 
+/*!
+ * \brief Returns the undo limit.
+ */
 int ThreadedUndoRedoSystem::undoLimit() const
 {
     QMutexLocker locker(&m_mutex);
@@ -118,6 +166,9 @@ int ThreadedUndoRedoSystem::undoLimit() const
     return result;
 }
 
+/*!
+ * \brief Returns the text of the last undo command.
+ */
 QString ThreadedUndoRedoSystem::undoText() const
 {
     QMutexLocker locker(&m_mutex);
@@ -126,6 +177,9 @@ QString ThreadedUndoRedoSystem::undoText() const
     return result;
 }
 
+/*!
+ * \brief Returns the text of the last redo command.
+ */
 QString ThreadedUndoRedoSystem::redoText() const
 {
     QMutexLocker locker(&m_mutex);
@@ -133,6 +187,10 @@ QString ThreadedUndoRedoSystem::redoText() const
     QMetaObject::invokeMethod(m_undoRedoSystem, "redoText", Qt::QueuedConnection, Q_RETURN_ARG(QString, result));
     return result;
 }
+
+/*!
+ * \brief Creates and returns a redo QAction with the specified \a parent and \a prefix.
+ */
 QAction *ThreadedUndoRedoSystem::createRedoAction(QObject *parent, const QString &prefix) const
 {
     QMutexLocker locker(&m_mutex);
@@ -168,6 +226,9 @@ QAction *ThreadedUndoRedoSystem::createRedoAction(QObject *parent, const QString
     return action;
 }
 
+/*!
+ * \brief Creates and returns an undo QAction with the specified \a parent and \a prefix.
+ */
 QAction *ThreadedUndoRedoSystem::createUndoAction(QObject *parent, const QString &prefix) const
 {
     QMutexLocker locker(&m_mutex);

@@ -1,20 +1,66 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Example Qt 6 project structure demonstrating the implementation of Clean Architecture principles for maintainable and scalable software development. 
+
+The basic concepts come from the book *Clean Architecture: A Craftsman's Guide to Software Structure and Design* by Robert C. Martin and the teachings of Bernardo Estacio Abreu, Software Architect. This proof of concept was initiated so as to offer a new base for the software Skribisto.
+
+This example is minimal but functional and tested.
+
+Main points:
+- one simple entity: Author
+- a very basic QWidget UI 
+- asynchronous API
+- asynchronous undo redo system
+- automapper
+- Command and Query Responsibility Segregation ([CQRS](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs))
+- use of Data Transfert Objects ([DTO](https://www.baeldung.com/java-dto-pattern))
+- file load and save
+
+
+
+# Structure
+
+## Core
+
+Business side of the clean architecture.
+
+### Domain
+
+Contains the entities. Simple inert QObjects exposing their fields using Q_PROPERTY
+
+### Persistence
+
+#### Database
+
+Internal database. Here a simple SQLite.
+
+#### Repositories
+
+Agnostic wrapper around the database. One repository per entity.
+### Contracts
+
+Used to enforce the [Interface Segregation Principle](https://stackify.com/interface-segregation-principle/) and the [ependency Inversion Principle](https://stackify.com/dependency-inversion-principle/). Also contains DTOs and CQRS implementation which must be usable to all parts. All parts, but domains, depend of this library.
+
+### Infrastructure
+
+Here lie the connections of to the external services, like loading and saving files.
+
+### Application
+
+Use cases. All the business logics.
+
+## GUI
+
+GUI side of the clean architecture.
+
+### Presenter
+
+Each feature offer its own Controller singleton such as AuthorController or SystemController. The UndoRedoSystem manage all commands and queries asynchronously in an ordered manner. 
+
+### Desktop
+
+Only UI logic. All calls are to controllers are asynchornous and replies are received using signals.
 
 # Build and Test
-TODO: Describe and show how to build your code and run the tests. 
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+Qt Creator with Qt6

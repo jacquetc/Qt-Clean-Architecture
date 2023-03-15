@@ -30,13 +30,19 @@ class ThreadedUndoRedoSystem : public QObject
     void clear();
 
     void setUndoLimit(int limit);
-    int undoLimit() const;
-    QString undoText() const;
-    QString redoText() const;
 
+    int undoLimit() const;
+
+    QString undoText() const;
+
+    QString redoText() const;
     QAction *createUndoAction(QObject *parent, const QString &prefix = QString()) const;
     QAction *createRedoAction(QObject *parent, const QString &prefix = QString()) const;
   signals:
+    /*!
+     * \brief A signal that is emitted when the undo redo system state has changed. Useful for the undo and redo
+     * actions.
+     */
     void stateChanged();
 
   private slots:

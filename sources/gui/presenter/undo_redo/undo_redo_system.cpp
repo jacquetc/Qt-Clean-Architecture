@@ -4,10 +4,22 @@
 #include <QEventLoop>
 
 using namespace Presenter::UndoRedo;
+/*!
+ * \class UndoRedoSystem
+ * \inmodule Presenter::UndoRedo
+ * \brief A QObject that manages the undo and redo command history.
+ */
 
+/*!
+ * \brief Constructs an UndoRedoSystem with the specified \a parent.
+ */
 UndoRedoSystem::UndoRedoSystem(QObject *parent) : QObject(parent), m_currentIndex(-1), m_undoLimit(10)
 {
 }
+
+/*!
+ * \brief Initializes the event loop for the UndoRedoSystem.
+ */
 void UndoRedoSystem::run()
 {
     // Create an event loop for the thread
@@ -20,16 +32,25 @@ void UndoRedoSystem::run()
     eventLoop.exec();
 }
 
+/*!
+ * \brief Returns true if an undo operation can be performed, otherwise false.
+ */
 bool UndoRedoSystem::canUndo() const
 {
     return m_currentIndex >= 0 && !m_generalCommandQueue[m_currentIndex]->isRunning();
 }
 
+/*!
+ * \brief Returns true if a redo operation can be performed, otherwise false.
+ */
 bool UndoRedoSystem::canRedo() const
 {
     return m_currentIndex < m_generalCommandQueue.size() - 1 && !m_generalCommandQueue[m_currentIndex + 1]->isRunning();
 }
 
+/*!
+ * \brief Performs an undo operation if it can be performed.
+ */
 void UndoRedoSystem::undo()
 {
     if (canUndo())
@@ -39,6 +60,9 @@ void UndoRedoSystem::undo()
     }
 }
 
+/*!
+ * \brief Performs a redo operation if it can be performed.
+ */
 void UndoRedoSystem::redo()
 {
     if (canRedo())
@@ -49,9 +73,13 @@ void UndoRedoSystem::redo()
     }
 }
 
+/*!
+ * \brief Adds an \a command to the UndoRedoSystem with the specified \a scope.
+ */
 void UndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoCommand::Scope &scope)
 {
     command->setParent(this);
+    command->setScope(scope);
 
     QQueue<QSharedPointer<UndoRedoCommand>> &queue = m_scopedCommandQueueHash[scope];
     // Enqueue the command
@@ -67,6 +95,9 @@ void UndoRedoSystem::push(UndoRedoCommand *command, const UndoRedoCommand::Scope
     emit stateChanged();
 }
 
+/*!
+ * \brief Clears the UndoRedoSystem command history.
+ */
 void UndoRedoSystem::clear()
 {
     // Clear the general command queue, not the scoped command queue
@@ -76,6 +107,10 @@ void UndoRedoSystem::clear()
     // Emit the stateChanged signal
     emit stateChanged();
 }
+
+/*!
+ * \brief Sets the undo limit to \a limit.
+ */
 void UndoRedoSystem::setUndoLimit(int limit)
 {
     m_undoLimit = limit;
@@ -89,11 +124,17 @@ void UndoRedoSystem::setUndoLimit(int limit)
     emit stateChanged();
 }
 
+/*!
+ * \brief Returns the undo limit. Defaults to 10.
+ */
 int UndoRedoSystem::undoLimit() const
 {
     return m_undoLimit;
 }
 
+/*!
+ * \brief Returns the text of the undo command, or an empty QString if there is no command to undo.
+ */
 QString UndoRedoSystem::undoText() const
 {
     if (m_currentIndex >= 0)
@@ -106,6 +147,9 @@ QString UndoRedoSystem::undoText() const
     }
 }
 
+/*!
+ * \brief Returns the text of the next redo command in the queue, or an empty QString if there is no command to redo.
+ */
 QString UndoRedoSystem::redoText() const
 {
     if (m_currentIndex < m_generalCommandQueue.size() - 1)
@@ -118,6 +162,9 @@ QString UndoRedoSystem::redoText() const
     }
 }
 
+/*!
+ * \brief Handles the finished() signal from an UndoRedoCommand and updates the UndoRedoSystem state.
+ */
 void UndoRedoSystem::onCommandFinished()
 {
 
@@ -143,6 +190,9 @@ void UndoRedoSystem::onCommandFinished()
     emit stateChanged();
 }
 
+/*!
+ * \brief Executes the next command in the queue for the specified \a scope.
+ */
 void UndoRedoSystem::executeNextCommand(const UndoRedoCommand::Scope &scope)
 {
 

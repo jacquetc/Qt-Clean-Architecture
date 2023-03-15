@@ -4,6 +4,7 @@
 
 namespace Presenter::UndoRedo
 {
+
 class QueryCommand : public UndoRedoCommand
 {
     Q_OBJECT
@@ -13,11 +14,14 @@ class QueryCommand : public UndoRedoCommand
     void setQueryFunction(const std::function<void()> &function);
 
   private:
-    // UndoRedoCommand interface
+    // Overrides the redo() method of UndoRedoCommand
     void redo() override;
+
+    // Overrides the undo() method of UndoRedoCommand
     void undo() override;
 
   private:
-    std::function<void()> m_queryFunction;
+    std::function<void()>
+        m_queryFunction; /*!< The function to be executed asynchronously when the redo() method is called. */
 };
 } // namespace Presenter::UndoRedo

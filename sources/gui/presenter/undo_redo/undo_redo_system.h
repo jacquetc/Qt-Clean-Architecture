@@ -29,23 +29,30 @@ class UndoRedoSystem : public QObject
                           const Presenter::UndoRedo::UndoRedoCommand::Scope &scope);
 
     Q_INVOKABLE void clear();
+
     Q_INVOKABLE void setUndoLimit(int limit);
+
     Q_INVOKABLE int undoLimit() const;
+
     Q_INVOKABLE QString undoText() const;
+
     Q_INVOKABLE QString redoText() const;
 
   private slots:
     void onCommandFinished();
 
   signals:
+
     void stateChanged();
+
     void finished();
 
   private:
     void executeNextCommand(const UndoRedoCommand::Scope &scope);
 
-    int m_undoLimit;
-    int m_currentIndex;
+    int m_undoLimit;    /*!< The maximum number of undo commands that can be stored in the undo-redo system. */
+    int m_currentIndex; /*!< The current index in the command history. */
+
     QQueue<QSharedPointer<UndoRedoCommand>> m_generalCommandQueue;
     QHash<UndoRedoCommand::Scope, QQueue<QSharedPointer<UndoRedoCommand>>> m_scopedCommandQueueHash;
     QHash<UndoRedoCommand::Scope, QSharedPointer<UndoRedoCommand>> m_currentCommandHash;
