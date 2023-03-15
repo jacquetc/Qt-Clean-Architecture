@@ -1,36 +1,48 @@
 #pragma once
 
-#include "features/system/handlers/commands/load_system_command_handler.h"
-#include "features/system/handlers/commands/save_system_as_command_handler.h"
+#include "dto/system/load_system_dto.h"
+#include "dto/system/save_system_as_dto.h"
+#include "persistence/interface_repository_provider.h"
 #include "presenter_global.h"
 #include "result.h"
+#include "system_signal_bridge.h"
+#include "undo_redo/threaded_undo_redo_system.h"
 
-using namespace Application::Features::System::Commands;
+using namespace Contracts::DTO::System;
+using namespace Presenter;
+using namespace Contracts::Persistence;
+using namespace Presenter::System::Private;
+using namespace Presenter::UndoRedo;
 
 namespace Presenter::System
 {
 
-SKRPRESENTEREXPORT Result<void> loadSystem(const LoadSystemDTO &dto)
+class SKRPRESENTEREXPORT SystemController : public QObject
 {
-    LoadSystemCommand command;
-    command.req = dto;
-    //    LoadSystemCommandHandler handler(Repository::Repositories::instance());
-    //    return handler.handle(command);
-}
+    Q_OBJECT
+  public:
+    SystemController(InterfaceRepositoryProvider *repositoryProvider);
+    static SystemController *instance();
 
-SKRPRESENTEREXPORT Result<void> saveSystem()
-{
-    Q_UNIMPLEMENTED();
-}
+    static void loadSystem(const LoadSystemDTO &dto);
 
-SKRPRESENTEREXPORT Result<void> saveSystemAs(const SaveSystemAsDTO &dto)
-{
-    Q_UNIMPLEMENTED();
-    SaveSystemAsCommand command;
-    command.req = dto;
+    static void saveSystem();
 
-    //    SaveSystemAsCommandHandler handler(Repository::Repositories::instance());
-    //    return handler.handle(command);
-}
+    static void saveSystemAs(const SaveSystemAsDTO &dto);
+
+  signals:
+    void errorSent(Result<void> result);
+    void systemLoaded(Result<void> result);
+    void systemSaved(Result<void> result);
+
+  private:
+    static QScopedPointer<SystemController> s_instance;
+    static SystemSignalBridge *s_signal_bridge;
+    static InterfaceRepositoryProvider *s_repositoryProvider;
+    static ThreadedUndoRedoSystem *s_undo_redo_system;
+    SystemController() = delete;
+    SystemController(const SystemController &) = delete;
+    SystemController &operator=(const SystemController &) = delete;
+};
 
 } // namespace Presenter::System

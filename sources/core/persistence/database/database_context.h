@@ -73,7 +73,6 @@ class SKRPERSISTENCEEXPORT DatabaseContext : public QObject, public Contracts::D
      * @return A Result object with the name of the loaded database if successful, or an Error object if an error
      * occurred.
      */
-    Result<QString> loadSkribFile(const QUrl &fileName);
     Result<QString> createEmptyDatabase();
     QStringList SqlEmptyDatabaseQuery() const;
 };

@@ -4,31 +4,55 @@
 #include "system/system_controller.h"
 
 using namespace Presenter::Author;
+using namespace Presenter::System;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    Contracts::DTO::System::LoadSystemDTO dto;
-    dto.setFileName(QUrl::fromLocalFile("/Users/cyril/Documents/test_clean.skrib"));
+    // disable all:
+    ui->saveSystemPushButton->setEnabled(false);
+    ui->addAsyncPushButton->setEnabled(false);
+    ui->removePushButton->setEnabled(false);
 
-    //    Result<void> result = Presenter::System::loadSystem(dto);
-    //    if (!result)
-    //    {
-    //        qDebug() << result.error().message() << result.error().data();
-    //    }
-    auto list = AuthorController::instance()->getAll();
+    // system :
+
+    auto systemController = SystemController::instance();
+
+    connect(ui->loadSystemPushButton, &QPushButton::clicked, this, [=]() {
+        Contracts::DTO::System::LoadSystemDTO dto;
+        dto.setFileName(QUrl("qrc:/test_clean.skrib"));
+
+        SystemController::loadSystem(dto);
+    });
+
+    connect(systemController, &SystemController::systemLoaded, this, [this](Result<void> result) {
+        if (!result)
+        {
+            qDebug() << result.error().message() << result.error().data();
+            return;
+        }
+        ui->addAsyncPushButton->setEnabled(true);
+        ui->removePushButton->setEnabled(true);
+
+        auto list = AuthorController::instance()->getAll();
+
+        for (const auto &author : list.value())
+        {
+            auto *item = new QListWidgetItem(ui->listWidget);
+            item->setText(author.name());
+        }
+    });
+
+    // undo redo buttons:
 
     ui->redoToolButton->setDefaultAction(
         Presenter::UndoRedo::ThreadedUndoRedoSystem::instance()->createRedoAction(this));
     ui->undoToolButton->setDefaultAction(
         Presenter::UndoRedo::ThreadedUndoRedoSystem::instance()->createUndoAction(this));
 
-    for (const auto &author : list.value())
-    {
-        auto *item = new QListWidgetItem(ui->listWidget);
-        item->setText(author.name());
-    }
+    // add / remove buttons:
+
     auto authorController = AuthorController::instance();
 
     connect(ui->addAsyncPushButton, &QPushButton::clicked, this, [=]() {
@@ -41,11 +65,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         if (!result)
         {
             qDebug() << result.error().message() << result.error().data();
+            return;
         }
         auto author = AuthorController::instance()->get(result.value());
         if (!author)
         {
             qDebug() << author.error().message() << author.error().data();
+            return;
         }
         auto *item = new QListWidgetItem(ui->listWidget);
         item->setText(author.value().name());
@@ -64,6 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 if (!result)
                 {
                     qDebug() << result.error().message() << result.error().data();
+                    return;
                 }
 
                 for (int i = 0; i < ui->listWidget->count(); i++)

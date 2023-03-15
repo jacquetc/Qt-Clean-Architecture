@@ -14,13 +14,19 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
 set(TS_FILES skribisto-gui_fr_FR.ts)
 
+set(QRC
+desktop_resources.qrc
+)
+
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
     ${TS_FILES}
+    ${QRC}
 )
+
 
 qt_add_executable(skribisto-desktop
     MANUAL_FINALIZATION

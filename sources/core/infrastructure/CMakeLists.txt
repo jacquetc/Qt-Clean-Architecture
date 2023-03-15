@@ -15,7 +15,8 @@ set(infrastructure_SRCS
 
     infrastructure_global.h
     infrastructure_registration.h infrastructure_registration.cpp
-    skrib_loader.h skrib_loader.cpp
+    skrib/skrib_loader.h skrib/skrib_loader.cpp
+    skrib/skrib_file_configuration.h
 )
 
 add_library(skribisto-infrastructure SHARED ${infrastructure_SRCS})
@@ -25,9 +26,9 @@ target_compile_definitions(skribisto-infrastructure PRIVATE SKRIBISTO_infrastruc
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_link_libraries(skribisto-infrastructure PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql  Qt${QT_VERSION_MAJOR}::Concurrent)
-#target_link_libraries(skribisto-infrastructure PRIVATE )
+target_link_libraries(skribisto-infrastructure PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
 
+# target_link_libraries(skribisto-infrastructure PRIVATE )
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
 

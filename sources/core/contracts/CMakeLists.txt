@@ -44,6 +44,8 @@ set(contracts_SRCS
     cqrs/system/commands/load_system_command.h
     cqrs/system/validators/save_system_as_command_validator.h
     cqrs/system/validators/load_system_command_validator.h
+    # infrastructure:
+    infrastructure/skrib/interface_skrib_loader.h
 
 )
 

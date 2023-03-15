@@ -15,10 +15,16 @@ set(presenter_SRCS
 
     presenter_global.h
     presenter_registration.h presenter_registration.cpp
+    # author
     author/author_controller.h author/author_controller.cpp
     author/author_undo_commands.h author/author_undo_commands.cpp
     author/author_signal_bridge.h
+    # system
     system/system_controller.h
+    system/system_controller.cpp
+    system/system_undo_command.h system/system_undo_command.cpp
+    system/system_signal_bridge.h
+    # undo redo
     undo_redo/undo_redo_command.h undo_redo/undo_redo_command.cpp
     undo_redo/undo_redo_system.h undo_redo/undo_redo_system.cpp
     undo_redo/threaded_undo_redo_system.h undo_redo/threaded_undo_redo_system.cpp
@@ -31,6 +37,7 @@ add_dependencies(${PROJECT_NAME} skribisto-domain)
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
+add_dependencies(${PROJECT_NAME} skribisto-infrastructure)
 
 target_compile_definitions(skribisto-presenter PRIVATE SKRIBISTO_PRESENTER_LIBRARY)
 
@@ -39,12 +46,14 @@ target_link_libraries(skribisto-presenter PRIVATE
     skribisto-contracts
     skribisto-application
     skribisto-persistence
+    skribisto-infrastructure
     Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Concurrent)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/persistence/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/infrastructure/")
 
 # ---------------------------------
 if(IOS)
