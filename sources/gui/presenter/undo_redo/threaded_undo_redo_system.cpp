@@ -133,6 +133,7 @@ void ThreadedUndoRedoSystem::startUndoRedoSystem()
     // Connect the UndoRedoSystem's stateChanged signal to this class's stateChanged signal
     connect(m_undoRedoSystem, &UndoRedoSystem::stateChanged, this,
             &ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged);
+    connect(m_undoRedoSystem, &UndoRedoSystem::errorSent, this, &ThreadedUndoRedoSystem::onErrorSent);
     QMetaObject::invokeMethod(m_undoRedoSystem, "run", Qt::QueuedConnection);
 }
 
@@ -144,6 +145,14 @@ void ThreadedUndoRedoSystem::onUndoRedoSystemStateChanged()
     QMutexLocker locker(&m_mutex);
     // Emit the stateChanged signal
     emit stateChanged();
+}
+
+void ThreadedUndoRedoSystem::onErrorSent(const Error &error)
+{
+
+    QMutexLocker locker(&m_mutex);
+    // Emit the stateChanged signal
+    emit errorSent(error);
 }
 
 /*!

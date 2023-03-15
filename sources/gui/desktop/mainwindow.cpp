@@ -3,6 +3,8 @@
 #include "author/author_controller.h"
 #include "system/system_controller.h"
 
+#include <QMessageBox>
+
 using namespace Presenter::Author;
 using namespace Presenter::System;
 
@@ -14,6 +16,34 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->saveSystemPushButton->setEnabled(false);
     ui->addAsyncPushButton->setEnabled(false);
     ui->removePushButton->setEnabled(false);
+
+    // error handling :
+
+    connect(ThreadedUndoRedoSystem::instance(), &ThreadedUndoRedoSystem::errorSent, this, [=](Error error) {
+        QMessageBox *box = new QMessageBox(this);
+        switch (error.status())
+        {
+        case Error::Status::Warning:
+            box->setIcon(QMessageBox::Icon::Warning);
+            box->setText(tr("Warning: %1").arg(error.message()));
+            box->setDetailedText(error.code());
+            break;
+        case Error::Status::Critical:
+            box->setIcon(QMessageBox::Icon::Critical);
+            box->setText(tr("Critical: %1").arg(error.message()));
+            box->setDetailedText(error.code());
+            break;
+        case Error::Status::Fatal:
+            box->setIcon(QMessageBox::Icon::NoIcon);
+            box->setText(tr("Fatal: %1").arg(error.message()));
+            box->setDetailedText(error.code());
+            break;
+        default:
+            break;
+        }
+        box->setModal(true);
+        box->show();
+    });
 
     // system :
 

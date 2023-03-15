@@ -34,7 +34,11 @@ class SKRCONTRACTSEXPORT Error
      * @param status The error status.
      * @param code The error code.
      */
-    explicit Error(const QObject *object, const Error::Status &status, const QString &code);
+    explicit Error(const QObject *object, const Error::Status &status, const QString &code)
+        : m_status(status), m_code(code), m_message("")
+    {
+        m_className = object->metaObject()->className();
+    }
 
     /**
      * @brief Constructs an Error object with the given QObject, status, error code, and error message.
@@ -148,7 +152,7 @@ class SKRCONTRACTSEXPORT Error
      *
      * @return The error status.
      */
-    Error::Status getStatus() const
+    Error::Status status() const
     {
         return m_status;
     }
@@ -164,6 +168,11 @@ class SKRCONTRACTSEXPORT Error
     }
 
     //--------------------------------------------------------------
+
+    QString code() const
+    {
+        return m_code;
+    }
 
   private:
     QString m_code;

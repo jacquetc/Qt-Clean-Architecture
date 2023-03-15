@@ -31,7 +31,7 @@ class SKRPRESENTEREXPORT SystemController : public QObject
     static void saveSystemAs(const SaveSystemAsDTO &dto);
 
   signals:
-    void errorSent(Result<void> result);
+
     void systemLoaded(Result<void> result);
     void systemSaved(Result<void> result);
 

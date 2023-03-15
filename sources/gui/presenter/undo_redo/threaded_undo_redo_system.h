@@ -44,11 +44,17 @@ class ThreadedUndoRedoSystem : public QObject
      * actions.
      */
     void stateChanged();
+    /*!
+     * \brief A signal that is emitted when a command results in an error.
+     * actions.
+     */
+    void errorSent(Error error);
 
   private slots:
     void startUndoRedoSystem();
 
     void onUndoRedoSystemStateChanged();
+    void onErrorSent(const Error &error);
 
   private:
     static ThreadedUndoRedoSystem *m_instance;

@@ -178,6 +178,7 @@ void UndoRedoSystem::onCommandFinished()
     if (command->obsolete())
     {
         m_generalCommandQueue.removeLast();
+        m_currentIndex--;
     }
 
     // If there are commands in the queue, execute the next one
@@ -224,6 +225,9 @@ void UndoRedoSystem::executeNextCommand(const UndoRedoCommand::Scope &scope)
 
     // Connect the finished signal to the onCommandFinished slot
     connect(command.data(), &UndoRedoCommand::finished, this, &UndoRedoSystem::onCommandFinished, Qt::UniqueConnection);
+
+    // Connect the errorSent signal to the errorSent signal
+    connect(command.data(), &UndoRedoCommand::errorSent, this, &UndoRedoSystem::errorSent, Qt::UniqueConnection);
 
     // Execute the command asynchronously
     command->asyncRedo();

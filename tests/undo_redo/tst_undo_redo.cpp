@@ -14,12 +14,27 @@ class DummyCommand : public UndoRedoCommand
     {
     }
 
-    void undo() override
+    Result<void> undo() override
     {
+        return m_undoReturn;
     }
-    void redo() override
+    Result<void> redo() override
     {
+        return m_redoReturn;
     }
+
+    void setUndoReturn(const Result<void> &result)
+    {
+        m_undoReturn = result;
+    }
+    void setRedoReturn(const Result<void> &result)
+    {
+        m_redoReturn = result;
+    }
+
+  private:
+    Result<void> m_undoReturn;
+    Result<void> m_redoReturn;
 };
 
 class UndoRedoSystemTest : public QObject
@@ -97,6 +112,22 @@ class UndoRedoSystemTest : public QObject
         QTRY_VERIFY_WITH_TIMEOUT(!system.canRedo(), 500);
         QCOMPARE(system.undoText(), QString("Command 3"));
         QCOMPARE(system.redoText(), QString());
+    }
+
+    void testCommandInError()
+    {
+        UndoRedoSystem system(this);
+
+        auto *command = new DummyCommand("Command 1");
+        command->setRedoReturn(Result<void>(Error(this, Error::Critical, "test error", "this is an error")));
+
+        QSignalSpy spy(&system, &UndoRedoSystem::errorSent);
+        QVERIFY(spy.isValid());
+        system.push(command, UndoRedoCommand::Author);
+
+        QTRY_VERIFY_WITH_TIMEOUT(!system.canUndo(), 500);
+        QVERIFY(spy.wait(500));
+        QCOMPARE(spy.count(), 1);
     }
 };
 QTEST_GUILESS_MAIN(UndoRedoSystemTest)

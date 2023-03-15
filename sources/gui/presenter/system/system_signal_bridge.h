@@ -17,7 +17,7 @@ class SKRPRESENTEREXPORT SystemSignalBridge : public QObject
     }
 
   signals:
-    void errorSent(Result<void> result);
+
     void systemLoaded(Result<void> result);
     void systemSaved(Result<void> result);
 };

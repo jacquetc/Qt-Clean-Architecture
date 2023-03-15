@@ -11,17 +11,17 @@ class QueryCommand : public UndoRedoCommand
   public:
     QueryCommand(const QString &text);
 
-    void setQueryFunction(const std::function<void()> &function);
+    void setQueryFunction(const std::function<Result<void>()> &function);
 
   private:
     // Overrides the redo() method of UndoRedoCommand
-    void redo() override;
+    Result<void> redo() override;
 
     // Overrides the undo() method of UndoRedoCommand
-    void undo() override;
+    Result<void> undo() override;
 
   private:
-    std::function<void()>
+    std::function<Result<void>()>
         m_queryFunction; /*!< The function to be executed asynchronously when the redo() method is called. */
 };
 } // namespace Presenter::UndoRedo

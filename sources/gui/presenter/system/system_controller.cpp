@@ -19,7 +19,7 @@ SystemController::SystemController(InterfaceRepositoryProvider *repositoryProvid
     s_repositoryProvider = repositoryProvider;
     s_signal_bridge = new SystemSignalBridge(this);
     // connections for undo commands:
-    connect(s_signal_bridge, &SystemSignalBridge::errorSent, this, &SystemController::errorSent);
+
     connect(s_signal_bridge, &SystemSignalBridge::systemLoaded, this, &SystemController::systemLoaded);
     connect(s_signal_bridge, &SystemSignalBridge::systemSaved, this, &SystemController::systemSaved);
 

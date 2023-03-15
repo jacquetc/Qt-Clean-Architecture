@@ -26,8 +26,8 @@ class CreateAuthorUndoCommand : public UndoRedoCommand
   public:
     CreateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
                             QSharedPointer<InterfaceAuthorRepository> repository, const CreateAuthorCommand &request);
-    void undo();
-    void redo();
+    Result<void> undo();
+    Result<void> redo();
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;
@@ -43,8 +43,8 @@ class UpdateAuthorUndoCommand : public UndoRedoCommand
   public:
     UpdateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
                             QSharedPointer<InterfaceAuthorRepository> repository, const UpdateAuthorCommand &request);
-    void undo();
-    void redo();
+    Result<void> undo();
+    Result<void> redo();
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;
@@ -61,8 +61,8 @@ class RemoveAuthorUndoCommand : public UndoRedoCommand
   public:
     RemoveAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
                             QSharedPointer<InterfaceAuthorRepository> repository, const RemoveAuthorCommand &request);
-    void undo();
-    void redo();
+    Result<void> undo();
+    Result<void> redo();
     Result<AuthorDTO> result() const;
 
   private:

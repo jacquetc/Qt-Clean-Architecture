@@ -39,6 +39,7 @@ class SKRPRESENTEREXPORT AuthorController : public QObject
     static void removeAsync(const QUuid &uuid);
 
   signals:
+
     void getAuthorReplied(Result<Contracts::DTO::Author::AuthorDTO> result);
     void getAuthorListReplied(Result<QList<Contracts::DTO::Author::AuthorDTO>> result);
     void authorCreated(Result<QUuid> result);

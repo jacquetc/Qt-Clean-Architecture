@@ -48,6 +48,7 @@ AuthorController::AuthorController(InterfaceRepositoryProvider *repositoryProvid
     s_repositoryProvider = repositoryProvider;
     s_signal_bridge = new AuthorSignalBridge(this);
     // connections for undo commands:
+
     connect(s_signal_bridge, &AuthorSignalBridge::authorCreated, this, &AuthorController::authorCreated);
     connect(s_signal_bridge, &AuthorSignalBridge::authorRemoved, this, &AuthorController::authorRemoved);
     connect(s_signal_bridge, &AuthorSignalBridge::authorUpdated, this, &AuthorController::authorUpdated);
@@ -83,7 +84,11 @@ void AuthorController::getAsync(const QUuid &uuid)
             s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
         GetAuthorRequestHandler handler(interface);
         auto result = handler.handle(request);
-        emit s_signal_bridge->getAuthorReplied(result);
+        if (result.isSuccess())
+        {
+            emit s_signal_bridge->getAuthorReplied(result);
+        }
+        return Result<void>(result.error());
     });
     s_undo_redo_system->push(queryCommand, UndoRedoCommand::Scope::Author);
 }
@@ -118,7 +123,11 @@ void AuthorController::getAllAsync()
             s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
         GetAuthorListRequestHandler handler(interface);
         auto result = handler.handle();
-        emit s_signal_bridge->getAuthorListReplied(result);
+        if (result.isSuccess())
+        {
+            emit s_signal_bridge->getAuthorListReplied(result);
+        }
+        return Result<void>(result.error());
     });
     s_undo_redo_system->push(queryCommand, UndoRedoCommand::Scope::Author);
 }

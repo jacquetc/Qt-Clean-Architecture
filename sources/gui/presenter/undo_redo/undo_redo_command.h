@@ -1,5 +1,7 @@
 #pragma once
 
+#include "result.h"
+#include <QFutureWatcher>
 #include <QObject>
 
 namespace Presenter::UndoRedo
@@ -17,9 +19,9 @@ class UndoRedoCommand : public QObject
 
     UndoRedoCommand(const QString &text);
 
-    virtual void undo() = 0;
+    virtual Result<void> undo() = 0;
 
-    virtual void redo() = 0;
+    virtual Result<void> redo() = 0;
 
     void asyncUndo();
 
@@ -41,11 +43,17 @@ class UndoRedoCommand : public QObject
 
   signals:
     void finished();
+    /*!
+     * \brief A signal that is emitted when a command results in an error.
+     * actions.
+     */
+    void errorSent(Error error);
 
   private slots:
     void onFinished();
 
   private:
+    QFutureWatcher<Result<void>> *m_watcher;
     bool m_obsolete;                /*!< A boolean representing the obsolete state of the command. */
     bool m_finished;                /*!< A boolean representing the finished state of the command. */
     bool m_running;                 /*!< A boolean representing the running state of the command. */

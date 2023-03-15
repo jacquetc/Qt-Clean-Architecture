@@ -26,7 +26,7 @@ CreateAuthorUndoCommand::CreateAuthorUndoCommand(Private::AuthorSignalBridge *si
 {
 }
 
-void CreateAuthorUndoCommand::undo()
+Result<void> CreateAuthorUndoCommand::undo()
 {
     RemoveAuthorCommand removeRequest;
     removeRequest.id = m_result.value();
@@ -35,11 +35,14 @@ void CreateAuthorUndoCommand::undo()
 
     // do
     auto result = handler.handle(removeRequest);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->authorRemoved(result);
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->authorRemoved(result);
+    }
+    return Result<void>(result.error());
 }
 
-void CreateAuthorUndoCommand::redo()
+Result<void> CreateAuthorUndoCommand::redo()
 {
     if (!m_result.isEmpty())
     {
@@ -48,8 +51,12 @@ void CreateAuthorUndoCommand::redo()
 
     CreateAuthorCommandHandler handler(m_repository);
     m_result = handler.handle(m_request);
-    this->setObsolete(m_result.isError());
-    emit m_signalBridge->authorCreated(m_result);
+    if (m_result.isSuccess())
+    {
+        emit m_signalBridge->authorCreated(m_result);
+    }
+    return Result<void>(m_result.error());
+    // return Result<void>(Error(this, Error::Critical, "test error", "this is an error"));
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -63,7 +70,7 @@ UpdateAuthorUndoCommand::UpdateAuthorUndoCommand(Private::AuthorSignalBridge *si
 {
 }
 
-void UpdateAuthorUndoCommand::undo()
+Result<void> UpdateAuthorUndoCommand::undo()
 {
 
     UpdateAuthorCommand command;
@@ -73,11 +80,14 @@ void UpdateAuthorUndoCommand::undo()
 
     // do
     auto result = handler.handle(command);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->authorUpdated(result);
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->authorUpdated(result);
+    }
+    return Result<void>(result.error());
 }
 
-void UpdateAuthorUndoCommand::redo()
+Result<void> UpdateAuthorUndoCommand::redo()
 {
 
     // save old state
@@ -89,16 +99,18 @@ void UpdateAuthorUndoCommand::redo()
         m_oldState = getHandler.handle(getRequest);
         if (m_oldState.hasError())
         {
-            this->setObsolete(true);
-            return;
+            return Result<void>(m_oldState.error());
         }
     }
 
     // do
     UpdateAuthorCommandHandler handler(m_repository);
     auto result = handler.handle(m_request);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->authorUpdated(result);
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->authorUpdated(result);
+    }
+    return Result<void>(result.error());
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -112,7 +124,7 @@ RemoveAuthorUndoCommand::RemoveAuthorUndoCommand(Private::AuthorSignalBridge *si
 {
 }
 
-void RemoveAuthorUndoCommand::undo()
+Result<void> RemoveAuthorUndoCommand::undo()
 {
 
     CreateAuthorCommand command;
@@ -121,18 +133,24 @@ void RemoveAuthorUndoCommand::undo()
     CreateAuthorCommandHandler handler(m_repository);
 
     auto result = handler.handle(command);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->authorCreated(result);
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->authorCreated(result);
+    }
+    return Result<void>(result.error());
 }
 
-void RemoveAuthorUndoCommand::redo()
+Result<void> RemoveAuthorUndoCommand::redo()
 {
 
     // do
     RemoveAuthorCommandHandler handler(m_repository);
     auto result = handler.handle(m_request);
-    emit m_signalBridge->authorRemoved(result);
-    this->setObsolete(m_result.isError());
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->authorRemoved(result);
+    }
+    return Result<void>(result.error());
 }
 
 Result<AuthorDTO> RemoveAuthorUndoCommand::result() const

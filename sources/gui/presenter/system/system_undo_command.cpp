@@ -15,17 +15,20 @@ LoadSystemUndoCommand::LoadSystemUndoCommand(SystemSignalBridge *signalBridge, I
 {
 }
 
-void LoadSystemUndoCommand::undo()
+Result<void> LoadSystemUndoCommand::undo()
 {
     Q_UNREACHABLE();
 }
 
-void LoadSystemUndoCommand::redo()
+Result<void> LoadSystemUndoCommand::redo()
 {
     LoadSystemCommandHandler handler(m_skribLoader);
     auto result = handler.handle(m_request);
-    this->setObsolete(result.isError());
-    emit m_signalBridge->systemLoaded(result);
+    if (result.isSuccess())
+    {
+        emit m_signalBridge->systemLoaded(result);
+    }
+    return Result<void>(result.error());
 }
 
 //------------------------------------------------------------------------------------------------------------

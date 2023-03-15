@@ -2,7 +2,6 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 
 #include <QFuture>
-#include <QFutureWatcher>
 
 using namespace Presenter::UndoRedo;
 /*!
@@ -19,6 +18,7 @@ using namespace Presenter::UndoRedo;
 UndoRedoCommand::UndoRedoCommand(const QString &text)
     : QObject(nullptr), m_text(text), m_running(false), m_finished(false)
 {
+    m_watcher = new QFutureWatcher<Result<void>>(this);
 }
 
 /*!
@@ -27,10 +27,9 @@ UndoRedoCommand::UndoRedoCommand(const QString &text)
 void UndoRedoCommand::asyncUndo()
 {
     m_running = true;
-    QFuture<void> future = QtConcurrent::run(&UndoRedoCommand::undo, this);
-    QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
-    connect(watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
-    watcher->setFuture(future);
+    QFuture<Result<void>> future = QtConcurrent::run(&UndoRedoCommand::undo, this);
+    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
+    m_watcher->setFuture(future);
 }
 
 /*!
@@ -39,10 +38,9 @@ void UndoRedoCommand::asyncUndo()
 void UndoRedoCommand::asyncRedo()
 {
     m_running = true;
-    QFuture<void> future = QtConcurrent::run(&UndoRedoCommand::redo, this);
-    QFutureWatcher<void> *watcher = new QFutureWatcher<void>(this);
-    connect(watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
-    watcher->setFuture(future);
+    QFuture<Result<void>> future = QtConcurrent::run(&UndoRedoCommand::redo, this);
+    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
+    m_watcher->setFuture(future);
 }
 
 /*!
@@ -58,6 +56,12 @@ bool UndoRedoCommand::isRunning() const
  */
 void UndoRedoCommand::onFinished()
 {
+    Result<void> result = m_watcher->result();
+    if (result.hasError())
+    {
+        this->setObsolete(true);
+        emit errorSent(result.error());
+    }
     m_running = false;
     m_finished = true;
     emit finished();

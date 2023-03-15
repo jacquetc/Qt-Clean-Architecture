@@ -20,8 +20,8 @@ class LoadSystemUndoCommand : public UndoRedoCommand
   public:
     LoadSystemUndoCommand(SystemSignalBridge *signal_bridge, InterfaceSkribLoader *skribLoader,
                           const LoadSystemCommand &request);
-    void undo();
-    void redo();
+    Result<void> undo();
+    Result<void> redo();
 
   private:
     InterfaceSkribLoader *m_skribLoader;

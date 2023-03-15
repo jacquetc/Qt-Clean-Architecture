@@ -88,7 +88,6 @@ void PresenterTest::getAuthorAsync()
     m_repository->fillGet(author);
 
     // invoke
-
     QSignalSpy spy(m_authorController, &AuthorController::getAuthorReplied);
     QVERIFY(spy.isValid());
 
@@ -104,7 +103,7 @@ void PresenterTest::getAuthorAsync()
     }
 
     QVERIFY(signalResult.isSuccess());
-    QVERIFY(signalResult.value().uuid() == dto.uuid());
+    QCOMPARE(signalResult.value().uuid(), dto.uuid());
 }
 // ----------------------------------------------------------
 

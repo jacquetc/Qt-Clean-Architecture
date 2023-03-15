@@ -46,6 +46,7 @@ class UndoRedoSystem : public QObject
     void stateChanged();
 
     void finished();
+    void errorSent(Error error);
 
   private:
     void executeNextCommand(const UndoRedoCommand::Scope &scope);
