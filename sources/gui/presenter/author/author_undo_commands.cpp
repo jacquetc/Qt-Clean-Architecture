@@ -1,5 +1,4 @@
 #include "author_undo_commands.h"
-#include "QtConcurrent/qtconcurrentmap.h"
 #include "automapper/automapper.h"
 #include "cqrs/author/commands/remove_author_command.h"
 #include "cqrs/author/requests/get_author_request.h"
@@ -19,15 +18,15 @@ using namespace Presenter::UndoRedo;
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-CreateUndoCommand::CreateUndoCommand(Private::AuthorSignalBridge *signal_bridge,
-                                     QSharedPointer<InterfaceAuthorRepository> repository,
-                                     const CreateAuthorCommand &request)
+CreateAuthorUndoCommand::CreateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                                                 QSharedPointer<InterfaceAuthorRepository> repository,
+                                                 const CreateAuthorCommand &request)
     : UndoRedoCommand(QObject::tr("Create author")), m_signalBridge(signal_bridge), m_repository(repository),
       m_request(request)
 {
 }
 
-void CreateUndoCommand::undo()
+void CreateAuthorUndoCommand::undo()
 {
     RemoveAuthorCommand removeRequest;
     removeRequest.id = m_result.value();
@@ -40,7 +39,7 @@ void CreateUndoCommand::undo()
     emit m_signalBridge->authorRemoved(result);
 }
 
-void CreateUndoCommand::redo()
+void CreateAuthorUndoCommand::redo()
 {
     if (!m_result.isEmpty())
     {
@@ -56,15 +55,15 @@ void CreateUndoCommand::redo()
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-UpdateUndoCommand::UpdateUndoCommand(Private::AuthorSignalBridge *signal_bridge,
-                                     QSharedPointer<InterfaceAuthorRepository> repository,
-                                     const UpdateAuthorCommand &request)
+UpdateAuthorUndoCommand::UpdateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                                                 QSharedPointer<InterfaceAuthorRepository> repository,
+                                                 const UpdateAuthorCommand &request)
     : UndoRedoCommand(QObject::tr("Update author")), m_signalBridge(signal_bridge), m_repository(repository),
       m_request(request)
 {
 }
 
-void UpdateUndoCommand::undo()
+void UpdateAuthorUndoCommand::undo()
 {
 
     UpdateAuthorCommand command;
@@ -78,7 +77,7 @@ void UpdateUndoCommand::undo()
     emit m_signalBridge->authorUpdated(result);
 }
 
-void UpdateUndoCommand::redo()
+void UpdateAuthorUndoCommand::redo()
 {
 
     // save old state
@@ -105,15 +104,15 @@ void UpdateUndoCommand::redo()
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-RemoveUndoCommand::RemoveUndoCommand(Private::AuthorSignalBridge *signal_bridge,
-                                     QSharedPointer<InterfaceAuthorRepository> repository,
-                                     const RemoveAuthorCommand &request)
+RemoveAuthorUndoCommand::RemoveAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                                                 QSharedPointer<InterfaceAuthorRepository> repository,
+                                                 const RemoveAuthorCommand &request)
     : UndoRedoCommand(QObject::tr("Remove author")), m_signalBridge(signal_bridge), m_repository(repository),
       m_request(request)
 {
 }
 
-void RemoveUndoCommand::undo()
+void RemoveAuthorUndoCommand::undo()
 {
 
     CreateAuthorCommand command;
@@ -126,7 +125,7 @@ void RemoveUndoCommand::undo()
     emit m_signalBridge->authorCreated(result);
 }
 
-void RemoveUndoCommand::redo()
+void RemoveAuthorUndoCommand::redo()
 {
 
     // do
@@ -136,7 +135,7 @@ void RemoveUndoCommand::redo()
     this->setObsolete(m_result.isError());
 }
 
-Result<AuthorDTO> RemoveUndoCommand::result() const
+Result<AuthorDTO> RemoveAuthorUndoCommand::result() const
 {
     return m_result;
 }

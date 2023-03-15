@@ -150,7 +150,7 @@ void AuthorController::createAsync(const CreateAuthorDTO &dto)
     auto repository = qSharedPointerCast<InterfaceAuthorRepository>(
         s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new CreateUndoCommand(s_signal_bridge, repository, request);
+    auto command = new CreateAuthorUndoCommand(s_signal_bridge, repository, request);
     s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }
 
@@ -167,7 +167,7 @@ void AuthorController::updateAsync(const UpdateAuthorDTO &dto)
     auto repository = qSharedPointerCast<InterfaceAuthorRepository>(
         s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new UpdateUndoCommand(s_signal_bridge, repository, request);
+    auto command = new UpdateAuthorUndoCommand(s_signal_bridge, repository, request);
     s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }
 
@@ -184,6 +184,6 @@ void AuthorController::removeAsync(const QUuid &uuid)
     auto interface = qSharedPointerCast<InterfaceAuthorRepository>(
         s_repositoryProvider->repository(InterfaceRepositoryProvider::Author));
 
-    auto command = new RemoveUndoCommand(s_signal_bridge, interface, request);
+    auto command = new RemoveAuthorUndoCommand(s_signal_bridge, interface, request);
     s_undo_redo_system->push(command, UndoRedoCommand::Scope::Author);
 }

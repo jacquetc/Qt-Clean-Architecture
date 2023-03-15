@@ -5,9 +5,6 @@
 #include "cqrs/author/commands/remove_author_command.h"
 #include "cqrs/author/commands/update_author_command.h"
 #include "dto/author/author_dto.h"
-#include "features/author/handlers/commands/create_author_command_handler.h"
-#include "features/author/handlers/commands/remove_author_command_handler.h"
-#include "features/author/handlers/commands/update_author_command_handler.h"
 #include "persistence/interface_author_repository.h"
 #include "result.h"
 #include "undo_redo/undo_redo_command.h"
@@ -16,20 +13,19 @@
 using namespace Contracts::DTO::Author;
 using namespace Contracts::CQRS::Author::Commands;
 using namespace Contracts::Persistence;
-using namespace Application::Features::Author::Commands;
 using namespace Presenter::UndoRedo;
 
-namespace Presenter::Author
+namespace Presenter::Author::Private
 {
 
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-class CreateUndoCommand : public UndoRedoCommand
+class CreateAuthorUndoCommand : public UndoRedoCommand
 {
   public:
-    CreateUndoCommand(Private::AuthorSignalBridge *signal_bridge, QSharedPointer<InterfaceAuthorRepository> repository,
-                      const CreateAuthorCommand &request);
+    CreateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                            QSharedPointer<InterfaceAuthorRepository> repository, const CreateAuthorCommand &request);
     void undo();
     void redo();
 
@@ -42,11 +38,11 @@ class CreateUndoCommand : public UndoRedoCommand
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-class UpdateUndoCommand : public UndoRedoCommand
+class UpdateAuthorUndoCommand : public UndoRedoCommand
 {
   public:
-    UpdateUndoCommand(Private::AuthorSignalBridge *signal_bridge, QSharedPointer<InterfaceAuthorRepository> repository,
-                      const UpdateAuthorCommand &request);
+    UpdateAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                            QSharedPointer<InterfaceAuthorRepository> repository, const UpdateAuthorCommand &request);
     void undo();
     void redo();
 
@@ -60,11 +56,11 @@ class UpdateUndoCommand : public UndoRedoCommand
 //------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------
 
-class RemoveUndoCommand : public UndoRedoCommand
+class RemoveAuthorUndoCommand : public UndoRedoCommand
 {
   public:
-    RemoveUndoCommand(Private::AuthorSignalBridge *signal_bridge, QSharedPointer<InterfaceAuthorRepository> repository,
-                      const RemoveAuthorCommand &request);
+    RemoveAuthorUndoCommand(Private::AuthorSignalBridge *signal_bridge,
+                            QSharedPointer<InterfaceAuthorRepository> repository, const RemoveAuthorCommand &request);
     void undo();
     void redo();
     Result<AuthorDTO> result() const;
@@ -75,4 +71,4 @@ class RemoveUndoCommand : public UndoRedoCommand
     Result<AuthorDTO> m_result;
     Private::AuthorSignalBridge *m_signalBridge;
 };
-} // namespace Presenter::Author
+} // namespace Presenter::Author::Private
