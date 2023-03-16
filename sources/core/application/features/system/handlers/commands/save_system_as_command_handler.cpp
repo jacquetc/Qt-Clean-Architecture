@@ -25,5 +25,8 @@ Result<void> SaveSystemAsCommandHandler::handle(const SaveSystemAsCommand &reque
     //    {
     //        return Result<void>(initResult.error());
     //    }
+
+    emit systemSaved();
+
     return Result<void>();
 }

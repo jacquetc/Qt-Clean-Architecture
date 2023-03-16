@@ -56,22 +56,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         SystemController::loadSystem(dto);
     });
 
-    connect(systemController, &SystemController::systemLoaded, this, [this](Result<void> result) {
-        if (!result)
-        {
-            qDebug() << result.error().message() << result.error().data();
-            return;
-        }
+    connect(systemController, &SystemController::systemLoaded, this, [this]() {
         ui->addAsyncPushButton->setEnabled(true);
         ui->removePushButton->setEnabled(true);
 
-        auto list = AuthorController::instance()->getAll();
+        connect(
+            AuthorController::instance(), &AuthorController::getAllReplied, this,
+            [this](QList<AuthorDTO> result) {
+                for (const auto &author : result)
+                {
+                    auto *item = new QListWidgetItem(ui->listWidget);
+                    item->setText(author.name());
+                }
+            },
+            Qt::SingleShotConnection);
 
-        for (const auto &author : list.value())
-        {
-            auto *item = new QListWidgetItem(ui->listWidget);
-            item->setText(author.name());
-        }
+        AuthorController::instance()->getAllAsync();
     });
 
     // undo redo buttons:
@@ -91,21 +91,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         authorController->createAsync(dto);
     });
 
-    connect(authorController, &AuthorController::authorCreated, this, [this](Result<QUuid> result) {
-        if (!result)
-        {
-            qDebug() << result.error().message() << result.error().data();
-            return;
-        }
-        auto author = AuthorController::instance()->get(result.value());
-        if (!author)
-        {
-            qDebug() << author.error().message() << author.error().data();
-            return;
-        }
+    connect(authorController, &AuthorController::authorCreated, this, [this](AuthorDTO result) {
         auto *item = new QListWidgetItem(ui->listWidget);
-        item->setText(author.value().name());
-        item->setData(Qt::UserRole, author.value().uuid());
+        item->setText(result.name());
+        item->setData(Qt::UserRole, result.uuid());
     });
 
     connect(ui->removePushButton, &QPushButton::clicked, this, [this]() {
@@ -115,23 +104,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         authorController->removeAsync(item->data(Qt::UserRole).toUuid());
     });
 
-    connect(authorController, &AuthorController::authorRemoved, this,
-            [this](Result<Contracts::DTO::Author::AuthorDTO> result) {
-                if (!result)
-                {
-                    qDebug() << result.error().message() << result.error().data();
-                    return;
-                }
-
-                for (int i = 0; i < ui->listWidget->count(); i++)
-                {
-                    if (ui->listWidget->item(i)->data(Qt::UserRole).toUuid() == result.value().uuid())
-                    {
-                        ui->listWidget->takeItem(i);
-                        break;
-                    }
-                }
-            });
+    connect(authorController, &AuthorController::authorRemoved, this, [this](Contracts::DTO::Author::AuthorDTO result) {
+        for (int i = 0; i < ui->listWidget->count(); i++)
+        {
+            if (ui->listWidget->item(i)->data(Qt::UserRole).toUuid() == result.uuid())
+            {
+                ui->listWidget->takeItem(i);
+                break;
+            }
+        }
+    });
 }
 
 MainWindow::~MainWindow()

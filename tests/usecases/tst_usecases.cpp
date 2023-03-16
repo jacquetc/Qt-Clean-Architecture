@@ -117,7 +117,7 @@ void UseCases::addAuthor()
     CreateAuthorCommand command;
     command.req = dto;
 
-    Result<QUuid> result = handler.handle(command);
+    Result<AuthorDTO> result = handler.handle(command);
 
     if (!result)
     {

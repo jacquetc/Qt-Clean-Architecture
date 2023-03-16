@@ -19,18 +19,14 @@ set(presenter_SRCS
     presenter_registration.h presenter_registration.cpp
     # author
     author/author_controller.h author/author_controller.cpp
-    author/author_undo_commands.h author/author_undo_commands.cpp
-    author/author_signal_bridge.h
     # system
-    system/system_controller.h
-    system/system_controller.cpp
-    system/system_undo_command.h system/system_undo_command.cpp
-    system/system_signal_bridge.h
+    system/system_controller.h system/system_controller.cpp
     # undo redo
     undo_redo/undo_redo_command.h undo_redo/undo_redo_command.cpp
     undo_redo/undo_redo_system.h undo_redo/undo_redo_system.cpp
     undo_redo/threaded_undo_redo_system.h undo_redo/threaded_undo_redo_system.cpp
     undo_redo/query_command.h undo_redo/query_command.cpp
+    undo_redo/alter_command.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${presenter_SRCS})

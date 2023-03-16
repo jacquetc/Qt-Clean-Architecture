@@ -30,6 +30,23 @@ Result<AuthorDTO> UpdateAuthorCommandHandler::handle(const UpdateAuthorCommand &
     return result;
 }
 
+Result<AuthorDTO> UpdateAuthorCommandHandler::restore()
+{
+    Result<AuthorDTO> result;
+
+    try
+    {
+        result = restoreImpl();
+    }
+    catch (const std::exception &ex)
+    {
+        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        qDebug() << "Error handling UpdateAuthorCommand restore:" << ex.what();
+    }
+
+    return result;
+}
+
 Result<AuthorDTO> UpdateAuthorCommandHandler::handleImpl(const UpdateAuthorCommand &request)
 {
     qDebug() << "UpdateAuthorCommandHandler::handleImpl called with id" << request.req.uuid();
@@ -45,8 +62,47 @@ Result<AuthorDTO> UpdateAuthorCommandHandler::handleImpl(const UpdateAuthorComma
     // map
     auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
 
-    // set update timestamp
-    author.setUpdateDate(QDateTime::currentDateTime());
+    // set update timestamp only on first pass
+    if (m_oldState.isEmpty())
+    {
+        author.setUpdateDate(QDateTime::currentDateTime());
+    }
+
+    // save old state
+    if (m_oldState.isEmpty())
+    {
+        Result<Domain::Author> saveResult = m_repository->get(request.req.uuid());
+        if (saveResult.hasError())
+        {
+            qDebug() << "Error getting author from repository:" << saveResult.error().message();
+            return Result<AuthorDTO>(saveResult.error());
+        }
+
+        // map
+        m_oldState = Result<AuthorDTO>(AutoMapper::AutoMapper::map<AuthorDTO>(saveResult.value()));
+    }
+    // do
+    auto authorResult = m_repository->update(std::move(author));
+    if (authorResult.hasError())
+    {
+        return Result<AuthorDTO>(authorResult.error());
+    }
+
+    // map
+    auto authorDto = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
+
+    emit authorUpdated(authorDto);
+
+    qDebug() << "UpdateAuthorCommandHandler::handleImpl done";
+
+    return Result<AuthorDTO>(authorDto);
+}
+
+Result<AuthorDTO> UpdateAuthorCommandHandler::restoreImpl()
+{
+    qDebug() << "UpdateAuthorCommandHandler::restoreImpl called with id" << m_oldState.value().uuid();
+    // map
+    auto author = AutoMapper::AutoMapper::map<Domain::Author>(m_oldState.value());
 
     // do
     auto authorResult = m_repository->update(std::move(author));
@@ -58,7 +114,9 @@ Result<AuthorDTO> UpdateAuthorCommandHandler::handleImpl(const UpdateAuthorComma
     // map
     auto authorDto = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
 
-    qDebug() << "UpdateAuthorCommandHandler::handleImpl done";
+    emit authorUpdated(authorDto);
+
+    qDebug() << "UpdateAuthorCommandHandler::restoreImpl done";
 
     return Result<AuthorDTO>(authorDto);
 }

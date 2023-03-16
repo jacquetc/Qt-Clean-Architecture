@@ -46,5 +46,12 @@ Result<void> LoadSystemCommandHandler::handleImpl(const LoadSystemCommand &reque
         return Result<void>(loadResult.error());
     }
 
+    emit systemLoaded();
+
     return Result<void>();
+}
+
+Result<void> LoadSystemCommandHandler::restore()
+{
+    Q_UNREACHABLE();
 }

@@ -159,7 +159,7 @@ template <class T> Result<T> InternalDatabase<T>::get(const QUuid &uuid)
                    if (fieldWithValue.isEmpty())
                    {
                        return Result<T>(Error("SkribFile", Error::Critical, "sql_row_missing",
-                                              "No row wiht uuid " + uuid.toString()));
+                                              "No row with uuid " + uuid.toString()));
                    }
                }
 

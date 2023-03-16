@@ -12,9 +12,13 @@ namespace Application::Features::System::Commands
 {
 class SKR_APPLICATION_EXPORT SaveSystemAsCommandHandler : public Handler
 {
+    Q_OBJECT
   public:
     SaveSystemAsCommandHandler();
     Result<void> handle(const SaveSystemAsCommand &request);
+
+  signals:
+    void systemSaved();
 
   private:
 };

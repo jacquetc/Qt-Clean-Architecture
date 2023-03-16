@@ -12,9 +12,9 @@ CreateAuthorCommandHandler::CreateAuthorCommandHandler(QSharedPointer<InterfaceA
     : Handler(), m_repository(repository)
 {
 }
-Result<QUuid> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &request)
+Result<AuthorDTO> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &request)
 {
-    Result<QUuid> result;
+    Result<AuthorDTO> result;
 
     try
     {
@@ -22,46 +22,102 @@ Result<QUuid> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &requ
     }
     catch (const std::exception &ex)
     {
-        result = Result<QUuid>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling CreateAuthorCommand:" << ex.what();
     }
 
     return result;
 }
 
-Result<QUuid> CreateAuthorCommandHandler::handleImpl(const CreateAuthorCommand &request)
+Result<AuthorDTO> CreateAuthorCommandHandler::restore()
+{
+    Result<AuthorDTO> result;
+
+    try
+    {
+        result = restoreImpl();
+    }
+    catch (const std::exception &ex)
+    {
+        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        qDebug() << "Error handling CreateAuthorCommand restore:" << ex.what();
+    }
+
+    return result;
+}
+
+Result<AuthorDTO> CreateAuthorCommandHandler::handleImpl(const CreateAuthorCommand &request)
 {
     qDebug() << "CreateAuthorCommandHandler::handleImpl called";
-
-    // Validate the create author command using the validator
-    auto validator = CreateAuthorCommandValidator(m_repository);
-    Result<void> validatorResult = validator.validate(request.req);
-    if (validatorResult.hasError())
+    Domain::Author author;
+    if (m_oldState.isEmpty())
     {
-        return Result<QUuid>(validatorResult.error());
+        // Validate the create author command using the validator
+        auto validator = CreateAuthorCommandValidator(m_repository);
+        Result<void> validatorResult = validator.validate(request.req);
+        if (validatorResult.hasError())
+        {
+            return Result<AuthorDTO>(validatorResult.error());
+        }
+
+        // Map the create author command to a domain author object and generate a UUID
+        author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
+
+        // allow for forcing the uuid
+        if (author.uuid().isNull())
+        {
+            author.setUuid(QUuid::createUuid());
+        }
+
+        // Set the creation and update timestamps to the current date and time
+        author.setCreationDate(QDateTime::currentDateTime());
+        author.setUpdateDate(QDateTime::currentDateTime());
     }
-
-    // Map the create author command to a domain author object and generate a UUID
-    auto author = AutoMapper::AutoMapper::map<Domain::Author>(request.req);
-
-    // allow for forcing the uuid
-    if (author.uuid().isNull())
+    else
     {
-        author.setUuid(QUuid::createUuid());
+        // Map the create author command to a domain author object and generate a UUID
+        author = AutoMapper::AutoMapper::map<Domain::Author>(m_oldState.value());
     }
-
-    // Set the creation and update timestamps to the current date and time
-    author.setCreationDate(QDateTime::currentDateTime());
-    author.setUpdateDate(QDateTime::currentDateTime());
 
     // Add the author to the repository
     auto authorResult = m_repository->add(std::move(author));
     if (authorResult.hasError())
     {
-        return Result<QUuid>(authorResult.error());
+        return Result<AuthorDTO>(authorResult.error());
     }
-    qDebug() << "Author added:" << authorResult.value().uuid();
+
+    auto authorDTO = AutoMapper::AutoMapper::map<AuthorDTO>(authorResult.value());
+
+    m_oldState = Result<AuthorDTO>(authorDTO);
+
+    emit authorCreated(authorDTO);
+
+    qDebug() << "Author added:" << authorDTO.uuid();
 
     // Return the UUID of the newly created author as a Result object
-    return Result<QUuid>(authorResult.value().uuid());
+    return Result<AuthorDTO>(authorDTO);
+}
+
+Result<AuthorDTO> CreateAuthorCommandHandler::restoreImpl()
+{
+    Result<Domain::Author> authorResult = m_repository->get(m_oldState.value().uuid());
+    if (authorResult.hasError())
+    {
+        qDebug() << "Error getting author from repository:" << authorResult.error().message();
+        return Result<AuthorDTO>(authorResult.error());
+    }
+
+    auto deleteResult = m_repository->remove(std::move(authorResult.value()));
+    if (deleteResult.hasError())
+    {
+        qDebug() << "Error deleting author from repository:" << deleteResult.error().message();
+        return Result<AuthorDTO>(deleteResult.error());
+    }
+    auto authorDTO = AutoMapper::AutoMapper::map<AuthorDTO>(deleteResult.value());
+
+    emit authorRemoved(authorDTO);
+
+    qDebug() << "Author removed:" << deleteResult.value().uuid();
+
+    return Result<AuthorDTO>(authorDTO);
 }
