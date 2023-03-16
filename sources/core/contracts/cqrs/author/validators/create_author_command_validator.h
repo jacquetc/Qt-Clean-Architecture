@@ -10,7 +10,7 @@ using namespace Contracts::DTO::Author;
 
 namespace Contracts::CQRS::Author::Validators
 {
-class SKRCONTRACTSEXPORT CreateAuthorCommandValidator
+class SKR_CONTRACTS_EXPORT CreateAuthorCommandValidator
 {
   public:
     CreateAuthorCommandValidator(QSharedPointer<InterfaceAuthorRepository> authorRepository)

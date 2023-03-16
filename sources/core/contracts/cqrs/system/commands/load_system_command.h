@@ -5,7 +5,7 @@
 
 namespace Contracts::CQRS::System::Commands
 {
-class SKRCONTRACTSEXPORT LoadSystemCommand
+class SKR_CONTRACTS_EXPORT LoadSystemCommand
 {
   public:
     LoadSystemCommand()

@@ -6,7 +6,7 @@
 namespace Domain
 {
 
-class SKRDOMAINEXPORT Author : public Entity
+class SKR_DOMAIN_EXPORT Author : public Entity
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName WRITE setName)

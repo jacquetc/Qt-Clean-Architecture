@@ -8,7 +8,7 @@
 
 namespace Contracts::Database
 {
-template <class T> class SKRCONTRACTSEXPORT InterfaceDatabase
+template <class T> class SKR_CONTRACTS_EXPORT InterfaceDatabase
 {
   public:
     virtual ~InterfaceDatabase()

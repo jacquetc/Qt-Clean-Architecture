@@ -13,7 +13,7 @@ using namespace Contracts::CQRS::Author::Commands;
 
 namespace Application::Features::Author::Commands
 {
-class SKRAPPLICATIONEXPORT UpdateAuthorCommandHandler : public Handler
+class SKR_APPLICATION_EXPORT UpdateAuthorCommandHandler : public Handler
 
 {
     Q_OBJECT

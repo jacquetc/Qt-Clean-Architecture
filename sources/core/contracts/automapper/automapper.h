@@ -1,5 +1,4 @@
-#ifndef AUTOMAPPER_H
-#define AUTOMAPPER_H
+#pragma once
 
 #include "contracts_global.h"
 #include <QDateTime>
@@ -9,7 +8,7 @@
 
 namespace AutoMapper
 {
-class SKRCONTRACTSEXPORT AutoMapper
+class SKR_CONTRACTS_EXPORT AutoMapper
 {
   public:
     template <class Destination> static Destination map(const QObject &sourceObject)
@@ -101,4 +100,3 @@ class SKRCONTRACTSEXPORT AutoMapper
 
 } // namespace AutoMapper
 
-#endif // AUTOMAPPER_H

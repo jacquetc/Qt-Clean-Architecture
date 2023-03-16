@@ -6,7 +6,7 @@
 
 namespace Contracts::DTO::System
 {
-class SKRCONTRACTSEXPORT LoadSystemDTO
+class SKR_CONTRACTS_EXPORT LoadSystemDTO
 {
     Q_GADGET
 

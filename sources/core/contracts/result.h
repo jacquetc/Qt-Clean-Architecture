@@ -5,9 +5,9 @@
 #include <QMetaType>
 #include <QString>
 
-template <typename T> class SKRCONTRACTSEXPORT Result;
+template <typename T> class SKR_CONTRACTS_EXPORT Result;
 
-template <> class SKRCONTRACTSEXPORT Result<void>
+template <> class SKR_CONTRACTS_EXPORT Result<void>
 {
   public:
     explicit Result() : m_error(Error())
@@ -86,7 +86,7 @@ template <> class SKRCONTRACTSEXPORT Result<void>
  * @brief A class that represents the result of an operation, which can be either a value or an error message.
  * @tparam T The type of the result value.
  */
-template <typename T> class SKRCONTRACTSEXPORT Result
+template <typename T> class SKR_CONTRACTS_EXPORT Result
 {
 
   public:

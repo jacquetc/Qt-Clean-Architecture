@@ -11,7 +11,7 @@ namespace Contracts::DTO::Author
 
 //-------------------------------------------------
 
-class SKRCONTRACTSEXPORT CreateAuthorDTO : public AuthorDTOBase
+class SKR_CONTRACTS_EXPORT CreateAuthorDTO : public AuthorDTOBase
 {
     Q_OBJECT
     Q_PROPERTY(QUuid uuid READ uuid WRITE setUuid)

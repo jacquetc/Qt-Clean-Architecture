@@ -18,7 +18,7 @@ using namespace Presenter::UndoRedo;
 namespace Presenter::Author
 {
 
-class SKRPRESENTEREXPORT AuthorController : public QObject
+class SKR_PRESENTER_EXPORT AuthorController : public QObject
 {
     Q_OBJECT
   public:

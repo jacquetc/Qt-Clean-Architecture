@@ -5,7 +5,7 @@
 
 namespace Contracts::CQRS::Author::Commands
 {
-class SKRCONTRACTSEXPORT RemoveAuthorCommand
+class SKR_CONTRACTS_EXPORT RemoveAuthorCommand
 {
   public:
     RemoveAuthorCommand()

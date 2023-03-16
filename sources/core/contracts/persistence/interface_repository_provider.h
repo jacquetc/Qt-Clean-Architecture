@@ -1,11 +1,12 @@
 #include "persistence/interface_repository.h"
+#include "contracts_global.h"
 #include <QSharedPointer>
 
 #pragma once
 namespace Contracts::Persistence
 
 {
-class InterfaceRepositoryProvider
+class SKR_CONTRACTS_EXPORT InterfaceRepositoryProvider
 {
 
   public:

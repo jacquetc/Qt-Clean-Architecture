@@ -10,7 +10,7 @@
 namespace Application
 {
 
-class SKRAPPLICATIONEXPORT Handler : public QObject
+class SKR_APPLICATION_EXPORT Handler : public QObject
 {
     Q_OBJECT
   public:

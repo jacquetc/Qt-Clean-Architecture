@@ -12,7 +12,7 @@ using namespace Contracts::CQRS::Author::Requests;
 
 namespace Application::Features::Author::Queries
 {
-class SKRAPPLICATIONEXPORT GetAuthorRequestHandler : public Handler
+class SKR_APPLICATION_EXPORT GetAuthorRequestHandler : public Handler
 {
     Q_OBJECT
   public:

@@ -5,7 +5,7 @@
 
 namespace Contracts::CQRS::System::Commands
 {
-class SKRCONTRACTSEXPORT SaveSystemAsCommand
+class SKR_CONTRACTS_EXPORT SaveSystemAsCommand
 {
   public:
     SaveSystemAsCommand()

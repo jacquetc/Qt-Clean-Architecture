@@ -6,7 +6,9 @@ cmake_minimum_required(VERSION 3.16.0)
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-project(skribisto-application LANGUAGES CXX VERSION ${VERSION})
+set(PROJECT_NAME "skribisto-application")
+
+project(${PROJECT_NAME} LANGUAGES CXX VERSION ${VERSION})
 
 find_package(QT NAMES Qt6 COMPONENTS Core Concurrent Sql CONFIG REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Concurrent Sql CONFIG REQUIRED)
@@ -27,30 +29,28 @@ set(application_SRCS
     features/system/handlers/commands/load_system_command_handler.h features/system/handlers/commands/load_system_command_handler.cpp
 )
 
-add_library(skribisto-application SHARED ${application_SRCS})
+add_library(${PROJECT_NAME} SHARED ${application_SRCS})
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_APPLICATION_LIBRARY)
+
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 
-target_compile_definitions(skribisto-application PRIVATE SKRIBISTO_APPLICATION_LIBRARY)
-
-target_link_libraries(skribisto-application PRIVATE skribisto-domain skribisto-contracts
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+target_link_libraries(${PROJECT_NAME} PRIVATE
      Qt6::Core Qt6::Sql Qt6::Concurrent)
-
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 
 # ---------------------------------
 if(IOS)
-    install(TARGETS skribisto-application LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(IOS)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    install(TARGETS skribisto-application LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    install(TARGETS skribisto-application
+    install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${BINDIR}
         LIBRARY DESTINATION ${LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
