@@ -96,14 +96,8 @@ void PresenterTest::getAuthorAsync()
     QVERIFY(spy.wait(5000));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
-    Result<AuthorDTO> signalResult = arguments.at(0).value<Result<AuthorDTO>>();
-    if (!signalResult)
-    {
-        qDebug() << signalResult.error().message() << signalResult.error().data();
-    }
-
-    QVERIFY(signalResult.isSuccess());
-    QCOMPARE(signalResult.value().uuid(), dto.uuid());
+    auto signalResult = arguments.at(0).value<AuthorDTO>();
+    QCOMPARE(signalResult.uuid(), dto.uuid());
 }
 // ----------------------------------------------------------
 
@@ -136,14 +130,8 @@ void PresenterTest::getAuthorAsync_aLot()
     QCOMPARE(spy.count(), 30);
 
     QList<QVariant> arguments = spy.takeFirst();
-    Result<AuthorDTO> signalResult = arguments.at(0).value<Result<AuthorDTO>>();
-    if (!signalResult)
-    {
-        qDebug() << signalResult.error().message() << signalResult.error().data();
-    }
-
-    QVERIFY(signalResult.isSuccess());
-    QVERIFY(signalResult.value().uuid() == dto.uuid());
+    auto signalResult = arguments.at(0).value<AuthorDTO>();
+    QVERIFY(signalResult.uuid() == dto.uuid());
 }
 // ----------------------------------------------------------
 

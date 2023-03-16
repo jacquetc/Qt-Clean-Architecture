@@ -7,6 +7,7 @@
 
 #include "application_global.h"
 #include "cqrs/author/commands/create_author_command.h"
+#include "dto/author/author_dto.h"
 #include "handler.h"
 #include "persistence/interface_author_repository.h"
 #include "result.h"
@@ -36,10 +37,17 @@ class SKR_APPLICATION_EXPORT CreateAuthorCommandHandler : public Handler
      * @return A Result object containing the UUID of the newly created author, or an error message if the operation
      * failed.
      */
-    Result<QUuid> handle(const CreateAuthorCommand &request);
+    Result<AuthorDTO> handle(const CreateAuthorCommand &request);
+    Result<AuthorDTO> restore();
+
+  signals:
+    void authorCreated(Contracts::DTO::Author::AuthorDTO result);
+    void authorRemoved(Contracts::DTO::Author::AuthorDTO result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository; // A pointer to the interface repositories object.
-    Result<QUuid> handleImpl(const CreateAuthorCommand &request);
+    Result<AuthorDTO> handleImpl(const CreateAuthorCommand &request);
+    Result<AuthorDTO> restoreImpl();
+    Result<AuthorDTO> m_oldState;
 };
 } // namespace Application::Features::Author::Commands

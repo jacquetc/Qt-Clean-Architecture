@@ -5,13 +5,11 @@
 #include "persistence/interface_repository_provider.h"
 #include "presenter_global.h"
 #include "result.h"
-#include "system_signal_bridge.h"
 #include "undo_redo/threaded_undo_redo_system.h"
 
 using namespace Contracts::DTO::System;
 using namespace Presenter;
 using namespace Contracts::Persistence;
-using namespace Presenter::System::Private;
 using namespace Presenter::UndoRedo;
 
 namespace Presenter::System
@@ -32,12 +30,11 @@ class SKR_PRESENTER_EXPORT SystemController : public QObject
 
   signals:
 
-    void systemLoaded(Result<void> result);
-    void systemSaved(Result<void> result);
+    void systemLoaded();
+    void systemSaved();
 
   private:
     static QScopedPointer<SystemController> s_instance;
-    static SystemSignalBridge *s_signal_bridge;
     static InterfaceRepositoryProvider *s_repositoryProvider;
     static ThreadedUndoRedoSystem *s_undo_redo_system;
     SystemController() = delete;

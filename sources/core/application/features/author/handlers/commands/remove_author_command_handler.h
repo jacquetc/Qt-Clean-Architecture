@@ -19,9 +19,17 @@ class SKR_APPLICATION_EXPORT RemoveAuthorCommandHandler : public Handler
   public:
     RemoveAuthorCommandHandler(QSharedPointer<InterfaceAuthorRepository> repository);
     Result<AuthorDTO> handle(const RemoveAuthorCommand &request);
+    Result<AuthorDTO> restore();
+
+  signals:
+    void authorCreated(Contracts::DTO::Author::AuthorDTO result);
+    void authorRemoved(Contracts::DTO::Author::AuthorDTO result);
 
   private:
     QSharedPointer<InterfaceAuthorRepository> m_repository;
     Result<AuthorDTO> handleImpl(const RemoveAuthorCommand &request);
+    Result<AuthorDTO> restoreImpl();
+    Result<AuthorDTO> saveOldState();
+    Result<AuthorDTO> m_oldState;
 };
 } // namespace Application::Features::Author::Commands

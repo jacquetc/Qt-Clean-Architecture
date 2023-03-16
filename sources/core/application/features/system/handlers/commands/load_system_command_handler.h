@@ -14,9 +14,14 @@ namespace Application::Features::System::Commands
 {
 class SKR_APPLICATION_EXPORT LoadSystemCommandHandler : public Handler
 {
+    Q_OBJECT
   public:
     LoadSystemCommandHandler(InterfaceSkribLoader *skribLoader);
     Result<void> handle(const LoadSystemCommand &request);
+
+    Result<void> restore();
+signals:
+    void systemLoaded();
 
   private:
     InterfaceSkribLoader *m_skribLoader;

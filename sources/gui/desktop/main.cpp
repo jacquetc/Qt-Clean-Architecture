@@ -10,6 +10,19 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    // Names for the QSettings
+    QCoreApplication::setOrganizationName("skribisto");
+    QCoreApplication::setOrganizationDomain("skribisto.eu");
+    //    QCoreApplication::setApplicationVersion(QString("%1.%2.%3")
+    //                                                .arg(QString::number(SKR_VERSION_MAJOR),
+    //                                                     QString::number(SKR_VERSION_MINOR),
+    //                                                     QString::number(SKR_VERSION_PATCH)));
+    qDebug() << QCoreApplication::applicationVersion();
+    QString appName = "Skribisto";
+    QCoreApplication::setApplicationName(appName);
+
+    // Translations
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
 
