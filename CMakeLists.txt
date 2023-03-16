@@ -26,7 +26,7 @@ include(CMakePackageConfigHelpers)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(SKR_DEBUG true)
     add_compile_definitions(SKR_DEBUG=true)
-   # add_subdirectory(tests)
+    add_subdirectory(tests)
 
 else()
     set(SKR_DEBUG false)
