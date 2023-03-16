@@ -29,13 +29,15 @@ set(application_SRCS
 
 add_library(skribisto-application SHARED ${application_SRCS})
 
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+#add_dependencies(${PROJECT_NAME} skribisto-domain)
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
-
 target_compile_definitions(skribisto-application PRIVATE SKRIBISTO_APPLICATION_LIBRARY)
 
-target_link_libraries(skribisto-application PRIVATE skribisto-domain skribisto-contracts
+target_link_libraries(skribisto-application PRIVATE
      Qt6::Core Qt6::Sql Qt6::Concurrent)
+
+# target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-domain)
+ target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")

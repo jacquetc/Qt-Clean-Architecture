@@ -39,14 +39,18 @@ qt_add_executable(skribisto-desktop
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-presenter)
-add_dependencies(${PROJECT_NAME} skribisto-application)
+add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+#add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(${PROJECT_NAME} skribisto-application)
 
-target_link_libraries(skribisto-desktop PRIVATE skribisto-contracts skribisto-presenter skribisto-application skribisto-persistence Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(skribisto-desktop PUBLIC skribisto-domain)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-presenter)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-persistence)
+#target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-domain)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-application)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/gui/presenter/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")

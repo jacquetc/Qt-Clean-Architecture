@@ -26,13 +26,16 @@ add_test(${PROJECT_NAME} ${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(${PROJECT_NAME} skribisto-infrastructure)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Core )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-application)
 target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-domain)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-infrastructure)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
+include_directories("${CMAKE_SOURCE_DIR}/sources/core/infrastructure/")

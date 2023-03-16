@@ -7,8 +7,6 @@ class SKRCONTRACTSEXPORT InterfaceRepository
 {
 
   public:
-    virtual ~InterfaceRepository()
-    {
-    }
+    virtual ~InterfaceRepository() = default;
 };
 } // namespace Contracts::Persistence

@@ -5,7 +5,6 @@
 #include <QUuid>
 
 #include "contracts_global.h"
-#include "interface_repository.h"
 #include "result.h"
 
 namespace Contracts::Persistence

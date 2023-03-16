@@ -2,6 +2,7 @@
 
 #include "infrastructure/skrib/interface_skrib_loader.h"
 #include "persistence/interface_repository_provider.h"
+#include "infrastructure_global.h"
 
 using namespace Contracts::DTO::System;
 using namespace Contracts::Infrastructure::Skrib;
@@ -10,7 +11,7 @@ using namespace Contracts::Persistence;
 namespace Infrastructure::Skrib
 {
 
-class SkribLoader : public InterfaceSkribLoader
+class SKRINFRASTRUCTUREEXPORT SkribLoader : public InterfaceSkribLoader
 {
 
   public:

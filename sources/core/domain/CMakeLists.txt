@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.16.0)
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+#set(PROJECT_NAME "skribisto-domain")
+
 project(skribisto-domain LANGUAGES CXX VERSION ${VERSION})
 
 find_package(QT NAMES Qt6 COMPONENTS Core CONFIG REQUIRED)
@@ -19,7 +21,7 @@ entity.h
 )
 
 add_library(skribisto-domain SHARED ${domain_SRCS})
-target_include_directories(skribisto-domain PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(skribisto-domain PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_definitions(skribisto-domain PRIVATE SKRIBISTO_DOMAIN_LIBRARY)
 target_link_libraries(skribisto-domain PRIVATE Qt${QT_VERSION_MAJOR}::Core)

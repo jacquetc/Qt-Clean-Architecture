@@ -21,14 +21,15 @@ set(infrastructure_SRCS
 
 add_library(skribisto-infrastructure SHARED ${infrastructure_SRCS})
 
-target_compile_definitions(skribisto-infrastructure PRIVATE SKRIBISTO_infrastructure_LIBRARY)
+target_compile_definitions(skribisto-infrastructure PRIVATE SKRIBISTO_INFRASTRUCTURE_LIBRARY)
 
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+#add_dependencies(${PROJECT_NAME} skribisto-domain)
 
-target_link_libraries(skribisto-infrastructure PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
+target_link_libraries(skribisto-infrastructure PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+#target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-domain)
 
-# target_link_libraries(skribisto-infrastructure PRIVATE )
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
 

@@ -33,7 +33,7 @@ set(presenter_SRCS
 
 add_library(skribisto-presenter SHARED ${presenter_SRCS})
 
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+#add_dependencies(${PROJECT_NAME} skribisto-domain)
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
@@ -42,12 +42,12 @@ add_dependencies(${PROJECT_NAME} skribisto-infrastructure)
 target_compile_definitions(skribisto-presenter PRIVATE SKRIBISTO_PRESENTER_LIBRARY)
 
 target_link_libraries(skribisto-presenter PRIVATE
-    skribisto-domain
-    skribisto-contracts
-    skribisto-application
-    skribisto-persistence
-    skribisto-infrastructure
     Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Concurrent)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-application)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-persistence)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+#target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-domain)
+target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-infrastructure)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/persistence/")

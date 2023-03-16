@@ -4,7 +4,9 @@ cmake_minimum_required(VERSION 3.16.0)
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++11  -pedantic -Wno-deprecated-declarations -fstrict-aliasing -pedantic-errors -Wno-unused-variable")
 #
 # Populate a CMake variable with the sources
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(PROJECT_NAME "skribisto-persistence")
 
 project(skribisto-persistence LANGUAGES CXX VERSION ${VERSION})
 
@@ -23,17 +25,14 @@ set(persistence_SRCS
 )
 
 add_library(skribisto-persistence SHARED ${persistence_SRCS})
+target_include_directories(skribisto-persistence PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_compile_definitions(skribisto-persistence PRIVATE SKRIBISTO_PERSISTENCE_LIBRARY)
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(skribisto-persistence skribisto-contracts)
 
-target_link_libraries(skribisto-persistence PRIVATE skribisto-domain skribisto-contracts Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
-
-# target_link_libraries(skribisto-persistence PRIVATE )
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
+target_link_libraries(skribisto-persistence PUBLIC skribisto-contracts)
+target_link_libraries(skribisto-persistence PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
 
 # ---------------------------------
 if(IOS)

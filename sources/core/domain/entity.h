@@ -1,5 +1,6 @@
 #pragma once
 
+#include "domain_global.h"
 #include <QDateTime>
 #include <QObject>
 #include <QUuid>
@@ -7,7 +8,7 @@
 namespace Domain
 {
 
-class Entity : public QObject
+class SKRDOMAINEXPORT Entity : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUuid uuid READ getUuid WRITE setUuid)
