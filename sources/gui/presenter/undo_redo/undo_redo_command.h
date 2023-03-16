@@ -61,3 +61,4 @@ class UndoRedoCommand : public QObject
     UndoRedoCommand::Scope m_scope; /*!< The command's scope as an UndoRedoCommand::Scope enumeration value. */
 };
 } // namespace Presenter::UndoRedo
+Q_DECLARE_METATYPE(Presenter::UndoRedo::UndoRedoCommand::Scope)
