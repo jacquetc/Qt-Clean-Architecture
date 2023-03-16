@@ -20,7 +20,7 @@ namespace Application::Features::Author::Commands
 /**
  * @brief Handles the CreateAuthorCommand and persists the new author to the data store.
  */
-class SKRAPPLICATIONEXPORT CreateAuthorCommandHandler : public Handler
+class SKR_APPLICATION_EXPORT CreateAuthorCommandHandler : public Handler
 {
     Q_OBJECT
   public:

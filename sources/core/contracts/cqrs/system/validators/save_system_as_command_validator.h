@@ -10,7 +10,7 @@ using namespace Contracts::DTO::System;
 
 namespace Contracts::CQRS::Author::Validators
 {
-class SKRCONTRACTSEXPORT SaveSystemAsCommandValidator
+class SKR_CONTRACTS_EXPORT SaveSystemAsCommandValidator
 {
   public:
     SaveSystemAsCommandValidator()

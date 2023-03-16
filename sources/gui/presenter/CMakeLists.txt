@@ -6,7 +6,9 @@ cmake_minimum_required(VERSION 3.16.0)
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-project(skribisto-presenter LANGUAGES CXX VERSION ${VERSION})
+set(PROJECT_NAME "skribisto-presenter")
+
+project(${PROJECT_NAME} LANGUAGES CXX VERSION ${VERSION})
 
 find_package(QT NAMES Qt6 COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
@@ -31,41 +33,36 @@ set(presenter_SRCS
     undo_redo/query_command.h undo_redo/query_command.cpp
 )
 
-add_library(skribisto-presenter SHARED ${presenter_SRCS})
+add_library(${PROJECT_NAME} STATIC ${presenter_SRCS})
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_PRESENTER_LIBRARY)
+
+
 add_dependencies(${PROJECT_NAME} skribisto-contracts)
 add_dependencies(${PROJECT_NAME} skribisto-application)
 add_dependencies(${PROJECT_NAME} skribisto-persistence)
 add_dependencies(${PROJECT_NAME} skribisto-infrastructure)
 
-target_compile_definitions(skribisto-presenter PRIVATE SKRIBISTO_PRESENTER_LIBRARY)
+target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-application)
+target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-persistence)
+target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
+target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-infrastructure)
 
-target_link_libraries(skribisto-presenter PRIVATE
-    skribisto-domain
-    skribisto-contracts
-    skribisto-application
-    skribisto-persistence
-    skribisto-infrastructure
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Concurrent)
-
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/application/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/persistence/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/domain/")
-include_directories("${CMAKE_SOURCE_DIR}/sources/core/infrastructure/")
 
 # ---------------------------------
 if(IOS)
-    install(TARGETS skribisto-presenter LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(IOS)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    install(TARGETS skribisto-presenter LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    install(TARGETS skribisto-presenter
+    install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION ${BINDIR}
         LIBRARY DESTINATION ${LIBDIR})
 endif(CMAKE_SYSTEM_NAME STREQUAL "Windows")

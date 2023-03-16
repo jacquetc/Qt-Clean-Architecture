@@ -1,5 +1,6 @@
 #pragma once
 
+#include "presenter_global.h"
 #include "undo_redo_system.h"
 #include <QMutex>
 #include <QObject>
@@ -7,7 +8,7 @@
 
 namespace Presenter::UndoRedo
 {
-class ThreadedUndoRedoSystem : public QObject
+class SKR_PRESENTER_EXPORT ThreadedUndoRedoSystem : public QObject
 {
     Q_OBJECT
   public:

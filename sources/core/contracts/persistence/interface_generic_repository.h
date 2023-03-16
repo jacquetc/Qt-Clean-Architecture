@@ -5,12 +5,11 @@
 #include <QUuid>
 
 #include "contracts_global.h"
-#include "interface_repository.h"
 #include "result.h"
 
 namespace Contracts::Persistence
 {
-template <class T> class SKRCONTRACTSEXPORT InterfaceGenericRepository
+template <class T> class SKR_CONTRACTS_EXPORT InterfaceGenericRepository
 {
   public:
     virtual ~InterfaceGenericRepository()

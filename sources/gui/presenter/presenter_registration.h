@@ -7,7 +7,7 @@
 namespace Presenter
 {
 
-class SKRPRESENTEREXPORT PresenterRegistration : public QObject
+class SKR_PRESENTER_EXPORT PresenterRegistration : public QObject
 {
     Q_OBJECT
   public:

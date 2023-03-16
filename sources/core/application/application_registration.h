@@ -1,10 +1,9 @@
-#ifndef APPLICATIONREGISTRATION_H
-#define APPLICATIONREGISTRATION_H
+#pragma once
 
 #include "application_global.h"
 #include <QObject>
 
-class SKRAPPLICATIONEXPORT ApplicationRegistration : public QObject
+class SKR_APPLICATION_EXPORT ApplicationRegistration : public QObject
 {
     Q_OBJECT
   public:
@@ -14,4 +13,3 @@ class SKRAPPLICATIONEXPORT ApplicationRegistration : public QObject
   private:
 };
 
-#endif // APPLICATIONREGISTRATION_H

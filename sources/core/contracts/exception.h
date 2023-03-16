@@ -4,7 +4,7 @@
 
 namespace Contracts
 {
-class SKRCONTRACTSEXPORT Exception : public QException
+class SKR_CONTRACTS_EXPORT Exception : public QException
 {
   public:
     void raise() const override

@@ -9,7 +9,7 @@
 namespace Contracts::DTO::Author
 {
 
-class SKRCONTRACTSEXPORT AuthorDTOBase : public QObject
+class SKR_CONTRACTS_EXPORT AuthorDTOBase : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName WRITE setName)

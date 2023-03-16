@@ -10,7 +10,7 @@ using namespace Contracts::CQRS::System::Commands;
 
 namespace Application::Features::System::Commands
 {
-class SKRAPPLICATIONEXPORT SaveSystemAsCommandHandler : public Handler
+class SKR_APPLICATION_EXPORT SaveSystemAsCommandHandler : public Handler
 {
   public:
     SaveSystemAsCommandHandler();

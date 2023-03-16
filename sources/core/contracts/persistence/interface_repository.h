@@ -3,12 +3,10 @@
 
 namespace Contracts::Persistence
 {
-class SKRCONTRACTSEXPORT InterfaceRepository
+class SKR_CONTRACTS_EXPORT InterfaceRepository
 {
 
   public:
-    virtual ~InterfaceRepository()
-    {
-    }
+    virtual ~InterfaceRepository() = default;
 };
 } // namespace Contracts::Persistence

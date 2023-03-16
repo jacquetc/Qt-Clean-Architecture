@@ -11,7 +11,7 @@ using namespace Contracts::DTO::Author;
 namespace Presenter::Author::Private
 {
 
-class SKRPRESENTEREXPORT AuthorSignalBridge : public QObject
+class SKR_PRESENTER_EXPORT AuthorSignalBridge : public QObject
 {
     Q_OBJECT
   public:

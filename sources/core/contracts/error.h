@@ -9,7 +9,7 @@
  * @brief The Error class represents an error with an associated status, error code, and optional error message and
  * data.
  */
-class SKRCONTRACTSEXPORT Error
+class SKR_CONTRACTS_EXPORT Error
 {
     Q_GADGET
 

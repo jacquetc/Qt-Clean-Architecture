@@ -5,7 +5,7 @@
 
 namespace Contracts::CQRS::Author::Requests
 {
-class SKRCONTRACTSEXPORT GetAuthorRequest
+class SKR_CONTRACTS_EXPORT GetAuthorRequest
 {
   public:
     GetAuthorRequest()

@@ -8,7 +8,7 @@
 namespace Presenter::System::Private
 {
 
-class SKRPRESENTEREXPORT SystemSignalBridge : public QObject
+class SKR_PRESENTER_EXPORT SystemSignalBridge : public QObject
 {
     Q_OBJECT
   public:

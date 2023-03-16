@@ -6,7 +6,7 @@
 
 namespace Contracts::DTO::System
 {
-class SKRCONTRACTSEXPORT SaveSystemAsDTO
+class SKR_CONTRACTS_EXPORT SaveSystemAsDTO
 {
     Q_GADGET
 
