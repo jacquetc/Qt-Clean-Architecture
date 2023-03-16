@@ -1,5 +1,4 @@
-#ifndef UPDATE_AUTHOR_COMMAND_VALIDATOR_H
-#define UPDATE_AUTHOR_COMMAND_VALIDATOR_H
+#pragma once
 
 #include "contracts_global.h"
 #include "dto/author/update_author_dto.h"
@@ -11,7 +10,7 @@ using namespace Contracts::DTO::Author;
 
 namespace Contracts::CQRS::Author::Validators
 {
-class SKRCONTRACTSEXPORT UpdateAuthorCommandValidator
+class SKR_CONTRACTS_EXPORT UpdateAuthorCommandValidator
 {
   public:
     UpdateAuthorCommandValidator(QSharedPointer<InterfaceAuthorRepository> authorRepository)
@@ -41,4 +40,3 @@ class SKRCONTRACTSEXPORT UpdateAuthorCommandValidator
 };
 } // namespace Contracts::CQRS::Author::Validators
 
-#endif // UPDATE_AUTHOR_COMMAND_VALIDATOR_H

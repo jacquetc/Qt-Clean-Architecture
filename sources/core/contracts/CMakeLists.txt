@@ -54,7 +54,7 @@ set(contracts_SRCS
 add_library(skribisto-contracts SHARED ${contracts_SRCS})
 target_include_directories(skribisto-contracts PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
-target_compile_definitions(skribisto-contracts PRIVATE SKRIBISTO_CONTRACTS_LIBRARY)
+target_compile_definitions(skribisto-contracts PUBLIC SKRIBISTO_CONTRACTS_LIBRARY)
 
 add_dependencies(skribisto-contracts skribisto-domain)
 

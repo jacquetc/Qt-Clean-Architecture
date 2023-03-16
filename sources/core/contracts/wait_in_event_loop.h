@@ -10,7 +10,7 @@
 /**
  * @brief A utility class that waits for a Qt future to complete in a Qt event loop.
  */
-class SKRCONTRACTSEXPORT WaitInEventLoop
+class SKR_CONTRACTS_EXPORT WaitInEventLoop
 {
 
   public:

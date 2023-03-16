@@ -8,7 +8,7 @@
 namespace Domain
 {
 
-class SKRDOMAINEXPORT Entity : public QObject
+class SKR_DOMAIN_EXPORT Entity : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QUuid uuid READ getUuid WRITE setUuid)

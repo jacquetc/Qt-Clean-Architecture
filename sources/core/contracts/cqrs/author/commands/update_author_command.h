@@ -5,7 +5,7 @@
 
 namespace Contracts::CQRS::Author::Commands
 {
-class SKRCONTRACTSEXPORT UpdateAuthorCommand
+class SKR_CONTRACTS_EXPORT UpdateAuthorCommand
 {
   public:
     UpdateAuthorCommand()

@@ -7,7 +7,7 @@
 namespace Contracts::DTO::Author
 {
 
-class SKRCONTRACTSEXPORT UpdateAuthorDTO : public AuthorDTOBase
+class SKR_CONTRACTS_EXPORT UpdateAuthorDTO : public AuthorDTOBase
 {
     Q_OBJECT
     Q_PROPERTY(QUuid uuid READ getUuid WRITE setUuid)

@@ -3,7 +3,7 @@
 
 namespace Contracts::Persistence
 {
-class SKRCONTRACTSEXPORT InterfaceRepository
+class SKR_CONTRACTS_EXPORT InterfaceRepository
 {
 
   public:

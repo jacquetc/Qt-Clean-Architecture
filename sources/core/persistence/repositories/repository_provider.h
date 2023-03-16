@@ -2,6 +2,7 @@
 
 #include "persistence/interface_repository.h"
 #include "persistence/interface_repository_provider.h"
+#include "persistence_global.h"
 #include <QDebug>
 #include <QHash>
 #include <QMutex>
@@ -13,7 +14,7 @@ using namespace Contracts::Persistence;
 
 namespace Repository
 {
-class RepositoryProvider : public QObject, public Contracts::Persistence::InterfaceRepositoryProvider
+class SKR_PERSISTENCE_EXPORT RepositoryProvider : public QObject, public Contracts::Persistence::InterfaceRepositoryProvider
 {
     Q_OBJECT
   public:

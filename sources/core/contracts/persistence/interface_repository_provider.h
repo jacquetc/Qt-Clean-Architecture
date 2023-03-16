@@ -6,7 +6,7 @@
 namespace Contracts::Persistence
 
 {
-class SKRCONTRACTSEXPORT InterfaceRepositoryProvider
+class SKR_CONTRACTS_EXPORT InterfaceRepositoryProvider
 {
 
   public:

@@ -12,7 +12,7 @@ using namespace Contracts::Infrastructure::Skrib;
 
 namespace Application::Features::System::Commands
 {
-class SKRAPPLICATIONEXPORT LoadSystemCommandHandler : public Handler
+class SKR_APPLICATION_EXPORT LoadSystemCommandHandler : public Handler
 {
   public:
     LoadSystemCommandHandler(InterfaceSkribLoader *skribLoader);

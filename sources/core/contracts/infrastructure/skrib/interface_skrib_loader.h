@@ -7,7 +7,7 @@ using namespace Contracts::DTO::System;
 
 namespace Contracts::Infrastructure::Skrib
 {
-class SKRCONTRACTSEXPORT InterfaceSkribLoader
+class SKR_CONTRACTS_EXPORT InterfaceSkribLoader
 {
   public:
     virtual ~InterfaceSkribLoader()

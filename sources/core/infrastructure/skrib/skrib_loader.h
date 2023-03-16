@@ -11,7 +11,7 @@ using namespace Contracts::Persistence;
 namespace Infrastructure::Skrib
 {
 
-class SKRINFRASTRUCTUREEXPORT SkribLoader : public InterfaceSkribLoader
+class SKR_INFRASTRUCTURE_EXPORT SkribLoader : public InterfaceSkribLoader
 {
 
   public:

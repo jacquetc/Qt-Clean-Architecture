@@ -18,7 +18,7 @@ namespace Repository
 // -------------------------------------------------
 
 template <class T>
-class SKRPERSISTENCEEXPORT GenericRepository : public virtual Contracts::Persistence::InterfaceGenericRepository<T>
+class SKR_PERSISTENCE_EXPORT GenericRepository : public virtual Contracts::Persistence::InterfaceGenericRepository<T>
 {
 
   public:

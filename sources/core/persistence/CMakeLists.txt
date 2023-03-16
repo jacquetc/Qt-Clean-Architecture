@@ -27,7 +27,7 @@ set(persistence_SRCS
 add_library(skribisto-persistence SHARED ${persistence_SRCS})
 target_include_directories(skribisto-persistence PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
-target_compile_definitions(skribisto-persistence PRIVATE SKRIBISTO_PERSISTENCE_LIBRARY)
+target_compile_definitions(skribisto-persistence PUBLIC SKRIBISTO_PERSISTENCE_LIBRARY)
 
 add_dependencies(skribisto-persistence skribisto-contracts)
 

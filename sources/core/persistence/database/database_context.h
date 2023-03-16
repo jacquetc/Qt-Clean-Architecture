@@ -13,7 +13,7 @@ namespace Database
 /**
  * @brief The SkribFileContext class represents the context for a Skrib file database.
  */
-class SKRPERSISTENCEEXPORT DatabaseContext : public QObject, public Contracts::Database::InterfaceDatabaseContext
+class SKR_PERSISTENCE_EXPORT DatabaseContext : public QObject, public Contracts::Database::InterfaceDatabaseContext
 {
     Q_OBJECT
   public:

@@ -3,7 +3,7 @@
 #include "infrastructure_global.h"
 #include <QObject>
 
-class SKRINFRASTRUCTUREEXPORT InfrastructureRegistration : public QObject
+class SKR_INFRASTRUCTURE_EXPORT InfrastructureRegistration : public QObject
 {
     Q_OBJECT
   public:

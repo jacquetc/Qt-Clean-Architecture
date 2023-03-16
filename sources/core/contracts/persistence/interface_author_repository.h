@@ -7,7 +7,7 @@
 
 namespace Contracts::Persistence
 {
-class SKRCONTRACTSEXPORT InterfaceAuthorRepository
+class SKR_CONTRACTS_EXPORT InterfaceAuthorRepository
     : public virtual Contracts::Persistence::InterfaceGenericRepository<Domain::Author>,
       public InterfaceRepository
 {

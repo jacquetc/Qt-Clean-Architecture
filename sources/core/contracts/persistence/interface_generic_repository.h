@@ -9,7 +9,7 @@
 
 namespace Contracts::Persistence
 {
-template <class T> class SKRCONTRACTSEXPORT InterfaceGenericRepository
+template <class T> class SKR_CONTRACTS_EXPORT InterfaceGenericRepository
 {
   public:
     virtual ~InterfaceGenericRepository()

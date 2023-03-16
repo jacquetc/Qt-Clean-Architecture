@@ -10,7 +10,7 @@ using namespace Contracts::Persistence;
 
 namespace Application::Features::Author::Queries
 {
-class SKRAPPLICATIONEXPORT GetAuthorListRequestHandler : public Handler
+class SKR_APPLICATION_EXPORT GetAuthorListRequestHandler : public Handler
 {
     Q_OBJECT
   public:

@@ -4,7 +4,7 @@
 
 namespace Contracts::Database
 {
-class SKRCONTRACTSEXPORT InterfaceDatabaseContext
+class SKR_CONTRACTS_EXPORT InterfaceDatabaseContext
 {
   public:
     virtual ~InterfaceDatabaseContext()

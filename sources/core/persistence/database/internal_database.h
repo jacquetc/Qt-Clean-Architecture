@@ -22,7 +22,7 @@ namespace Database
    *
    * @tparam T Type of entity that the database will store
    */
-template <class T> class SKRPERSISTENCEEXPORT InternalDatabase : public InterfaceDatabase<T>
+template <class T> class SKR_PERSISTENCE_EXPORT InternalDatabase : public InterfaceDatabase<T>
 {
   public:
     /**

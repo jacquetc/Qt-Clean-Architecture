@@ -23,7 +23,7 @@ entity.h
 add_library(skribisto-domain SHARED ${domain_SRCS})
 target_include_directories(skribisto-domain PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_compile_definitions(skribisto-domain PRIVATE SKRIBISTO_DOMAIN_LIBRARY)
+target_compile_definitions(skribisto-domain PUBLIC SKRIBISTO_DOMAIN_LIBRARY)
 target_link_libraries(skribisto-domain PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
 

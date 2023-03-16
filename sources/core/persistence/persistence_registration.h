@@ -5,7 +5,7 @@
 
 namespace Persistence
 {
-class SKRPERSISTENCEEXPORT PersistenceRegistration : public QObject
+class SKR_PERSISTENCE_EXPORT PersistenceRegistration : public QObject
 {
     Q_OBJECT
   public:

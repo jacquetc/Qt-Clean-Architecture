@@ -9,7 +9,7 @@
 
 namespace Repository
 {
-class SKRPERSISTENCEEXPORT AuthorRepository : public QObject,
+class SKR_PERSISTENCE_EXPORT AuthorRepository : public QObject,
                                               public Repository::GenericRepository<Domain::Author>,
                                               public Contracts::Persistence::InterfaceAuthorRepository
 {
