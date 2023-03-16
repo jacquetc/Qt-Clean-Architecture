@@ -40,3 +40,32 @@ add_subdirectory(sources/core/infrastructure)
 add_subdirectory(sources/core/application)
 add_subdirectory(sources/gui/presenter)
 add_subdirectory(sources/gui/desktop)
+
+# generate documentation
+find_program(QDOC_EXECUTABLE qdoc)
+message("doc : ${QDOC_EXECUTABLE}")
+if(QDOC_EXECUTABLE)
+  # Set the output directory for the generated documentation
+  set(DOCS_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/docs")
+
+  # Add a custom command to clean the output directory
+  add_custom_command(
+    OUTPUT clean_docs_output
+    COMMAND ${CMAKE_COMMAND} -E remove_directory ${DOCS_OUTPUT_DIR}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
+    COMMENT "Cleaning documentation output directory"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  )
+
+  # Add a custom target to generate documentation with QDoc
+  add_custom_target(docs
+    COMMAND ${QDOC_EXECUTABLE} ${CMAKE_SOURCE_DIR}/skribisto.qdocconf
+    DEPENDS clean_docs_output
+    COMMENT "Generating documentation with QDoc"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  )
+
+  # Add the following line to make the 'docs' target a dependency of the 'all' target
+  # add_dependencies(skribisto-domain docs)
+endif()
+

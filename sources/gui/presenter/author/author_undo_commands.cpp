@@ -56,7 +56,6 @@ Result<void> CreateAuthorUndoCommand::redo()
         emit m_signalBridge->authorCreated(m_result);
     }
     return Result<void>(m_result.error());
-    // return Result<void>(Error(this, Error::Critical, "test error", "this is an error"));
 }
 
 //------------------------------------------------------------------------------------------------------------
