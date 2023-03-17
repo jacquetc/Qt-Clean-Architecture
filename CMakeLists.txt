@@ -1,10 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
+
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++11  -pedantic -Wno-deprecated-declarations -fstrict-aliasing -pedantic-errors -Wno-unused-variable")
+#
 
 # forbid some old things
 add_definitions(-DQT_NO_FOREACH)
@@ -12,7 +13,7 @@ add_definitions(-DQT_NO_FOREACH)
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(QT_MIN_VERSION "6.2.2")
+set(QT_MIN_VERSION "6.4.0")
 set(QT_DEFAULT_MAJOR_VERSION 6)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/ ${CMAKE_SOURCE_DIR}/cmake/3rdparty/ ${CMAKE_MODULE_PATH})
@@ -22,6 +23,10 @@ set(VERSION 0.2)
 project(skribisto VERSION ${VERSION} LANGUAGES CXX)
 
 include(CMakePackageConfigHelpers)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
+qt_standard_project_setup()
+set(CMAKE_AUTORCC ON)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(SKR_DEBUG true)

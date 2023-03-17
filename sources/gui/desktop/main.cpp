@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     for (const QString &locale : uiLanguages)
     {
-        const QString baseName = "skribisto-desktopp_" + QLocale(locale).name();
+        const QString baseName = "skribisto-desktop_" + QLocale(locale).name();
 
         if (translator.load(":/i18n/" + baseName))
         {
