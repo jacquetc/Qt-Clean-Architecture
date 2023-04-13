@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // Names for the QSettings
-    QCoreApplication::setOrganizationName("skribisto");
-    QCoreApplication::setOrganizationDomain("skribisto.eu");
+    QCoreApplication::setOrganizationName("example");
+    QCoreApplication::setOrganizationDomain("example.eu");
     //    QCoreApplication::setApplicationVersion(QString("%1.%2.%3")
     //                                                .arg(QString::number(SKR_VERSION_MAJOR),
     //                                                     QString::number(SKR_VERSION_MINOR),
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     for (const QString &locale : uiLanguages)
     {
-        const QString baseName = "skribisto-desktopp_" + QLocale(locale).name();
+        const QString baseName = "example-desktop_" + QLocale(locale).name();
 
         if (translator.load(":/i18n/" + baseName))
         {

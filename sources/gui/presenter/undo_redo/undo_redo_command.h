@@ -1,37 +1,43 @@
 #pragma once
 
 #include "result.h"
+#include "undo_redo_scopes.h"
 #include <QFutureWatcher>
 #include <QObject>
+#include <QPromise>
 
 namespace Presenter::UndoRedo
 {
+
 class UndoRedoCommand : public QObject
 {
     Q_OBJECT
   public:
-    enum Scope
+    enum Status
     {
-        Author,
-        All
+        Waiting,
+        Running,
+        Finished,
     };
-    Q_ENUM(Scope)
+    Q_ENUM(Status)
 
     UndoRedoCommand(const QString &text);
 
     virtual Result<void> undo() = 0;
 
-    virtual Result<void> redo() = 0;
+    virtual void redo(QPromise<Result<void>> &progressPromise) = 0;
 
     void asyncUndo();
 
     void asyncRedo();
 
     bool isRunning() const;
+    bool isWaiting() const;
+    bool isFinished() const;
 
-    UndoRedoCommand::Scope scope() const;
+    Scope scope() const;
 
-    void setScope(UndoRedoCommand::Scope newScope);
+    void setScope(Scope newScope);
 
     QString text() const;
 
@@ -48,17 +54,19 @@ class UndoRedoCommand : public QObject
      * actions.
      */
     void errorSent(Error error);
+    void progressFinished();
+    void progressRangeChanged(int minimum, int maximum);
+    void progressTextChanged(const QString &progressText);
+    void progressValueChanged(int progressValue);
 
   private slots:
     void onFinished();
 
   private:
     QFutureWatcher<Result<void>> *m_watcher;
-    bool m_obsolete;                /*!< A boolean representing the obsolete state of the command. */
-    bool m_finished;                /*!< A boolean representing the finished state of the command. */
-    bool m_running;                 /*!< A boolean representing the running state of the command. */
-    QString m_text;                 /*!< A QString representing the text description of the command. */
-    UndoRedoCommand::Scope m_scope; /*!< The command's scope as an UndoRedoCommand::Scope enumeration value. */
+    bool m_obsolete; /*!< A boolean representing the obsolete state of the command. */
+    QString m_text;  /*!< A QString representing the text description of the command. */
+    Scope m_scope;   /*!< The command's scope as an UndoRedoCommand::Scope enumeration value. */
+    Status m_status; /*!< An enum representing the state of the command. */
 };
 } // namespace Presenter::UndoRedo
-Q_DECLARE_METATYPE(Presenter::UndoRedo::UndoRedoCommand::Scope)

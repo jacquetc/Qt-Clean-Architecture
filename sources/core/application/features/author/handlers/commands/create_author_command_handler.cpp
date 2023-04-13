@@ -12,7 +12,8 @@ CreateAuthorCommandHandler::CreateAuthorCommandHandler(QSharedPointer<InterfaceA
     : Handler(), m_repository(repository)
 {
 }
-Result<AuthorDTO> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &request)
+Result<AuthorDTO> CreateAuthorCommandHandler::handle(QPromise<Result<void>> &progressPromise,
+                                                     const CreateAuthorCommand &request)
 {
     Result<AuthorDTO> result;
 
@@ -22,7 +23,7 @@ Result<AuthorDTO> CreateAuthorCommandHandler::handle(const CreateAuthorCommand &
     }
     catch (const std::exception &ex)
     {
-        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling CreateAuthorCommand:" << ex.what();
     }
 
@@ -39,7 +40,7 @@ Result<AuthorDTO> CreateAuthorCommandHandler::restore()
     }
     catch (const std::exception &ex)
     {
-        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling CreateAuthorCommand restore:" << ex.what();
     }
 
@@ -80,6 +81,7 @@ Result<AuthorDTO> CreateAuthorCommandHandler::handleImpl(const CreateAuthorComma
     }
 
     // Add the author to the repository
+
     auto authorResult = m_repository->add(std::move(author));
     if (authorResult.hasError())
     {

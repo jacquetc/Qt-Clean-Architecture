@@ -57,7 +57,9 @@ void PresenterTest::initTestCase()
 {
     m_repository.reset(new DummyAuthorRepository(this));
     m_repositoryProvider->registerRepository(DummyRepositoryProvider::Author, m_repository);
-    new UndoRedo::ThreadedUndoRedoSystem(this);
+
+    Scopes scopes(QStringList() << "author");
+    new UndoRedo::ThreadedUndoRedoSystem(this, scopes);
     m_authorController = new AuthorController(m_repositoryProvider);
 }
 
@@ -79,6 +81,7 @@ void PresenterTest::getAuthorAsync()
 {
     // Create an AuthorDTO to add
     AuthorDTO dto;
+    dto.setId(1);
     dto.setUuid(QUuid::createUuid());
     dto.setName("new author");
     dto.setRelative(QUuid::createUuid());
@@ -91,7 +94,7 @@ void PresenterTest::getAuthorAsync()
     QSignalSpy spy(m_authorController, &AuthorController::getAuthorReplied);
     QVERIFY(spy.isValid());
 
-    AuthorController::getAsync(dto.uuid());
+    AuthorController::getAsync(dto.id());
 
     QVERIFY(spy.wait(5000));
     QCOMPARE(spy.count(), 1);
@@ -105,6 +108,7 @@ void PresenterTest::getAuthorAsync_aLot()
 {
     // Create an AuthorDTO to add
     AuthorDTO dto;
+    dto.setId(1);
     dto.setUuid(QUuid::createUuid());
     dto.setName("new author");
     dto.setRelative(QUuid::createUuid());
@@ -119,15 +123,13 @@ void PresenterTest::getAuthorAsync_aLot()
     QVERIFY(spy.isValid());
     QBENCHMARK_ONCE
     {
-        for (int i = 0; i < 30; i++)
-            AuthorController::getAsync(dto.uuid());
-
-        for (int i = 0; i < 30; i++)
+        for (int i = 1; i <= 100; i++)
         {
-            QVERIFY(spy.wait(5000));
+            AuthorController::getAsync(dto.id());
         }
+        QTest::qWait(500);
     }
-    QCOMPARE(spy.count(), 30);
+    QCOMPARE(spy.count(), 100);
 
     QList<QVariant> arguments = spy.takeFirst();
     auto signalResult = arguments.at(0).value<AuthorDTO>();

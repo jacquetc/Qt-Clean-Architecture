@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 3.16.0)
-
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++11  -pedantic -Wno-deprecated-declarations -fstrict-aliasing -pedantic-errors -Wno-unused-variable")
-#
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(PROJECT_NAME "skribisto-application")
+set(PROJECT_NAME "example-application")
 
 project(${PROJECT_NAME} LANGUAGES CXX VERSION ${VERSION})
 
@@ -18,15 +13,18 @@ set(application_SRCS
     application_global.h
     application_registration.h application_registration.cpp
     handler.h handler.cpp
+
     # author:
     features/author/handlers/queries/get_author_request_handler.h features/author/handlers/queries/get_author_request_handler.cpp
     features/author/handlers/commands/create_author_command_handler.h features/author/handlers/commands/create_author_command_handler.cpp
     features/author/handlers/commands/remove_author_command_handler.h features/author/handlers/commands/remove_author_command_handler.cpp
     features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
     features/author/handlers/queries/get_author_list_request_handler.h features/author/handlers/queries/get_author_list_request_handler.cpp
+
     # system:
     features/system/handlers/commands/save_system_as_command_handler.h features/system/handlers/commands/save_system_as_command_handler.cpp
     features/system/handlers/commands/load_system_command_handler.h features/system/handlers/commands/load_system_command_handler.cpp
+    features/system/handlers/commands/close_system_command_handler.h features/system/handlers/commands/close_system_command_handler.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${application_SRCS})
@@ -34,11 +32,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_APPLICATION_LIBRARY)
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
+add_dependencies(${PROJECT_NAME} example-contracts)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+target_link_libraries(${PROJECT_NAME} PRIVATE example-contracts)
 target_link_libraries(${PROJECT_NAME} PRIVATE
-     Qt6::Core Qt6::Sql Qt6::Concurrent)
+    Qt6::Core Qt6::Sql Qt6::Concurrent)
 
 # ---------------------------------
 if(IOS)

@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 3.16.0)
-
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++11  -pedantic -Wno-deprecated-declarations -fstrict-aliasing -pedantic-errors -Wno-unused-variable")
-#
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(PROJECT_NAME "skribisto-infrastructure")
+set(PROJECT_NAME "example-infrastructure")
 
 project(${PROJECT_NAME} LANGUAGES CXX VERSION ${VERSION})
 
@@ -26,10 +21,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_INFRASTRUCTURE_LIBRARY)
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
+add_dependencies(${PROJECT_NAME} example-contracts)
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-contracts)
+target_link_libraries(${PROJECT_NAME} PRIVATE example-contracts)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::Concurrent)
 
 # ---------------------------------

@@ -9,7 +9,7 @@ GetAuthorListRequestHandler::GetAuthorListRequestHandler(QSharedPointer<Interfac
 {
 }
 
-Result<QList<AuthorDTO>> GetAuthorListRequestHandler::handle()
+Result<QList<AuthorDTO>> GetAuthorListRequestHandler::handle(QPromise<Result<void>> &progressPromise)
 {
     qDebug() << "GetAuthorListRequestHandler::handle called";
 
@@ -21,7 +21,7 @@ Result<QList<AuthorDTO>> GetAuthorListRequestHandler::handle()
     }
     catch (const std::exception &ex)
     {
-        result = Result<QList<AuthorDTO>>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<QList<AuthorDTO>>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling GetAuthorListRequest:" << ex.what();
     }
 

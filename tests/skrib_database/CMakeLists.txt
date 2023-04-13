@@ -22,15 +22,15 @@ qt_add_resources(RESOURCES ${QRC})
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp ${RESOURCES})
 add_test(${PROJECT_NAME} ${PROJECT_NAME})
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-persistence)
-add_dependencies(${PROJECT_NAME} skribisto-domain)
+add_dependencies(${PROJECT_NAME} example-contracts)
+add_dependencies(${PROJECT_NAME} example-persistence)
+add_dependencies(${PROJECT_NAME} example-domain)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Test Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Sql)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
-target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-persistence)
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-domain)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-contracts)
+target_link_libraries(${PROJECT_NAME} PRIVATE example-persistence)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-domain)
 
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/contracts/")
 include_directories("${CMAKE_SOURCE_DIR}/sources/core/persistence/")
