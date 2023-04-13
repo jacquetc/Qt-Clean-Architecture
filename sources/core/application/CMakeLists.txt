@@ -13,15 +13,18 @@ set(application_SRCS
     application_global.h
     application_registration.h application_registration.cpp
     handler.h handler.cpp
+
     # author:
     features/author/handlers/queries/get_author_request_handler.h features/author/handlers/queries/get_author_request_handler.cpp
     features/author/handlers/commands/create_author_command_handler.h features/author/handlers/commands/create_author_command_handler.cpp
     features/author/handlers/commands/remove_author_command_handler.h features/author/handlers/commands/remove_author_command_handler.cpp
     features/author/handlers/commands/update_author_command_handler.h features/author/handlers/commands/update_author_command_handler.cpp
     features/author/handlers/queries/get_author_list_request_handler.h features/author/handlers/queries/get_author_list_request_handler.cpp
+
     # system:
     features/system/handlers/commands/save_system_as_command_handler.h features/system/handlers/commands/save_system_as_command_handler.cpp
     features/system/handlers/commands/load_system_command_handler.h features/system/handlers/commands/load_system_command_handler.cpp
+    features/system/handlers/commands/close_system_command_handler.h features/system/handlers/commands/close_system_command_handler.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${application_SRCS})
@@ -33,7 +36,7 @@ add_dependencies(${PROJECT_NAME} example-contracts)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE example-contracts)
 target_link_libraries(${PROJECT_NAME} PRIVATE
-     Qt6::Core Qt6::Sql Qt6::Concurrent)
+    Qt6::Core Qt6::Sql Qt6::Concurrent)
 
 # ---------------------------------
 if(IOS)

@@ -18,6 +18,7 @@ template <class T> class SKR_CONTRACTS_EXPORT InterfaceGenericRepository
 
     // classes can clean up
 
+    virtual Result<T> get(const int &id) = 0;
     virtual Result<T> get(const QUuid &uuid) = 0;
 
     virtual Result<QList<T>> getAll() = 0;
@@ -26,5 +27,6 @@ template <class T> class SKR_CONTRACTS_EXPORT InterfaceGenericRepository
     virtual Result<T> add(T &&entity) = 0;
     virtual Result<T> update(T &&entity) = 0;
     virtual Result<bool> exists(const QUuid &uuid) = 0;
+    virtual Result<bool> exists(int id) = 0;
 };
 } // namespace Contracts::Persistence

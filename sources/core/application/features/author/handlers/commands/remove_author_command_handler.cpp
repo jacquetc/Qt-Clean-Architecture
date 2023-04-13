@@ -12,7 +12,8 @@ RemoveAuthorCommandHandler::RemoveAuthorCommandHandler(QSharedPointer<InterfaceA
 {
 }
 
-Result<AuthorDTO> RemoveAuthorCommandHandler::handle(const RemoveAuthorCommand &request)
+Result<AuthorDTO> RemoveAuthorCommandHandler::handle(QPromise<Result<void>> &progressPromise,
+                                                     const RemoveAuthorCommand &request)
 {
     Result<AuthorDTO> result;
 
@@ -22,7 +23,7 @@ Result<AuthorDTO> RemoveAuthorCommandHandler::handle(const RemoveAuthorCommand &
     }
     catch (const std::exception &ex)
     {
-        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling RemoveAuthorCommand:" << ex.what();
     }
 
@@ -39,7 +40,7 @@ Result<AuthorDTO> RemoveAuthorCommandHandler::restore()
     }
     catch (const std::exception &ex)
     {
-        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling RemoveAuthorCommand restore:" << ex.what();
     }
 

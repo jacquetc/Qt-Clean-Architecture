@@ -9,26 +9,28 @@ find_package(QT NAMES Qt6 COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Concurrent CONFIG REQUIRED)
 
 set(presenter_SRCS
-
     presenter_global.h
     presenter_registration.h presenter_registration.cpp
+
     # author
     author/author_controller.h author/author_controller.cpp
+
     # system
     system/system_controller.h system/system_controller.cpp
+
     # undo redo
     undo_redo/undo_redo_command.h undo_redo/undo_redo_command.cpp
     undo_redo/undo_redo_system.h undo_redo/undo_redo_system.cpp
     undo_redo/threaded_undo_redo_system.h undo_redo/threaded_undo_redo_system.cpp
     undo_redo/query_command.h undo_redo/query_command.cpp
     undo_redo/alter_command.h
+    undo_redo/undo_redo_scopes.h
 )
 
 add_library(${PROJECT_NAME} STATIC ${presenter_SRCS})
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_PRESENTER_LIBRARY)
-
 
 add_dependencies(${PROJECT_NAME} example-contracts)
 add_dependencies(${PROJECT_NAME} example-application)

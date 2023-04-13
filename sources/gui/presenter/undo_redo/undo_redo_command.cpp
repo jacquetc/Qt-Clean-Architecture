@@ -15,10 +15,14 @@ using namespace Presenter::UndoRedo;
 /*!
  * \brief Constructs an UndoRedoCommand with the specified \a text.
  */
-UndoRedoCommand::UndoRedoCommand(const QString &text)
-    : QObject(nullptr), m_text(text), m_running(false), m_finished(false)
+UndoRedoCommand::UndoRedoCommand(const QString &text) : QObject(nullptr), m_text(text), m_status(Status::Waiting)
 {
     m_watcher = new QFutureWatcher<Result<void>>(this);
+    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
+    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::progressFinished);
+    connect(m_watcher, &QFutureWatcher<void>::progressRangeChanged, this, &UndoRedoCommand::progressRangeChanged);
+    connect(m_watcher, &QFutureWatcher<void>::progressTextChanged, this, &UndoRedoCommand::progressTextChanged);
+    connect(m_watcher, &QFutureWatcher<void>::progressValueChanged, this, &UndoRedoCommand::progressValueChanged);
 }
 
 /*!
@@ -26,9 +30,8 @@ UndoRedoCommand::UndoRedoCommand(const QString &text)
  */
 void UndoRedoCommand::asyncUndo()
 {
-    m_running = true;
+    m_status = Status::Running;
     QFuture<Result<void>> future = QtConcurrent::run(&UndoRedoCommand::undo, this);
-    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
     m_watcher->setFuture(future);
 }
 
@@ -37,9 +40,8 @@ void UndoRedoCommand::asyncUndo()
  */
 void UndoRedoCommand::asyncRedo()
 {
-    m_running = true;
+    m_status = Status::Running;
     QFuture<Result<void>> future = QtConcurrent::run(&UndoRedoCommand::redo, this);
-    connect(m_watcher, &QFutureWatcher<void>::finished, this, &UndoRedoCommand::onFinished);
     m_watcher->setFuture(future);
 }
 
@@ -48,7 +50,15 @@ void UndoRedoCommand::asyncRedo()
  */
 bool UndoRedoCommand::isRunning() const
 {
-    return m_running;
+    return m_status == Status::Running;
+}
+bool UndoRedoCommand::isWaiting() const
+{
+    return m_status == Status::Waiting;
+}
+bool UndoRedoCommand::isFinished() const
+{
+    return m_status == Status::Finished;
 }
 
 /*!
@@ -62,8 +72,8 @@ void UndoRedoCommand::onFinished()
         this->setObsolete(true);
         emit errorSent(result.error());
     }
-    m_running = false;
-    m_finished = true;
+    m_status = Status::Finished;
+    emit progressFinished();
     emit finished();
 }
 
@@ -103,7 +113,7 @@ void UndoRedoCommand::setText(const QString &newText)
 /*!
  * \brief Returns the scope of the command.
  */
-UndoRedoCommand::Scope UndoRedoCommand::scope() const
+Scope UndoRedoCommand::scope() const
 {
     return m_scope;
 }

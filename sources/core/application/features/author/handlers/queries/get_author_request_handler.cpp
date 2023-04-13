@@ -9,7 +9,8 @@ GetAuthorRequestHandler::GetAuthorRequestHandler(QSharedPointer<InterfaceAuthorR
 {
 }
 
-Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &request)
+Result<AuthorDTO> GetAuthorRequestHandler::handle(QPromise<Result<void>> &progressPromise,
+                                                  const GetAuthorRequest &request)
 {
     Result<AuthorDTO> result;
 
@@ -19,7 +20,7 @@ Result<AuthorDTO> GetAuthorRequestHandler::handle(const GetAuthorRequest &reques
     }
     catch (const std::exception &ex)
     {
-        result = Result<AuthorDTO>(Error(this, Error::Critical, "Unknown error", ex.what()));
+        result = Result<AuthorDTO>(Error(Q_FUNC_INFO, Error::Critical, "Unknown error", ex.what()));
         qDebug() << "Error handling GetAuthorRequest:" << ex.what();
     }
 

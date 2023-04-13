@@ -21,6 +21,7 @@ template <class T> class SKR_CONTRACTS_EXPORT InterfaceDatabase
     virtual Result<T> add(T &&entity) = 0;
     virtual Result<T> update(T &&entity) = 0;
     virtual Result<bool> exists(const QUuid &uuid) = 0;
+    virtual Result<bool> exists(int id) = 0;
 
   private:
 };

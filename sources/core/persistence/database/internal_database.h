@@ -80,6 +80,7 @@ template <class T> class SKR_PERSISTENCE_EXPORT InternalDatabase : public Interf
      * or an error message.
      */
     Result<bool> exists(const QUuid &uuid) override;
+    Result<bool> exists(int id) override;
 
   private:
     QScopedPointer<InterfaceDatabaseContext>
@@ -447,6 +448,46 @@ template <class T> Result<bool> InternalDatabase<T>::exists(const QUuid &uuid)
                return Result<bool>(Error("SkribFile", Error::Fatal, "normaly_unreacheable", ""));
            })
         .withArguments(uuid)
+        .onThreadPool(m_databaseContext->threadPool())
+        .spawn()
+        .result();
+}
+
+//--------------------------------------------
+
+template <class T> Result<bool> InternalDatabase<T>::exists(int id)
+{
+    return QtConcurrent::task([this](int id) {
+               const QString &entityName = InternalDatabase::getEntityClassName();
+               QSqlDatabase database = QSqlDatabase::database(m_databaseContext->databaseName());
+
+               {
+
+                   QSqlQuery query(database);
+                   QString queryStr = "SELECT COUNT(*) FROM " + entityName + " WHERE id = :id";
+                   query.prepare(queryStr);
+                   query.bindValue(":id", id);
+                   query.exec();
+
+                   if (query.lastError().isValid())
+                   {
+                       return Result<bool>(
+                           Error("SkribFile", Error::Critical, "sql_error", query.lastError().text(), queryStr));
+                   }
+
+                   if (query.next())
+                   {
+                       return Result<bool>(query.value(0).toBool());
+                   }
+                   else
+                   {
+                       return Result<bool>(
+                           Error("SkribFile", Error::Critical, "sql_row_missing", "No row with uuid " + id.toString()));
+                   }
+               }
+               return Result<bool>(Error("SkribFile", Error::Fatal, "normaly_unreacheable", ""));
+           })
+        .withArguments(id)
         .onThreadPool(m_databaseContext->threadPool())
         .spawn()
         .result();
