@@ -1,7 +1,7 @@
 # Populate a CMake variable with the sources
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(PROJECT_NAME "skribisto-presenter")
+set(PROJECT_NAME "example-presenter")
 
 project(${PROJECT_NAME} LANGUAGES CXX VERSION ${VERSION})
 
@@ -30,15 +30,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_definitions(${PROJECT_NAME} PUBLIC SKRIBISTO_PRESENTER_LIBRARY)
 
 
-add_dependencies(${PROJECT_NAME} skribisto-contracts)
-add_dependencies(${PROJECT_NAME} skribisto-application)
-add_dependencies(${PROJECT_NAME} skribisto-persistence)
-add_dependencies(${PROJECT_NAME} skribisto-infrastructure)
+add_dependencies(${PROJECT_NAME} example-contracts)
+add_dependencies(${PROJECT_NAME} example-application)
+add_dependencies(${PROJECT_NAME} example-persistence)
+add_dependencies(${PROJECT_NAME} example-infrastructure)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-application)
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-persistence)
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-contracts)
-target_link_libraries(${PROJECT_NAME} PUBLIC skribisto-infrastructure)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-application)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-persistence)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-contracts)
+target_link_libraries(${PROJECT_NAME} PUBLIC example-infrastructure)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Concurrent)

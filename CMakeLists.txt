@@ -20,7 +20,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/ ${CMAKE_SOURCE_DIR}/cmake/3rdpa
 
 set(VERSION 0.2)
 
-project(skribisto VERSION ${VERSION} LANGUAGES CXX)
+project(example VERSION ${VERSION} LANGUAGES CXX)
 
 include(CMakePackageConfigHelpers)
 
@@ -64,13 +64,13 @@ if(QDOC_EXECUTABLE)
 
   # Add a custom target to generate documentation with QDoc
   add_custom_target(docs
-    COMMAND ${QDOC_EXECUTABLE} ${CMAKE_SOURCE_DIR}/skribisto.qdocconf
+    COMMAND ${QDOC_EXECUTABLE} ${CMAKE_SOURCE_DIR}/example.qdocconf
     DEPENDS clean_docs_output
     COMMENT "Generating documentation with QDoc"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   )
 
   # Add the following line to make the 'docs' target a dependency of the 'all' target
-  # add_dependencies(skribisto-domain docs)
+  # add_dependencies(example-domain docs)
 endif()
 

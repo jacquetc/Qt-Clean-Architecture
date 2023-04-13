@@ -1,4 +1,4 @@
-set(PROJECT_NAME "skribisto-desktop")
+set(PROJECT_NAME "example-desktop")
 
 project(${PROJECT_NAME} VERSION ${VERSION} LANGUAGES CXX)
 
@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
 
-set(US_TS_FILE i18n/skribisto-desktop_en_US.ts)
-set(TS_FILES ${US_TS_FILE} i18n/skribisto-desktop_fr_FR.ts)
+set(US_TS_FILE i18n/example-desktop_en_US.ts)
+set(TS_FILES ${US_TS_FILE} i18n/example-desktop_fr_FR.ts)
 
 set(QRC
 desktop_resources.qrc
@@ -47,13 +47,13 @@ qt_add_lrelease(${PROJECT_NAME}
       BASE "${CMAKE_CURRENT_BINARY_DIR}"
       FILES "${QM_FILES}")
 
-add_dependencies(${PROJECT_NAME} skribisto-desktop_lupdate)
+add_dependencies(${PROJECT_NAME} example-desktop_lupdate)
 
 # library dependencies
 
-add_dependencies(${PROJECT_NAME} skribisto-presenter)
+add_dependencies(${PROJECT_NAME} example-presenter)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE skribisto-presenter)
+target_link_libraries(${PROJECT_NAME} PRIVATE example-presenter)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

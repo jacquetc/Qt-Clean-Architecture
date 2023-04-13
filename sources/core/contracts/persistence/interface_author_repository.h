@@ -17,5 +17,5 @@ class SKR_CONTRACTS_EXPORT InterfaceAuthorRepository
     }
 };
 } // namespace Contracts::Persistence
-#define InterfaceAuthorRepository_iid "eu.skribisto.Contracts.Persistence.InterfaceAuthorRepository"
+#define InterfaceAuthorRepository_iid "eu.example.Contracts.Persistence.InterfaceAuthorRepository"
 Q_DECLARE_INTERFACE(Contracts::Persistence::InterfaceAuthorRepository, InterfaceAuthorRepository_iid)
