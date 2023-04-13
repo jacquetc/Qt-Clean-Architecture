@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2016 by Cyril Jacquet                                 *
- *   cyril.jacquet@skribisto.eu                                        *
+ *   cyril.jacquet@example.eu                                        *
  *                                                                         *
  *  Filename: mysharedlib_global
  *                                                  *

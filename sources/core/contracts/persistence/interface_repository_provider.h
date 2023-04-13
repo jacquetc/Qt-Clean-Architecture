@@ -1,5 +1,5 @@
-#include "persistence/interface_repository.h"
 #include "contracts_global.h"
+#include "persistence/interface_repository.h"
 #include <QSharedPointer>
 
 #pragma once
@@ -12,7 +12,9 @@ class SKR_CONTRACTS_EXPORT InterfaceRepositoryProvider
   public:
     enum Entities
     {
-        Author
+        Author,
+        Atelier,
+        Book
     };
 
     virtual ~InterfaceRepositoryProvider()

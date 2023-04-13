@@ -9,21 +9,29 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core CONFIG REQUIRED)
 
 set(contracts_SRCS
 
-    contracts_global.h
-    exception.h
-    database/interface_database.h
-    database/interface_database_context.h
-    automapper/automapper.h
-    error.h
-    wait_in_event_loop.h
-    result.h
-    types.h
 
-    # persistence:
-    persistence/interface_generic_repository.h
-    persistence/interface_author_repository.h
-    persistence/interface_repository.h
-    persistence/interface_repository_provider.h
+contracts_global.h
+exception.h
+automapper/automapper.h
+error.h
+wait_in_event_loop.h
+result.h
+types.h
+
+# database:
+database/interface_database_table.h
+database/interface_database_context.h
+database/interface_ordered_database_table.h
+
+# persistence:
+persistence/interface_generic_repository.h
+persistence/interface_unique_generic_repository.h
+persistence/interface_ordered_generic_repository.h
+persistence/interface_author_repository.h
+persistence/interface_atelier_repository.h
+persistence/interface_book_repository.h
+persistence/interface_repository.h
+persistence/interface_repository_provider.h
 
     # author:
     dto/author/author_dto.h
